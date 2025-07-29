@@ -1,150 +1,96 @@
-# FastAPI Web Scraper
+# Trading Card Tracker Frontend v6.0.0
 
-A simple FastAPI application that provides a web scraping API endpoint. This project is ready for deployment to Railway.
+A modern React frontend for tracking trading card prices with real-time market data.
 
-## Features
+## 🚀 Features
 
-- FastAPI web server
-- `/scrape` endpoint that accepts a `query` parameter
-- Mock scraping functionality (easily replaceable with real scraping logic)
-- Docker support for containerized deployment
-- Railway-ready configuration
+- **Clean Modern UI** - Built with TailwindCSS utility classes only
+- **Real-time Price Tracking** - Live market prices from eBay and other marketplaces
+- **Responsive Design** - Works perfectly on all devices
+- **Search & Scrape** - Add new cards to your collection
+- **Card Library** - View all tracked cards with price history
 
-## Local Development
+## 🛠 Tech Stack
 
-### Prerequisites
+- **React 18** - Modern React with hooks
+- **Vite** - Fast build tool and dev server
+- **TailwindCSS 3.4** - Utility-first CSS framework
+- **Supabase** - Backend database and API
+- **Railway** - Scraper service
 
-- Python 3.10 or higher
-- pip
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone <your-repo-url>
-cd fastapi-scraper
-```
-
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-3. Run the development server:
-```bash
-python server.py
-```
-
-Or using uvicorn directly:
-```bash
-uvicorn server:app --reload
-```
-
-4. Open your browser and navigate to `http://localhost:8000`
-
-### API Endpoints
-
-- `GET /` - Health check endpoint
-- `GET /docs` - Interactive API documentation (Swagger UI)
-- `GET /scrape?query=<your-query>` - Scrape data based on query
-
-### Example Usage
+## 📦 Installation
 
 ```bash
-curl "http://localhost:8000/scrape?query=laptop"
+# Clone the repository
+git clone https://github.com/aleksanderkav/Ny-flippio-front.git
+cd Ny-flippio-front
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
 
-Response:
-```json
-{
-  "query": "laptop",
-  "prices": [150.0, 162.5, 175.0],
-  "average": 162.5,
-  "timestamp": "2024-01-01T00:00:00Z"
-}
+## 🔧 Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-## Docker
+## 🚀 Deployment
 
-### Build and Run
+### Vercel (Recommended)
+
+1. Connect your GitHub repository to Vercel
+2. Set environment variables in Vercel dashboard
+3. Deploy automatically on push to main branch
+
+### Manual Build
 
 ```bash
-# Build the Docker image
-docker build -t fastapi-scraper .
+# Build for production
+npm run build
 
-# Run the container
-docker run -p 8000:8000 fastapi-scraper
+# Preview production build
+npm run preview
 ```
 
-## Deployment to Railway
+## 📊 Build Stats
 
-### Method 1: GitHub Integration (Recommended)
+- **CSS Bundle**: ~17.37 kB (3.91 kB gzipped)
+- **JS Bundle**: ~151.93 kB (48.59 kB gzipped)
+- **Total Size**: Optimized for fast loading
 
-1. Push your code to GitHub
-2. Go to [Railway](https://railway.app/)
-3. Click "New Project" → "Deploy from GitHub repo"
-4. Select your repository
-5. Railway will automatically detect the Dockerfile and deploy your application
+## 🎨 Design Features
 
-### Method 2: Direct Deployment
+- **Sticky Header** with gradient and blur effects
+- **Responsive Grid** layout for card display
+- **Hover Effects** and smooth transitions
+- **Modern Color Scheme** with price-based gradients
+- **Clean Typography** using system fonts
 
-1. Install Railway CLI:
-```bash
-npm install -g @railway/cli
-```
+## 🔗 Backend Services
 
-2. Login to Railway:
-```bash
-railway login
-```
+- **Supabase Database**: `https://jvkxyjycpomtzfngocge.supabase.co`
+- **Scraper Service**: `https://scraper-production-22f6.up.railway.app`
 
-3. Initialize and deploy:
-```bash
-railway init
-railway up
-```
+## 📝 Version History
 
-### Environment Variables
+- **v6.0.0** - Clean modern UI, removed legacy styling, optimized for Vercel deployment
+- **v5.2.0** - Previous version with dark mode support
 
-No environment variables are required for basic functionality, but you can add them in Railway's dashboard if needed for your specific use case.
+## 🤝 Contributing
 
-## Customization
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
-### Adding Real Scraping Logic
+## 📄 License
 
-Replace the mock implementation in `scraper.py` with your actual scraping logic:
-
-```python
-import requests
-from bs4 import BeautifulSoup
-
-def run_scraper(query: str) -> dict:
-    # Your actual scraping logic here
-    # Example: scrape prices from an e-commerce site
-    pass
-```
-
-### Adding More Endpoints
-
-Add new endpoints in `server.py`:
-
-```python
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy"}
-```
-
-## Project Structure
-
-```
-fastapi-scraper/
-├── server.py          # Main FastAPI application
-├── scraper.py         # Scraping logic
-├── requirements.txt   # Python dependencies
-├── Dockerfile         # Docker configuration
-└── README.md         # This file
-```
-
-## License
-
-MIT License - feel free to use this project as a starting point for your own applications.
+This project is licensed under the MIT License.
