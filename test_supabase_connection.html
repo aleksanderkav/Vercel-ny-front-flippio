@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        pre {
+            background: #f8f8f8;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Supabase Connection Test</h1>
+    
+    <div class="test-section">
+        <h2>1. Load Supabase Client</h2>
+        <div id="supabase-load-status">Loading...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Test Supabase URL</h2>
+        <div id="url-test-status">Testing...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Test Database Connection</h2>
+        <div id="db-test-status">Testing...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Test Query</h2>
+        <div id="query-test-status">Testing...</div>
+    </div>
+
+    <script>
+        const supabaseUrl = 'https://jvkxjyjycpomtzfngocge.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2a3h5anljcG9tdHpmbmdvY2dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3NTM1OTMsImV4cCI6MjA2OTMyOTU5M30.r3p4y2sl2RFROdKN-MsAsI1Z_8TBn6tK-aZ2claU32Q';
+        
+        function log(message, type = 'info') {
+            console.log(message);
+            return `<div class="${type}">${message}</div>`;
+        }
+        
+        async function testSupabaseConnection() {
+            const loadStatus = document.getElementById('supabase-load-status');
+            const urlStatus = document.getElementById('url-test-status');
+            const dbStatus = document.getElementById('db-test-status');
+            const queryStatus = document.getElementById('query-test-status');
+            
+            // Test 1: Load Supabase
+            try {
+                loadStatus.innerHTML = log('🔍 Loading Supabase from CDN...', 'info');
+                
+                const script = document.createElement('script');
+                script.src = 'https://unpkg.com/@supabase/supabase-js@2';
+                
+                await new Promise((resolve, reject) => {
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                });
+                
+                loadStatus.innerHTML = log('✅ Supabase loaded successfully', 'success');
+            } catch (error) {
+                loadStatus.innerHTML = log(`❌ Failed to load Supabase: ${error.message}`, 'error');
+                return;
+            }
+            
+            // Test 2: Test URL accessibility
+            try {
+                urlStatus.innerHTML = log('🔍 Testing Supabase URL accessibility...', 'info');
+                
+                const response = await fetch(`${supabaseUrl}/rest/v1/`, {
+                    method: 'GET',
+                    headers: {
+                        'apikey': supabaseKey,
+                        'Authorization': `Bearer ${supabaseKey}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                urlStatus.innerHTML = log(`✅ URL accessible: ${response.status} ${response.statusText}`, 'success');
+            } catch (error) {
+                urlStatus.innerHTML = log(`❌ URL not accessible: ${error.message}`, 'error');
+            }
+            
+            // Test 3: Initialize Supabase client
+            try {
+                dbStatus.innerHTML = log('🔍 Initializing Supabase client...', 'info');
+                
+                const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+                
+                dbStatus.innerHTML = log('✅ Supabase client initialized', 'success');
+                
+                // Test 4: Test query
+                try {
+                    queryStatus.innerHTML = log('🔍 Testing database query...', 'info');
+                    
+                    const { data, error } = await supabase
+                        .from('cards')
+                        .select('count')
+                        .limit(1);
+                    
+                    if (error) {
+                        queryStatus.innerHTML = log(`❌ Query failed: ${error.message}`, 'error');
+                    } else {
+                        queryStatus.innerHTML = log(`✅ Query successful: ${JSON.stringify(data)}`, 'success');
+                    }
+                } catch (queryError) {
+                    queryStatus.innerHTML = log(`❌ Query error: ${queryError.message}`, 'error');
+                }
+                
+            } catch (error) {
+                dbStatus.innerHTML = log(`❌ Client initialization failed: ${error.message}`, 'error');
+            }
+        }
+        
+        // Start the test when page loads
+        document.addEventListener('DOMContentLoaded', testSupabaseConnection);
+    </script>
+</body>
+</html> 

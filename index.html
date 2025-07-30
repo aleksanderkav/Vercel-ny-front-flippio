@@ -138,6 +138,9 @@
           const supabaseUrl = 'https://jvkxjyjycpomtzfngocge.supabase.co';
           const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2a3h5anljcG9tdHpmbmdvY2dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3NTM1OTMsImV4cCI6MjA2OTMyOTU5M30.r3p4y2sl2RFROdKN-MsAsI1Z_8TBn6tK-aZ2claU32Q';
           
+          console.log('🔍 Initializing Supabase with URL:', supabaseUrl);
+          console.log('🔍 Supabase key length:', supabaseKey.length);
+          
           const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
           console.log('✅ Supabase client initialized');
           
@@ -167,7 +170,22 @@
                 console.log('🔍 Supabase URL:', supabaseUrl);
                 console.log('🔍 Testing basic connection...');
                 
-                // First test basic connection
+                // First test if we can reach the Supabase URL
+                try {
+                  const response = await fetch(`${supabaseUrl}/rest/v1/`, {
+                    method: 'GET',
+                    headers: {
+                      'apikey': supabaseKey,
+                      'Authorization': `Bearer ${supabaseKey}`,
+                      'Content-Type': 'application/json'
+                    }
+                  });
+                  console.log('🔍 Supabase URL test response:', response.status, response.statusText);
+                } catch (fetchError) {
+                  console.error('❌ Supabase URL fetch error:', fetchError);
+                }
+                
+                // Test basic connection
                 const { data: testData, error: testError } = await supabase
                   .from('cards')
                   .select('count')
