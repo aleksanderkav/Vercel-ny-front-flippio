@@ -2,7 +2,7 @@
 
 A modern React frontend for tracking trading card prices with real-time market data.
 
-**🚀 Deployment Status: Ready for Vercel with Vite v4.5.2**
+**🚀 Deployment Status: Ready for Vercel with Webpack v5.101.0**
 
 ## 🚀 Features
 
