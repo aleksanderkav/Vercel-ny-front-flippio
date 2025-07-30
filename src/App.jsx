@@ -11,8 +11,8 @@ function App() {
   const APP_VERSION = '8.0.1'
 
   // Get environment variables - Railway deployment compatible
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+  const supabaseUrl = process.env.VITE_SUPABASE_URL
+  const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY
   
   // Debug environment variables
   console.log('🔍 Environment Variables Debug:')
@@ -20,6 +20,10 @@ function App() {
   console.log('VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? 'Set' : 'NOT SET')
   console.log('Full URL:', supabaseUrl)
   console.log('Key length:', supabaseAnonKey ? supabaseAnonKey.length : 0)
+  console.log('process.env check:', {
+    url: process.env.VITE_SUPABASE_URL ? 'Set' : 'NOT SET',
+    key: process.env.VITE_SUPABASE_ANON_KEY ? 'Set' : 'NOT SET'
+  })
 
   useEffect(() => {
     fetchCards()
@@ -31,14 +35,14 @@ function App() {
       console.log('=== FETCHING CARDS WITH PRICES (v8.0.1) ===')
       
       // Check if environment variables are set
-      if (!supabaseUrl || !supabaseAnonKey) {
+      if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY) {
         throw new Error('Supabase environment variables not configured')
       }
       
-      const apiUrl = `${supabaseUrl}/rest/v1/cards_with_prices?select=*&order=created_at.desc`
+      const apiUrl = `${process.env.VITE_SUPABASE_URL}/rest/v1/cards_with_prices?select=*&order=created_at.desc`
       const headers = {
-        'apikey': supabaseAnonKey,
-        'Authorization': `Bearer ${supabaseAnonKey}`,
+        'apikey': process.env.VITE_SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${process.env.VITE_SUPABASE_ANON_KEY}`,
         'Content-Type': 'application/json'
       }
       
@@ -139,11 +143,11 @@ function App() {
             </div>
             <div className="flex items-center space-x-3">
               <div className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
-                supabaseUrl && supabaseAnonKey 
+                process.env.VITE_SUPABASE_URL && process.env.VITE_SUPABASE_ANON_KEY 
                   ? 'bg-emerald-500 text-white' 
                   : 'bg-orange-500 text-white'
               }`}>
-                {supabaseUrl && supabaseAnonKey ? '🟢 Connected' : '🟡 Config'}
+                {process.env.VITE_SUPABASE_URL && process.env.VITE_SUPABASE_ANON_KEY ? '🟢 Connected' : '🟡 Config'}
               </div>
               <div className="bg-blue-500 text-white px-3 py-1.5 rounded-lg text-sm font-medium">
                 🚀 v{APP_VERSION}
@@ -264,10 +268,10 @@ function App() {
                   <span className="text-2xl">📭</span>
                 </div>
                 <h3 className="text-xl font-semibold text-slate-700 mb-2">
-                  {!supabaseUrl || !supabaseAnonKey ? 'Configuration Required' : 'No cards found'}
+                  {!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY ? 'Configuration Required' : 'No cards found'}
                 </h3>
                 <p className="text-slate-600">
-                  {!supabaseUrl || !supabaseAnonKey ? (
+                  {!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY ? (
                     <>
                       Supabase environment variables need to be configured in Railway.<br />
                       <span className="text-sm text-slate-500">
