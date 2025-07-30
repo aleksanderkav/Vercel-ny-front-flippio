@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import CardGrid from './CardGrid'
 import { supabase } from '../lib/supabase'
+import { colors, typography, spacing, borderRadius, shadows, components } from '../styles/designSystem'
 
 const CardLibrary = ({ 
   cards = [], 
@@ -208,36 +209,34 @@ const CardLibrary = ({
 
   return (
     <div style={{
-      paddingLeft: '1rem',
-      paddingRight: '1rem',
-      paddingBottom: '6rem'
+      padding: `${spacing.md} ${spacing.md} ${spacing['3xl']}`,
+      fontFamily: typography.fontFamily.primary
     }}>
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto'
       }}>
         <div style={{
-          background: 'rgba(255, 255, 255, 0.98)',
-          backdropFilter: 'blur(20px)',
-          borderRadius: '2rem',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 10px 20px -5px rgba(0, 0, 0, 0.1)',
-          border: '2px solid rgba(226, 232, 240, 0.8)',
-          padding: '3rem'
+          background: colors.surface,
+          borderRadius: borderRadius.xl,
+          boxShadow: shadows.xl,
+          border: `1px solid ${colors.border}`,
+          padding: spacing['3xl']
         }}>
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginBottom: '1.5rem' }}>
             <button
               onClick={() => setShowScraper(v => !v)}
               style={{
-                padding: '0.75rem 1.5rem',
-                fontSize: '1rem',
-                fontWeight: 700,
-                color: '#fff',
-                backgroundColor: '#10b981',
+                padding: `${spacing.md} ${spacing.lg}`,
+                fontSize: typography.fontSize.base,
+                fontWeight: typography.fontWeight.bold,
+                color: colors.white,
+                backgroundColor: colors.success,
                 border: 'none',
-                borderRadius: '0.75rem',
+                borderRadius: borderRadius.full,
                 cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(16, 185, 129, 0.15)',
-                transition: 'all 0.2s',
+                boxShadow: shadows.md,
+                transition: 'all 0.2s ease',
                 outline: 'none'
               }}
             >

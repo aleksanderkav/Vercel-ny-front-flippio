@@ -1,24 +1,26 @@
 import { isSupabaseConfigured } from '../lib/supabase'
+import { colors, typography, spacing, borderRadius, shadows } from '../styles/designSystem'
 
-const Header = ({ version = '1.2.7' }) => {
+const Header = ({ version = '1.3.2' }) => {
   console.log('🎴 Header rendered with version:', version)
   return (
     <div style={{
       position: 'sticky',
       top: 0,
       zIndex: 50,
-      background: 'rgba(255, 255, 255, 0.85)',
-      backdropFilter: 'blur(16px)',
-      borderBottom: '2px solid rgba(226, 232, 240, 0.6)',
-      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1)'
+      background: 'rgba(255, 255, 255, 0.95)',
+      backdropFilter: 'blur(20px)',
+      borderBottom: `1px solid ${colors.border}`,
+      boxShadow: shadows.sm,
+      fontFamily: typography.fontFamily.primary
     }}>
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: '0 1.5rem',
-        paddingTop: '1.25rem',
-        paddingBottom: '1.25rem'
-      }}>
+              <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: `${spacing.md} ${spacing.lg}`,
+          paddingTop: spacing.lg,
+          paddingBottom: spacing.lg
+        }}>
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -27,47 +29,46 @@ const Header = ({ version = '1.2.7' }) => {
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '0.75rem'
+            gap: spacing.md
           }}>
-                          <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '3rem',
-                height: '3rem',
-                backgroundColor: '#ffffff',
-                borderRadius: '1.25rem',
-                border: '2px solid rgba(226, 232, 240, 0.8)',
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                transition: 'all 0.3s ease-in-out'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'scale(1.05)'
-                e.target.style.boxShadow = '0 8px 12px -1px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1)'
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'scale(1)'
-                e.target.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
-              }}
-              >
-              <span style={{ fontSize: '1.125rem' }}>🎴</span>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '3rem',
+              height: '3rem',
+              backgroundColor: colors.surface,
+              borderRadius: borderRadius.xl,
+              border: `1px solid ${colors.border}`,
+              boxShadow: shadows.sm,
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'scale(1.05)'
+              e.target.style.boxShadow = shadows.lg
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'scale(1)'
+              e.target.style.boxShadow = shadows.sm
+            }}
+            >
+              <span style={{ fontSize: typography.fontSize.lg }}>🎴</span>
             </div>
             <div>
-                              <h1 style={{
-                  fontSize: '1.75rem',
-                  fontWeight: 800,
-                  color: '#0f172a',
-                  margin: 0,
-                  letterSpacing: '-0.025em',
-                  textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
-                }}>
-                  Trading Card Tracker
-                </h1>
-              <p style={{
-                color: '#64748b',
+              <h1 style={{
+                fontSize: typography.fontSize['3xl'],
+                fontWeight: typography.fontWeight.bold,
+                color: colors.textPrimary,
                 margin: 0,
-                fontSize: '0.875rem',
-                fontWeight: 500
+                letterSpacing: '-0.025em'
+              }}>
+                Trading Card Tracker
+              </h1>
+              <p style={{
+                color: colors.textSecondary,
+                margin: 0,
+                fontSize: typography.fontSize.sm,
+                fontWeight: typography.fontWeight.medium
               }}>
                 v{version} • Live Market Prices
               </p>
@@ -76,21 +77,20 @@ const Header = ({ version = '1.2.7' }) => {
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '0.5rem'
+            gap: spacing.sm
           }}>
             <div style={{
               display: 'inline-flex',
               alignItems: 'center',
-              padding: '0.375rem 0.75rem',
-              fontSize: '0.75rem',
-              fontWeight: 600,
-              borderRadius: '0.75rem',
-              backgroundColor: isSupabaseConfigured ? '#f0fdf4' : '#fffbeb',
-              color: isSupabaseConfigured ? '#166534' : '#92400e',
-              border: '1px solid',
-              borderColor: isSupabaseConfigured ? '#bbf7d0' : '#fde68a',
-              boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-              transition: 'all 0.2s ease-in-out'
+              padding: `${spacing.xs} ${spacing.md}`,
+              fontSize: typography.fontSize.xs,
+              fontWeight: typography.fontWeight.semibold,
+              borderRadius: borderRadius.full,
+              backgroundColor: isSupabaseConfigured ? colors.success : colors.warning,
+              color: colors.white,
+              border: 'none',
+              boxShadow: shadows.sm,
+              transition: 'all 0.2s ease'
             }}>
               {isSupabaseConfigured ? '🟢 Connected' : '🟡 Config'}
             </div>

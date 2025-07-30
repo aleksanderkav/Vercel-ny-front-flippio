@@ -1,25 +1,13 @@
 import React from 'react'
 import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts'
 import { isSupabaseConfigured } from '../lib/supabase'
+import { colors, typography, spacing, borderRadius, shadows, getPriceColor, formatPrice } from '../styles/designSystem'
 
 const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) => {
   console.log('CardGrid received cards:', cards)
   console.log('Cards with prices:', cards.filter(card => card.latest_price > 0))
   
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(price)
-  }
 
-  const getPriceColor = (price) => {
-    if (price >= 100) return '#9333ea'
-    if (price >= 50) return '#ea580c'
-    return '#059669'
-  }
 
   // Generate mock price history data for sparkline chart
   const generatePriceHistory = (currentPrice, count) => {
@@ -235,18 +223,28 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
       <div style={{
         display: 'grid',
         gridTemplateColumns: `repeat(${gridColumns}, 1fr)`,
-        gap: '2rem'
+        gap: spacing.xl,
+        fontFamily: typography.fontFamily.primary
       }}>
         {cards.map((card, index) => (
           <div 
             key={index} 
             style={{
-              background: '#ffffff',
-              borderRadius: '1.5rem',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-              border: '1px solid rgba(226, 232, 240, 0.6)',
+              background: colors.surface,
+              borderRadius: borderRadius.lg,
+              boxShadow: shadows.sm,
+              border: `1px solid ${colors.border}`,
               overflow: 'hidden',
-              position: 'relative'
+              position: 'relative',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.boxShadow = shadows.lg
+              e.target.style.transform = 'translateY(-2px)'
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.boxShadow = shadows.sm
+              e.target.style.transform = 'translateY(0)'
             }}
           >
             {/* Card Header */}
