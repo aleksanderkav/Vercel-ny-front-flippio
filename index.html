@@ -71,37 +71,6 @@
           loadingDiv.innerHTML = '<p>✅ DOM loaded, waiting for React...</p>';
         }
       });
-      
-      // Test if modules are working
-      try {
-        console.log('🔍 Testing module loading...');
-        // This will be replaced by Vite with the actual module
-        import('/src/main.jsx').catch(error => {
-          console.error('❌ Module loading failed:', error);
-          document.getElementById('root').innerHTML = `
-            <div class="fallback">
-              <h1>🎴 Trading Card Tracker</h1>
-              <p>v1.0.0 • Module Loading Error</p>
-              <div class="error">
-                <p>❌ Failed to load React module</p>
-                <p>Error: ${error.message}</p>
-              </div>
-            </div>
-          `;
-        });
-      } catch (error) {
-        console.error('❌ Script error:', error);
-        document.getElementById('root').innerHTML = `
-          <div class="fallback">
-            <h1>🎴 Trading Card Tracker</h1>
-            <p>v1.0.0 • JavaScript Error</p>
-            <div class="error">
-              <p>❌ JavaScript error occurred</p>
-              <p>Error: ${error.message}</p>
-            </div>
-          </div>
-        `;
-      }
     </script>
     
     <script type="module" src="/src/main.jsx"></script>
