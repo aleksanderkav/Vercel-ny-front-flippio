@@ -12,6 +12,11 @@ function App() {
 
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
   const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+  
+  // Debug environment variables
+  console.log('🔍 Environment Variables Debug:')
+  console.log('VITE_SUPABASE_URL:', supabaseUrl ? 'Set' : 'NOT SET')
+  console.log('VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? 'Set' : 'NOT SET')
 
   useEffect(() => {
     fetchCards()
@@ -21,6 +26,11 @@ function App() {
     try {
       setLibraryLoading(true)
       console.log('=== FETCHING CARDS WITH PRICES (v8.0.0) ===')
+      
+      // Check if environment variables are set
+      if (!supabaseUrl || !supabaseAnonKey) {
+        throw new Error('Supabase environment variables not configured')
+      }
       
       const apiUrl = `${supabaseUrl}/rest/v1/cards_with_prices?select=*&order=created_at.desc`
       const headers = {
@@ -43,7 +53,12 @@ function App() {
       }
     } catch (error) {
       console.error('❌ Error fetching cards:', error)
-      setSearchStatus('Error loading card library')
+      console.error('🔍 Error details:', {
+        supabaseUrl,
+        hasAnonKey: !!supabaseAnonKey,
+        errorMessage: error.message
+      })
+      setSearchStatus(`Error loading card library: ${error.message}`)
     } finally {
       setLibraryLoading(false)
     }
