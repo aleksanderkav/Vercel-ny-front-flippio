@@ -1,11 +1,7 @@
--- Add INSTEAD OF INSERT trigger to existing cards_with_prices view
--- Run this in your Supabase SQL Editor
+-- Quick fix for sync_status constraint violation
+-- Run this in your Supabase SQL Editor to update the existing trigger function
 
--- Step 1: Drop any existing trigger and function
-DROP TRIGGER IF EXISTS cards_with_prices_insert_trigger ON cards_with_prices;
-DROP FUNCTION IF EXISTS insert_into_cards_via_view();
-
--- Step 2: Create the INSERT trigger function
+-- Update the trigger function to use valid sync_status values
 CREATE OR REPLACE FUNCTION insert_into_cards_via_view()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -51,19 +47,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Step 3: Create the INSTEAD OF INSERT trigger
-CREATE TRIGGER cards_with_prices_insert_trigger
-    INSTEAD OF INSERT ON cards_with_prices
-    FOR EACH ROW
-    EXECUTE FUNCTION insert_into_cards_via_view();
-
--- Step 4: Grant permissions for the trigger function
-GRANT EXECUTE ON FUNCTION insert_into_cards_via_view() TO anon;
-
--- Step 5: Test the trigger (optional - uncomment to test)
--- INSERT INTO cards_with_prices (name, latest_price, price_count) 
--- VALUES ('Test Card via Trigger', 25.99, 1);
-
--- Step 6: Show confirmation
-SELECT '=== INSERT TRIGGER CREATED SUCCESSFULLY ===' as info;
-SELECT 'You can now insert new cards through the cards_with_prices view!' as info; 
+-- Show confirmation
+SELECT '=== SYNC_STATUS CONSTRAINT FIX APPLIED ===' as info;
+SELECT 'Updated sync_status from "manual" to "pending" and source from "manual" to "app"' as info;
+SELECT 'You can now insert new cards without constraint violations!' as info; 
