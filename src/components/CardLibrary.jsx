@@ -23,6 +23,7 @@ const CardLibrary = ({
   const [batchCardNames, setBatchCardNames] = useState('')
   const [scrapingStatus, setScrapingStatus] = useState('')
   const [lastResult, setLastResult] = useState(null)
+  const [searchResults, setSearchResults] = useState(null)
 
   // Scraping functions
   const handleSingleScrape = async () => {
@@ -33,6 +34,7 @@ const CardLibrary = ({
 
     setScrapingStatus('🔍 Scraping card data...')
     setLastResult(null)
+    setSearchResults(null)
 
     try {
       const result = await onSearch(singleCardName.trim())
@@ -40,6 +42,16 @@ const CardLibrary = ({
       
       if (result) {
         setScrapingStatus(`✅ Successfully scraped "${singleCardName}"`)
+        
+        // Create visual result with card info
+        setSearchResults({
+          name: singleCardName.trim(),
+          action: result.action || 'created',
+          price: result.latestPrice || 'N/A',
+          category: result.category || 'Other',
+          timestamp: new Date().toLocaleString()
+        })
+        
         setSingleCardName('') // Clear input on success
       }
     } catch (error) {
@@ -459,6 +471,108 @@ const CardLibrary = ({
                   📊 Get Statistics
                 </button>
               </div>
+
+              {/* Visual Search Results */}
+              {searchResults && (
+                <div style={{
+                  background: 'rgba(239, 246, 255, 0.8)',
+                  borderRadius: '0.75rem',
+                  padding: '1rem',
+                  border: '1px solid rgba(59, 130, 246, 0.2)',
+                  marginBottom: '1rem'
+                }}>
+                  <h4 style={{
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    color: '#1e40af',
+                    margin: '0 0 0.75rem 0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}>
+                    🎯 Card Added Successfully
+                  </h4>
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '0.75rem'
+                  }}>
+                    <div>
+                      <div style={{
+                        fontSize: '0.75rem',
+                        color: '#6b7280',
+                        marginBottom: '0.25rem'
+                      }}>
+                        Card Name
+                      </div>
+                      <div style={{
+                        fontSize: '0.875rem',
+                        fontWeight: 600,
+                        color: '#1e293b'
+                      }}>
+                        {searchResults.name}
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{
+                        fontSize: '0.75rem',
+                        color: '#6b7280',
+                        marginBottom: '0.25rem'
+                      }}>
+                        Price
+                      </div>
+                      <div style={{
+                        fontSize: '0.875rem',
+                        fontWeight: 600,
+                        color: '#059669'
+                      }}>
+                        ${searchResults.price}
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{
+                        fontSize: '0.75rem',
+                        color: '#6b7280',
+                        marginBottom: '0.25rem'
+                      }}>
+                        Category
+                      </div>
+                      <div style={{
+                        fontSize: '0.875rem',
+                        fontWeight: 600,
+                        color: '#7c3aed'
+                      }}>
+                        {searchResults.category}
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{
+                        fontSize: '0.75rem',
+                        color: '#6b7280',
+                        marginBottom: '0.25rem'
+                      }}>
+                        Action
+                      </div>
+                      <div style={{
+                        fontSize: '0.875rem',
+                        fontWeight: 600,
+                        color: searchResults.action === 'created' ? '#059669' : '#f59e0b'
+                      }}>
+                        {searchResults.action === 'created' ? '🆕 Created' : '🔄 Updated'}
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{
+                    fontSize: '0.75rem',
+                    color: '#6b7280',
+                    marginTop: '0.75rem',
+                    paddingTop: '0.75rem',
+                    borderTop: '1px solid rgba(203, 213, 225, 0.4)'
+                  }}>
+                    Added at: {searchResults.timestamp}
+                  </div>
+                </div>
+              )}
 
               {/* Results Display */}
               {lastResult && (
