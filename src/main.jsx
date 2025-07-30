@@ -5,10 +5,14 @@ import App from './App.jsx'
 console.log('🚀 Main.jsx starting...')
 console.log('React version:', React.version)
 console.log('ReactDOM version:', ReactDOM.version)
+console.log('App component:', App)
 
 try {
+  console.log('🔍 Looking for root element...')
   const rootElement = document.getElementById('root')
   console.log('🎯 Root element found:', rootElement)
+  console.log('📄 Document body:', document.body)
+  console.log('📄 Document head:', document.head)
 
   if (rootElement) {
     const root = ReactDOM.createRoot(rootElement)
@@ -36,15 +40,35 @@ try {
       }
     }
     
+    // Test React rendering with a simple component first
+    console.log('🧪 Testing React rendering...')
     root.render(
-      React.createElement(React.StrictMode, null,
-        React.createElement(ErrorBoundary, null,
-          React.createElement(App)
-        )
-      )
+      React.createElement('div', {
+        style: {
+          padding: '20px',
+          background: '#ecfdf5',
+          border: '1px solid #a7f3d0',
+          borderRadius: '10px',
+          margin: '20px'
+        }
+      }, [
+        React.createElement('h1', { key: 'title' }, '🧪 React Test'),
+        React.createElement('p', { key: 'status' }, 'React is working! Loading main app...')
+      ])
     )
     
-    console.log('✅ App rendered successfully')
+    // After a short delay, render the actual app
+    setTimeout(() => {
+      console.log('🚀 Rendering main App component...')
+      root.render(
+        React.createElement(React.StrictMode, null,
+          React.createElement(ErrorBoundary, null,
+            React.createElement(App)
+          )
+        )
+      )
+      console.log('✅ App rendered successfully')
+    }, 1000)
     
     // Update the fallback content to show success
     setTimeout(() => {
@@ -56,7 +80,17 @@ try {
     
   } else {
     console.error('❌ Root element not found!')
-    document.body.innerHTML = '<div style="padding: 20px; color: red;">❌ Root element not found!</div>'
+    document.body.innerHTML = `
+      <div style="padding: 20px; background: #fee2e2; border: 1px solid #fecaca; border-radius: 10px; margin: 20px;">
+        <h1 style="color: #dc2626;">❌ Root element not found!</h1>
+        <p>This means the React app cannot load properly.</p>
+        <p>Document ready state: ${document.readyState}</p>
+        <p>Body children: ${document.body.children.length}</p>
+        <button onclick="window.location.reload()" style="padding: 10px 20px; background: #dc2626; color: white; border: none; border-radius: 5px; cursor: pointer;">
+          🔄 Reload Page
+        </button>
+      </div>
+    `
   }
 } catch (error) {
   console.error('❌ Error in main.jsx:', error)
