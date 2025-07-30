@@ -69,14 +69,14 @@ const CardLibrary = ({
               </div>
             </div>
             
-            {/* Filter and Sort Controls - Compact Design */}
+            {/* Filter and Sort Controls - Ultra Compact Design */}
             <div style={{
               background: 'rgba(255, 255, 255, 0.9)',
-              backdropFilter: 'blur(20px)',
-              borderRadius: '1rem',
-              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+              backdropFilter: 'blur(16px)',
+              borderRadius: '0.75rem',
+              boxShadow: '0 8px 20px -4px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.05)',
               border: '1px solid rgba(226, 232, 240, 0.6)',
-              padding: '1.5rem',
+              padding: '1rem',
               position: 'relative',
               overflow: 'hidden'
             }}>
@@ -90,28 +90,28 @@ const CardLibrary = ({
                 background: 'linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent)'
               }}></div>
               
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '0.75rem',
-                  marginBottom: '0.5rem'
+                  gap: '0.5rem',
+                  marginBottom: '0.25rem'
                 }}>
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    width: '2rem',
-                    height: '2rem',
+                    width: '1.75rem',
+                    height: '1.75rem',
                     backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    borderRadius: '0.5rem',
+                    borderRadius: '0.375rem',
                     border: '1px solid rgba(59, 130, 246, 0.2)'
                   }}>
-                    <span style={{ fontSize: '1rem' }}>🔍</span>
+                    <span style={{ fontSize: '0.875rem' }}>🔍</span>
                   </div>
                   <div>
                     <h3 style={{
-                      fontSize: '1.125rem',
+                      fontSize: '1rem',
                       fontWeight: 700,
                       color: '#1e293b',
                       margin: 0
@@ -121,7 +121,7 @@ const CardLibrary = ({
                     <p style={{
                       color: '#64748b',
                       margin: 0,
-                      fontSize: '0.875rem'
+                      fontSize: '0.75rem'
                     }}>
                       Organize your card collection
                     </p>
@@ -135,13 +135,13 @@ const CardLibrary = ({
                   flexWrap: 'wrap'
                 }}>
                   {/* Category Filter */}
-                  <div style={{ minWidth: '200px' }}>
+                  <div style={{ minWidth: '180px' }}>
                     <label style={{
                       display: 'block',
-                      fontSize: '0.75rem',
+                      fontSize: '0.625rem',
                       fontWeight: 600,
                       color: '#374151',
-                      marginBottom: '0.5rem',
+                      marginBottom: '0.375rem',
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em'
                     }}>
@@ -152,10 +152,10 @@ const CardLibrary = ({
                       onChange={(e) => setFilterCategory(e.target.value)}
                       style={{
                         width: '100%',
-                        padding: '0.75rem',
-                        fontSize: '0.875rem',
+                        padding: '0.5rem',
+                        fontSize: '0.75rem',
                         border: '1px solid rgba(203, 213, 225, 0.6)',
-                        borderRadius: '0.75rem',
+                        borderRadius: '0.5rem',
                         outline: 'none',
                         transition: 'all 0.3s ease',
                         backgroundColor: 'rgba(255, 255, 255, 0.8)',
@@ -180,13 +180,13 @@ const CardLibrary = ({
                   </div>
                   
                   {/* Sort Options */}
-                  <div style={{ minWidth: '200px' }}>
+                  <div style={{ minWidth: '180px' }}>
                     <label style={{
                       display: 'block',
-                      fontSize: '0.75rem',
+                      fontSize: '0.625rem',
                       fontWeight: 600,
                       color: '#374151',
-                      marginBottom: '0.5rem',
+                      marginBottom: '0.375rem',
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em'
                     }}>
@@ -197,10 +197,10 @@ const CardLibrary = ({
                       onChange={(e) => setSortBy(e.target.value)}
                       style={{
                         width: '100%',
-                        padding: '0.75rem',
-                        fontSize: '0.875rem',
+                        padding: '0.5rem',
+                        fontSize: '0.75rem',
                         border: '1px solid rgba(203, 213, 225, 0.6)',
-                        borderRadius: '0.75rem',
+                        borderRadius: '0.5rem',
                         outline: 'none',
                         transition: 'all 0.3s ease',
                         backgroundColor: 'rgba(255, 255, 255, 0.8)',
@@ -230,32 +230,32 @@ const CardLibrary = ({
             
                       <div style={{
             display: 'flex',
-            gap: '0.75rem',
+            gap: '0.5rem',
             flexWrap: 'wrap'
           }}>
             <button
               onClick={onRefresh}
               disabled={loading}
               style={{
-                padding: '0.5rem 1rem',
-                fontSize: '0.875rem',
+                padding: '0.375rem 0.75rem',
+                fontSize: '0.75rem',
                 fontWeight: 600,
                 color: '#ffffff',
                 backgroundColor: '#10b981',
                 border: 'none',
-                borderRadius: '0.5rem',
+                borderRadius: '0.375rem',
                 cursor: loading ? 'not-allowed' : 'pointer',
                 transition: 'all 0.2s',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.5rem'
+                gap: '0.375rem'
               }}
             >
               {loading ? (
                 <>
                   <div style={{
-                    width: '0.875rem',
-                    height: '0.875rem',
+                    width: '0.75rem',
+                    height: '0.75rem',
                     border: '2px solid #ffffff',
                     borderTop: '2px solid transparent',
                     borderRadius: '50%',
@@ -272,25 +272,25 @@ const CardLibrary = ({
               onClick={onRefreshPrices}
               disabled={loading}
               style={{
-                padding: '0.5rem 1rem',
-                fontSize: '0.875rem',
+                padding: '0.375rem 0.75rem',
+                fontSize: '0.75rem',
                 fontWeight: 600,
                 color: '#ffffff',
                 backgroundColor: '#f59e0b',
                 border: 'none',
-                borderRadius: '0.5rem',
+                borderRadius: '0.375rem',
                 cursor: loading ? 'not-allowed' : 'pointer',
                 transition: 'all 0.2s',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.5rem'
+                gap: '0.375rem'
               }}
             >
               {loading ? (
                 <>
                   <div style={{
-                    width: '0.875rem',
-                    height: '0.875rem',
+                    width: '0.75rem',
+                    height: '0.75rem',
                     border: '2px solid #ffffff',
                     borderTop: '2px solid transparent',
                     borderRadius: '50%',

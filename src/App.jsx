@@ -103,14 +103,15 @@ function App() {
       console.log('💰 Generated price:', mockPrice)
       
       // Insert into the base table instead of the view
+      // Use minimal required fields to avoid schema issues
       const { data, error } = await supabase
         .from('cards')
         .insert([
           {
             name: searchQuery,
             latest_price: mockPrice,
-            price_count: mockPriceCount,
-            last_price_update: new Date().toISOString()
+            price_count: mockPriceCount
+            // Note: last_price_update will be handled by database default or trigger
           }
         ])
         .select()
@@ -231,10 +232,10 @@ function App() {
             background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent)',
             animation: 'pulse 1s infinite'
           }}></div>
-          🚀 UPDATED TO VERSION 1.2.0 - Compact Design & Search Fix! 🚀
+          🚀 UPDATED TO VERSION 1.2.1 - Refined Compact Design & Schema Fix! 🚀
         </div>
         
-                  <Header version="1.2.0" />
+                  <Header version="1.2.1" />
         <Hero 
           onSearch={handleSearch}
           loading={loading}
