@@ -17,12 +17,12 @@ const SearchBar = ({ onSearch, loading = false, searchStatus = '' }) => {
       margin: '0 auto'
     }}>
       <div style={{
-        background: 'rgba(255, 255, 255, 0.8)',
+        background: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(24px)',
-        borderRadius: '1rem',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-        border: '1px solid rgba(226, 232, 240, 0.5)',
-        padding: '2rem'
+        borderRadius: '1.5rem',
+        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        border: '1px solid rgba(226, 232, 240, 0.6)',
+        padding: '2.5rem'
       }}>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div style={{ marginBottom: '1.5rem' }}>
@@ -42,13 +42,14 @@ const SearchBar = ({ onSearch, loading = false, searchStatus = '' }) => {
               placeholder="e.g., Pikachu PSA 10, Charizard PSA 9"
               style={{
                 width: '100%',
-                padding: '1rem',
+                padding: '1.125rem',
                 fontSize: '1.125rem',
-                border: '1px solid #cbd5e1',
-                borderRadius: '0.75rem',
+                border: '1px solid #e2e8f0',
+                borderRadius: '1rem',
                 outline: 'none',
-                transition: 'all 0.2s',
-                backgroundColor: loading ? '#f1f5f9' : '#ffffff'
+                transition: 'all 0.2s ease-in-out',
+                backgroundColor: loading ? '#f8fafc' : '#ffffff',
+                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
               }}
               required
               disabled={loading}
@@ -59,19 +60,33 @@ const SearchBar = ({ onSearch, loading = false, searchStatus = '' }) => {
             disabled={loading || !searchQuery.trim()}
             style={{
               width: '100%',
-              padding: '1rem',
+              padding: '1.125rem',
               fontSize: '1.125rem',
               fontWeight: 600,
               color: '#ffffff',
               backgroundColor: loading || !searchQuery.trim() ? '#94a3b8' : '#2563eb',
               border: 'none',
-              borderRadius: '0.75rem',
+              borderRadius: '1rem',
               cursor: loading || !searchQuery.trim() ? 'not-allowed' : 'pointer',
-              transition: 'all 0.2s',
+              transition: 'all 0.2s ease-in-out',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '0.75rem'
+              gap: '0.75rem',
+              boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)',
+              transform: loading || !searchQuery.trim() ? 'none' : 'translateY(0)'
+            }}
+            onMouseEnter={(e) => {
+              if (!loading && searchQuery.trim()) {
+                e.target.style.transform = 'translateY(-1px)'
+                e.target.style.boxShadow = '0 6px 8px -1px rgba(37, 99, 235, 0.25)'
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!loading && searchQuery.trim()) {
+                e.target.style.transform = 'translateY(0)'
+                e.target.style.boxShadow = '0 4px 6px -1px rgba(37, 99, 235, 0.2)'
+              }
             }}
           >
             {loading ? (

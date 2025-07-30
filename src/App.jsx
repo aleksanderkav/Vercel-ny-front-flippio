@@ -7,7 +7,7 @@ import { supabase } from './lib/supabase'
 function App() {
   // Build timestamp for cache busting
   console.log('🚀 App loaded at:', new Date().toISOString())
-  console.log('📦 Version: 1.2.2')
+  console.log('📦 Version: 1.2.3')
   
   const [cards, setCards] = useState([])
   const [loading, setLoading] = useState(false)
@@ -211,7 +211,7 @@ function App() {
       <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
 
         
-        <Header version="1.2.2" />
+        <Header version="1.2.3" />
         <Hero 
           onSearch={handleSearch}
           loading={loading}
@@ -227,6 +227,37 @@ function App() {
           sortBy={sortBy}
           setSortBy={setSortBy}
         />
+        
+        {/* Footer */}
+        <footer style={{
+          background: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(20px)',
+          borderTop: '1px solid rgba(226, 232, 240, 0.4)',
+          padding: '2rem 1rem',
+          marginTop: '4rem'
+        }}>
+          <div style={{
+            maxWidth: '1200px',
+            margin: '0 auto',
+            textAlign: 'center'
+          }}>
+            <p style={{
+              color: '#64748b',
+              fontSize: '0.875rem',
+              margin: 0,
+              fontWeight: 500
+            }}>
+              Trading Card Tracker v1.2.3 • Built with React & Supabase
+            </p>
+            <p style={{
+              color: '#94a3b8',
+              fontSize: '0.75rem',
+              margin: '0.5rem 0 0 0'
+            }}>
+              © 2024 • Real-time market price tracking for trading cards
+            </p>
+          </div>
+        </footer>
       </div>
     )
   } catch (error) {

@@ -125,31 +125,31 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
       
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        gap: '0.75rem'
+        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+        gap: '1.5rem'
       }}>
         {cards.map((card, index) => (
           <div 
             key={index} 
             style={{
-              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9))',
+              background: 'rgba(255, 255, 255, 0.98)',
               backdropFilter: 'blur(16px)',
-              borderRadius: '0.75rem',
-              boxShadow: '0 8px 20px -4px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.05)',
+              borderRadius: '1.5rem',
+              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
               border: '1px solid rgba(226, 232, 240, 0.6)',
               overflow: 'hidden',
-              transition: 'all 0.3s ease',
+              transition: 'all 0.2s ease-in-out',
               transform: 'translateY(0)',
               cursor: 'pointer',
               position: 'relative'
             }}
             onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-2px)'
-              e.target.style.boxShadow = '0 12px 24px -6px rgba(0, 0, 0, 0.12), 0 4px 8px -2px rgba(0, 0, 0, 0.06)'
+              e.target.style.transform = 'translateY(-4px)'
+              e.target.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
             }}
             onMouseLeave={(e) => {
               e.target.style.transform = 'translateY(0)'
-              e.target.style.boxShadow = '0 8px 20px -4px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.05)'
+              e.target.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
             }}
           >
             {/* Card Header */}
@@ -190,9 +190,10 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                   <h3 style={{
                     fontWeight: 700,
                     color: '#1e293b',
-                    fontSize: '1rem',
+                    fontSize: '1.125rem',
                     margin: 0,
-                    marginBottom: '0.125rem'
+                    marginBottom: '0.25rem',
+                    lineHeight: '1.3'
                   }}>
                     {card.name || 'Unknown Card'}
                   </h3>
@@ -231,16 +232,59 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                         <div style={{
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '0.375rem'
-                        }}>
+                          gap: '0.375rem',
+                          position: 'relative'
+                        }}
+                        onMouseEnter={(e) => {
+                          const tooltip = e.currentTarget.querySelector('.price-tooltip')
+                          if (tooltip) tooltip.style.opacity = '1'
+                        }}
+                        onMouseLeave={(e) => {
+                          const tooltip = e.currentTarget.querySelector('.price-tooltip')
+                          if (tooltip) tooltip.style.opacity = '0'
+                        }}
+                        >
                           <span style={{ fontSize: '0.75rem', color: '#64748b' }}>💰</span>
                           <span style={{
-                            fontSize: '1.125rem',
+                            fontSize: '1.25rem',
                             fontWeight: 700,
                             color: getPriceColor(card.latest_price)
                           }}>
                             {formatPrice(card.latest_price)}
                           </span>
+                          {card.last_price_update && (
+                            <div className="price-tooltip" style={{
+                              position: 'absolute',
+                              bottom: '100%',
+                              left: '50%',
+                              transform: 'translateX(-50%)',
+                              background: '#1e293b',
+                              color: 'white',
+                              padding: '0.5rem 0.75rem',
+                              borderRadius: '0.5rem',
+                              fontSize: '0.75rem',
+                              whiteSpace: 'nowrap',
+                              opacity: 0,
+                              transition: 'opacity 0.2s ease-in-out',
+                              pointerEvents: 'none',
+                              zIndex: 10,
+                              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                              marginBottom: '0.5rem'
+                            }}>
+                              Last updated: {new Date(card.last_price_update).toLocaleString()}
+                              <div style={{
+                                position: 'absolute',
+                                top: '100%',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                width: 0,
+                                height: 0,
+                                borderLeft: '4px solid transparent',
+                                borderRight: '4px solid transparent',
+                                borderTop: '4px solid #1e293b'
+                              }}></div>
+                            </div>
+                          )}
                         </div>
                         <div style={{
                           display: 'flex',
