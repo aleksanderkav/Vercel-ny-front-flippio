@@ -7,6 +7,8 @@ const CardLibrary = ({
   loading = false, 
   onRefresh,
   onRefreshPrices,
+  onBatchScrape,
+  onGetStats,
   filterCategory = 'all',
   setFilterCategory,
   sortBy = 'name',
@@ -15,6 +17,90 @@ const CardLibrary = ({
   searchStatus
 }) => {
   const [showSearch, setShowSearch] = useState(false)
+  const [showScraper, setShowScraper] = useState(false)
+  const [scrapingMode, setScrapingMode] = useState('single')
+  const [singleCardName, setSingleCardName] = useState('')
+  const [batchCardNames, setBatchCardNames] = useState('')
+  const [scrapingStatus, setScrapingStatus] = useState('')
+  const [lastResult, setLastResult] = useState(null)
+
+  // Scraping functions
+  const handleSingleScrape = async () => {
+    if (!singleCardName.trim()) {
+      setScrapingStatus('❌ Please enter a card name')
+      return
+    }
+
+    setScrapingStatus('🔍 Scraping card data...')
+    setLastResult(null)
+
+    try {
+      const result = await onSearch(singleCardName.trim())
+      setLastResult({ type: 'single', success: true })
+      
+      if (result) {
+        setScrapingStatus(`✅ Successfully scraped "${singleCardName}"`)
+        setSingleCardName('') // Clear input on success
+      }
+    } catch (error) {
+      console.error('Scraping error:', error)
+      setScrapingStatus(`❌ Error: ${error.message || 'Unknown error occurred'}`)
+    }
+  }
+
+  const handleBatchScrape = async () => {
+    const cardNames = batchCardNames
+      .split('\n')
+      .map(name => name.trim())
+      .filter(name => name.length > 0)
+
+    if (cardNames.length === 0) {
+      setScrapingStatus('❌ Please enter at least one card name')
+      return
+    }
+
+    setScrapingStatus(`🔄 Starting batch scrape for ${cardNames.length} cards...`)
+    setLastResult(null)
+
+    try {
+      const result = await onBatchScrape(cardNames)
+      setLastResult(result)
+      
+      if (result.successful > 0) {
+        setScrapingStatus(`✅ Batch completed: ${result.successful}/${result.total} cards processed successfully`)
+        setBatchCardNames('') // Clear input on success
+      } else {
+        setScrapingStatus(`❌ Batch failed: ${result.failed}/${result.total} cards failed`)
+      }
+    } catch (error) {
+      console.error('Batch scraping error:', error)
+      setScrapingStatus(`❌ Error: ${error.message || 'Unknown error occurred'}`)
+    }
+  }
+
+  const handleGetStats = async () => {
+    setScrapingStatus('📊 Getting card statistics...')
+
+    try {
+      const stats = await onGetStats()
+      setLastResult({ type: 'stats', data: stats })
+      setScrapingStatus(`📊 Statistics loaded: ${stats.totalCards} total cards`)
+    } catch (error) {
+      console.error('Stats error:', error)
+      setScrapingStatus(`❌ Error loading statistics: ${error.message}`)
+    }
+  }
+
+  const sampleCards = [
+    'Charizard PSA 10 Base Set',
+    'Pikachu PSA 9 Jungle',
+    'Blastoise PSA 8 Base Set',
+    'Venusaur PSA 10 Base Set'
+  ]
+
+  const loadSampleCards = () => {
+    setBatchCardNames(sampleCards.join('\n'))
+  }
 
   return (
     <div style={{
@@ -34,7 +120,25 @@ const CardLibrary = ({
           border: '2px solid rgba(226, 232, 240, 0.8)',
           padding: '3rem'
         }}>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginBottom: '1.5rem' }}>
+            <button
+              onClick={() => setShowScraper(v => !v)}
+              style={{
+                padding: '0.75rem 1.5rem',
+                fontSize: '1rem',
+                fontWeight: 700,
+                color: '#fff',
+                backgroundColor: '#10b981',
+                border: 'none',
+                borderRadius: '0.75rem',
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(16, 185, 129, 0.15)',
+                transition: 'all 0.2s',
+                outline: 'none'
+              }}
+            >
+              {showScraper ? '✖ Close Scraper' : '🎯 Card Scraper'}
+            </button>
             <button
               onClick={() => setShowSearch(v => !v)}
               style={{
@@ -48,13 +152,307 @@ const CardLibrary = ({
                 cursor: 'pointer',
                 boxShadow: '0 2px 8px rgba(99, 102, 241, 0.15)',
                 transition: 'all 0.2s',
-                outline: 'none',
-                marginBottom: showSearch ? 0 : '1rem'
+                outline: 'none'
               }}
             >
               {showSearch ? '✖ Close Search' : '➕ Search for New Cards'}
             </button>
           </div>
+          
+          {showScraper && (
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.98)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: '1.5rem',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 10px 20px -5px rgba(0, 0, 0, 0.1)',
+              border: '2px solid rgba(226, 232, 240, 0.8)',
+              padding: '2rem',
+              marginBottom: '2rem'
+            }}>
+              {/* Header */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '1rem',
+                marginBottom: '1.5rem'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '3rem',
+                  height: '3rem',
+                  backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                  borderRadius: '0.75rem',
+                  border: '1px solid rgba(16, 185, 129, 0.2)'
+                }}>
+                  <span style={{ fontSize: '1.5rem' }}>🎯</span>
+                </div>
+                <div>
+                  <h2 style={{
+                    fontSize: '1.5rem',
+                    fontWeight: 700,
+                    color: '#1e293b',
+                    margin: 0
+                  }}>
+                    Advanced Card Scraper
+                  </h2>
+                  <p style={{
+                    color: '#64748b',
+                    margin: 0,
+                    fontSize: '0.875rem'
+                  }}>
+                    Add new cards to your collection with advanced scraping
+                  </p>
+                </div>
+              </div>
+
+              {/* Mode Toggle */}
+              <div style={{
+                display: 'flex',
+                gap: '0.5rem',
+                marginBottom: '1.5rem',
+                background: 'rgba(248, 250, 252, 0.8)',
+                borderRadius: '0.75rem',
+                padding: '0.25rem'
+              }}>
+                <button
+                  onClick={() => setScrapingMode('single')}
+                  style={{
+                    flex: 1,
+                    padding: '0.75rem 1rem',
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    color: scrapingMode === 'single' ? '#ffffff' : '#64748b',
+                    backgroundColor: scrapingMode === 'single' ? '#10b981' : 'transparent',
+                    border: 'none',
+                    borderRadius: '0.5rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  📋 Single Card
+                </button>
+                <button
+                  onClick={() => setScrapingMode('batch')}
+                  style={{
+                    flex: 1,
+                    padding: '0.75rem 1rem',
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    color: scrapingMode === 'batch' ? '#ffffff' : '#64748b',
+                    backgroundColor: scrapingMode === 'batch' ? '#10b981' : 'transparent',
+                    border: 'none',
+                    borderRadius: '0.5rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  🔄 Batch Cards
+                </button>
+              </div>
+
+              {/* Single Card Scraping */}
+              {scrapingMode === 'single' && (
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    color: '#374151',
+                    marginBottom: '0.5rem'
+                  }}>
+                    Card Name
+                  </label>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <input
+                      type="text"
+                      value={singleCardName}
+                      onChange={(e) => setSingleCardName(e.target.value)}
+                      placeholder="e.g., Charizard PSA 10 Base Set"
+                      style={{
+                        flex: 1,
+                        padding: '0.75rem 1rem',
+                        fontSize: '0.875rem',
+                        border: '1px solid rgba(203, 213, 225, 0.6)',
+                        borderRadius: '0.5rem',
+                        outline: 'none',
+                        transition: 'all 0.2s',
+                        backgroundColor: 'rgba(255, 255, 255, 0.8)'
+                      }}
+                      onKeyPress={(e) => e.key === 'Enter' && handleSingleScrape()}
+                    />
+                    <button
+                      onClick={handleSingleScrape}
+                      disabled={loading || !singleCardName.trim()}
+                      style={{
+                        padding: '0.75rem 1.5rem',
+                        fontSize: '0.875rem',
+                        fontWeight: 600,
+                        color: '#ffffff',
+                        backgroundColor: loading || !singleCardName.trim() ? '#9ca3af' : '#10b981',
+                        border: 'none',
+                        borderRadius: '0.5rem',
+                        cursor: loading || !singleCardName.trim() ? 'not-allowed' : 'pointer',
+                        transition: 'all 0.2s',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      {loading ? '⏳ Scraping...' : '🎯 Scrape Card'}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Batch Card Scraping */}
+              {scrapingMode === 'batch' && (
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    color: '#374151',
+                    marginBottom: '0.5rem'
+                  }}>
+                    Card Names (one per line)
+                  </label>
+                  <textarea
+                    value={batchCardNames}
+                    onChange={(e) => setBatchCardNames(e.target.value)}
+                    placeholder="Charizard PSA 10 Base Set&#10;Pikachu PSA 9 Jungle&#10;Blastoise PSA 8 Base Set"
+                    rows={4}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      fontSize: '0.875rem',
+                      border: '1px solid rgba(203, 213, 225, 0.6)',
+                      borderRadius: '0.5rem',
+                      outline: 'none',
+                      transition: 'all 0.2s',
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                      resize: 'vertical',
+                      fontFamily: 'inherit'
+                    }}
+                  />
+                  <div style={{
+                    display: 'flex',
+                    gap: '0.5rem',
+                    marginTop: '0.75rem'
+                  }}>
+                    <button
+                      onClick={handleBatchScrape}
+                      disabled={loading || !batchCardNames.trim()}
+                      style={{
+                        flex: 1,
+                        padding: '0.75rem 1rem',
+                        fontSize: '0.875rem',
+                        fontWeight: 600,
+                        color: '#ffffff',
+                        backgroundColor: loading || !batchCardNames.trim() ? '#9ca3af' : '#10b981',
+                        border: 'none',
+                        borderRadius: '0.5rem',
+                        cursor: loading || !batchCardNames.trim() ? 'not-allowed' : 'pointer',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      {loading ? '⏳ Scraping...' : '🔄 Scrape Batch'}
+                    </button>
+                    <button
+                      onClick={loadSampleCards}
+                      disabled={loading}
+                      style={{
+                        padding: '0.75rem 1rem',
+                        fontSize: '0.875rem',
+                        fontWeight: 600,
+                        color: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        border: '1px solid rgba(99, 102, 241, 0.2)',
+                        borderRadius: '0.5rem',
+                        cursor: loading ? 'not-allowed' : 'pointer',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      📝 Load Samples
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Status Display */}
+              {scrapingStatus && (
+                <div style={{
+                  padding: '1rem',
+                  borderRadius: '0.5rem',
+                  marginBottom: '1rem',
+                  backgroundColor: scrapingStatus.includes('✅') ? 'rgba(16, 185, 129, 0.1)' :
+                                  scrapingStatus.includes('❌') ? 'rgba(239, 68, 68, 0.1)' :
+                                  'rgba(59, 130, 246, 0.1)',
+                  border: `1px solid ${scrapingStatus.includes('✅') ? 'rgba(16, 185, 129, 0.2)' :
+                                    scrapingStatus.includes('❌') ? 'rgba(239, 68, 68, 0.2)' :
+                                    'rgba(59, 130, 246, 0.2)'}`,
+                  color: scrapingStatus.includes('✅') ? '#065f46' :
+                         scrapingStatus.includes('❌') ? '#991b1b' :
+                         '#1e40af'
+                }}>
+                  {scrapingStatus}
+                </div>
+              )}
+
+              {/* Advanced Options */}
+              <div style={{ marginBottom: '1rem' }}>
+                <button
+                  onClick={handleGetStats}
+                  disabled={loading}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    color: '#ffffff',
+                    backgroundColor: loading ? '#9ca3af' : '#8b5cf6',
+                    border: 'none',
+                    borderRadius: '0.375rem',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  📊 Get Statistics
+                </button>
+              </div>
+
+              {/* Results Display */}
+              {lastResult && (
+                <div style={{
+                  background: 'rgba(248, 250, 252, 0.8)',
+                  borderRadius: '0.75rem',
+                  padding: '1rem',
+                  border: '1px solid rgba(203, 213, 225, 0.6)'
+                }}>
+                  <h4 style={{
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    color: '#374151',
+                    margin: '0 0 0.5rem 0'
+                  }}>
+                    📋 Last Result
+                  </h4>
+                  <pre style={{
+                    fontSize: '0.75rem',
+                    color: '#64748b',
+                    margin: 0,
+                    whiteSpace: 'pre-wrap',
+                    fontFamily: 'monospace',
+                    background: 'rgba(255, 255, 255, 0.5)',
+                    padding: '0.5rem',
+                    borderRadius: '0.375rem',
+                    maxHeight: '200px',
+                    overflow: 'auto'
+                  }}>
+                    {JSON.stringify(lastResult, null, 2)}
+                  </pre>
+                </div>
+              )}
+            </div>
+          )}
           
           {showSearch && (
             <div style={{

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Scraping Integration Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .test-section h2 {
+            margin-top: 0;
+            color: #ffd700;
+            font-size: 1.5em;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border-left: 4px solid #00ff88;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .success {
+            border-left-color: #00ff88;
+        }
+        
+        .error {
+            border-left-color: #ff4757;
+        }
+        
+        .info {
+            border-left-color: #3742fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Frontend Scraping Integration Test</h1>
+        
+        <div class="test-section">
+            <h2>📋 Single Card Scraping</h2>
+            <p>Test the single card scraping functionality from the frontend</p>
+            <button onclick="testSingleScrape()">Test Single Card Scrape</button>
+            <div id="singleResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔄 Batch Card Scraping</h2>
+            <p>Test the batch card scraping functionality from the frontend</p>
+            <button onclick="testBatchScrape()">Test Batch Card Scrape</button>
+            <div id="batchResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📊 Statistics</h2>
+            <p>Test the statistics functionality from the frontend</p>
+            <button onclick="testStats()">Test Get Statistics</button>
+            <div id="statsResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🚀 Frontend Integration</h2>
+            <p>Test the complete frontend integration</p>
+            <button onclick="testFrontendIntegration()">Test Frontend Integration</button>
+            <div id="frontendResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import the scraping functions
+        import { scrapeAndInsertCard, batchScrapeCards, getCardStats } from './src/lib/cardScraper.js';
+        
+        // Make functions globally available
+        window.scrapeAndInsertCard = scrapeAndInsertCard;
+        window.batchScrapeCards = batchScrapeCards;
+        window.getCardStats = getCardStats;
+        
+        function showResult(elementId, data, type = 'success') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${type}`;
+            element.textContent = JSON.stringify(data, null, 2);
+        }
+        
+        window.testSingleScrape = async function() {
+            try {
+                console.log('Testing single card scraping...');
+                const result = await scrapeAndInsertCard('Test Card PSA 10');
+                showResult('singleResult', result, result.success ? 'success' : 'error');
+            } catch (error) {
+                showResult('singleResult', { error: error.message }, 'error');
+            }
+        };
+        
+        window.testBatchScrape = async function() {
+            try {
+                console.log('Testing batch card scraping...');
+                const result = await batchScrapeCards(['Test Card 1', 'Test Card 2']);
+                showResult('batchResult', result, result.successful > 0 ? 'success' : 'error');
+            } catch (error) {
+                showResult('batchResult', { error: error.message }, 'error');
+            }
+        };
+        
+        window.testStats = async function() {
+            try {
+                console.log('Testing statistics...');
+                const result = await getCardStats();
+                showResult('statsResult', result, 'success');
+            } catch (error) {
+                showResult('statsResult', { error: error.message }, 'error');
+            }
+        };
+        
+        window.testFrontendIntegration = async function() {
+            try {
+                console.log('Testing frontend integration...');
+                
+                // Test all functions
+                const results = {
+                    single: await scrapeAndInsertCard('Frontend Test Card'),
+                    stats: await getCardStats(),
+                    timestamp: new Date().toISOString()
+                };
+                
+                showResult('frontendResult', {
+                    message: 'Frontend integration test completed successfully!',
+                    results: results
+                }, 'success');
+            } catch (error) {
+                showResult('frontendResult', { 
+                    message: 'Frontend integration test failed',
+                    error: error.message 
+                }, 'error');
+            }
+        };
+        
+        console.log('Frontend scraping integration test page loaded successfully!');
+    </script>
+</body>
+</html> 

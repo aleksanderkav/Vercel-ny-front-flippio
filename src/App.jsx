@@ -5,6 +5,7 @@ import CardLibrary from './components/CardLibrary'
 import { supabase } from './lib/supabase'
 import PriceService from './lib/priceService'
 import ScrapingService from './lib/scrapingService'
+import { scrapeAndInsertCard, batchScrapeCards, getCardStats } from './lib/cardScraper'
 
 function App() {
   // Build timestamp for cache busting
@@ -169,48 +170,22 @@ function App() {
 
   const handleSearch = async (searchQuery) => {
     setLoading(true)
-    setSearchStatus('🌐 Scraping eBay, TCGPlayer, CardMarket...')
+    setSearchStatus('🎯 Using advanced card scraper...')
     
     try {
-      // Check if card already exists
-      const { data: existingCard } = await supabase
-        .from('cards_with_prices')
-        .select('*')
-        .eq('name', searchQuery)
-        .single()
-
-      if (existingCard) {
-        console.log('Card already exists:', existingCard)
-        const price = existingCard.latest_price ? `$${existingCard.latest_price.toFixed(2)}` : 'No price'
-        setSearchStatus(`✅ Found existing card: "${searchQuery}" - ${price}`)
+      // Use the new scraper function instead of the old simulation
+      const result = await scrapeAndInsertCard(searchQuery)
+      
+      if (result.success) {
+        const action = result.action === 'created' ? 'Added' : 'Updated'
+        setSearchStatus(`✅ ${action} "${result.cardName}" - $${result.latestPrice} (${result.category})`)
         await loadCards() // Refresh the list
-        return
+      } else {
+        setSearchStatus(`❌ Failed to scrape "${result.cardName}": ${result.error}`)
       }
-
-      // Scrape real prices from multiple sources
-      const scrapedData = await simulateEbayScraping(searchQuery)
-      
-      console.log('🌐 Scraping completed for:', searchQuery)
-      console.log('💰 Scraped data:', scrapedData)
-      
-      // Insert directly into the cards table
-      const { data, error } = await supabase
-        .from('cards')
-        .insert([scrapedData])
-        .select()
-
-      if (error) {
-        console.error('❌ Database error:', error)
-        throw error
-      }
-      
-      console.log('✅ Inserted card data:', data)
-      const source = scrapedData.source || 'Unknown source'
-      setSearchStatus(`✅ Added "${searchQuery}" (${scrapedData.category}) - $${scrapedData.latest_price.toFixed(2)} via ${source}`)
-      await loadCards() // Refresh the list
     } catch (error) {
-      console.error('❌ Error adding card:', error)
-      setSearchStatus('❌ Error adding card to database')
+      console.error('❌ Error during scraping:', error)
+      setSearchStatus('❌ Error during card scraping')
     } finally {
       setLoading(false)
     }
@@ -285,6 +260,43 @@ function App() {
     }
   }
 
+  // New function for batch scraping
+  const handleBatchScrape = async (cardNames) => {
+    setLoading(true)
+    setSearchStatus(`🔄 Starting batch scrape for ${cardNames.length} cards...`)
+    
+    try {
+      const result = await batchScrapeCards(cardNames)
+      
+      if (result.successful > 0) {
+        setSearchStatus(`✅ Batch completed: ${result.successful}/${result.total} cards processed successfully`)
+        await loadCards() // Refresh the list
+      } else {
+        setSearchStatus(`❌ Batch failed: ${result.failed}/${result.total} cards failed`)
+      }
+      
+      return result
+    } catch (error) {
+      console.error('❌ Error during batch scraping:', error)
+      setSearchStatus('❌ Error during batch scraping')
+      throw error
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // New function for getting statistics
+  const handleGetStats = async () => {
+    try {
+      const stats = await getCardStats()
+      console.log('📊 Card statistics:', stats)
+      return stats
+    } catch (error) {
+      console.error('❌ Error getting statistics:', error)
+      throw error
+    }
+  }
+
   const filteredCards = getFilteredAndSortedCards()
 
   try {
@@ -298,6 +310,8 @@ function App() {
           loading={loading}
           onRefresh={loadCards}
           onRefreshPrices={refreshPrices}
+          onBatchScrape={handleBatchScrape}
+          onGetStats={handleGetStats}
           filterCategory={filterCategory}
           setFilterCategory={setFilterCategory}
           sortBy={sortBy}

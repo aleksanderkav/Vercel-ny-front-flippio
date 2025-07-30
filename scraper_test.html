@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flippio Card Scraper Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section h2 {
+            margin-top: 0;
+            color: #ffd700;
+            font-size: 1.5em;
+        }
+        
+        input, textarea, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        input, textarea {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border-left: 4px solid #00ff88;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .error {
+            border-left-color: #ff4757;
+            background: rgba(255, 71, 87, 0.1);
+        }
+        
+        .loading {
+            text-align: center;
+            color: #ffd700;
+            font-style: italic;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Flippio Card Scraper</h1>
+        
+        <!-- Single Card Scraping -->
+        <div class="section">
+            <h2>📋 Single Card Scraping</h2>
+            <input type="text" id="singleCardName" placeholder="Enter card name (e.g., 'Charizard PSA 10 Base Set')" />
+            <button onclick="scrapeSingleCard()" id="singleBtn">Scrape Card</button>
+            <div id="singleResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <!-- Batch Card Scraping -->
+        <div class="section">
+            <h2>🔄 Batch Card Scraping</h2>
+            <textarea id="batchCardNames" rows="4" placeholder="Enter card names, one per line:
+Charizard PSA 10 Base Set
+Pikachu PSA 9 Jungle
+Blastoise PSA 8 Base Set"></textarea>
+            <button onclick="scrapeBatchCards()" id="batchBtn">Scrape Batch</button>
+            <div id="batchResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <!-- Statistics -->
+        <div class="section">
+            <h2>📊 Card Statistics</h2>
+            <button onclick="getStats()" id="statsBtn">Get Statistics</button>
+            <div id="statsResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        
+        async function makeRequest(endpoint, data) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                throw new Error(`Request failed: ${error.message}`);
+            }
+        }
+        
+        function showResult(elementId, data, isError = false) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${isError ? 'error' : ''}`;
+            element.textContent = JSON.stringify(data, null, 2);
+        }
+        
+        function setLoading(buttonId, isLoading) {
+            const button = document.getElementById(buttonId);
+            button.disabled = isLoading;
+            button.textContent = isLoading ? '⏳ Processing...' : button.textContent.replace('⏳ Processing...', '');
+        }
+        
+        async function scrapeSingleCard() {
+            const cardName = document.getElementById('singleCardName').value.trim();
+            if (!cardName) {
+                alert('Please enter a card name');
+                return;
+            }
+            
+            setLoading('singleBtn', true);
+            const resultDiv = document.getElementById('singleResult');
+            resultDiv.style.display = 'none';
+            
+            try {
+                const result = await makeRequest('/api/scrape-card', {
+                    action: 'scrape_single',
+                    cardName: cardName
+                });
+                
+                showResult('singleResult', result);
+            } catch (error) {
+                showResult('singleResult', { error: error.message }, true);
+            } finally {
+                setLoading('singleBtn', false);
+            }
+        }
+        
+        async function scrapeBatchCards() {
+            const cardNamesText = document.getElementById('batchCardNames').value.trim();
+            if (!cardNamesText) {
+                alert('Please enter card names');
+                return;
+            }
+            
+            const cardNames = cardNamesText.split('\n').map(name => name.trim()).filter(name => name);
+            if (cardNames.length === 0) {
+                alert('Please enter at least one valid card name');
+                return;
+            }
+            
+            setLoading('batchBtn', true);
+            const resultDiv = document.getElementById('batchResult');
+            resultDiv.style.display = 'none';
+            
+            try {
+                const result = await makeRequest('/api/scrape-card', {
+                    action: 'scrape_batch',
+                    cardNames: cardNames
+                });
+                
+                showResult('batchResult', result);
+            } catch (error) {
+                showResult('batchResult', { error: error.message }, true);
+            } finally {
+                setLoading('batchBtn', false);
+            }
+        }
+        
+        async function getStats() {
+            setLoading('statsBtn', true);
+            const resultDiv = document.getElementById('statsResult');
+            resultDiv.style.display = 'none';
+            
+            try {
+                const result = await makeRequest('/api/scrape-card', {
+                    action: 'get_stats'
+                });
+                
+                if (result.success && result.result) {
+                    const stats = result.result;
+                    const statsHtml = `
+📊 Card Statistics
+
+Total Cards: ${stats.totalCards}
+Total Value: $${stats.totalValue.toFixed(2)}
+Average Price: $${stats.averagePrice.toFixed(2)}
+Last Updated: ${stats.lastUpdated ? new Date(stats.lastUpdated).toLocaleString() : 'N/A'}
+
+Categories:
+${Object.entries(stats.categories).map(([cat, count]) => `  ${cat}: ${count} cards`).join('\n')}
+
+Raw Data:
+${JSON.stringify(result, null, 2)}
+                    `;
+                    
+                    resultDiv.style.display = 'block';
+                    resultDiv.className = 'result';
+                    resultDiv.textContent = statsHtml;
+                } else {
+                    showResult('statsResult', result);
+                }
+            } catch (error) {
+                showResult('statsResult', { error: error.message }, true);
+            } finally {
+                setLoading('statsBtn', false);
+            }
+        }
+        
+        // Add some sample data on page load
+        window.addEventListener('load', () => {
+            document.getElementById('singleCardName').value = 'Charizard PSA 10 Base Set';
+            document.getElementById('batchCardNames').value = 'Charizard PSA 10 Base Set\nPikachu PSA 9 Jungle\nBlastoise PSA 8 Base Set\nVenusaur PSA 10 Base Set';
+        });
+    </script>
+</body>
+</html> 
