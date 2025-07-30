@@ -24,6 +24,10 @@ function App() {
         .order('created_at', { ascending: false })
 
       if (error) throw error
+      
+      console.log('Loaded cards:', data)
+      console.log('Cards with prices:', data?.filter(card => card.latest_price > 0))
+      
       setCards(data || [])
     } catch (error) {
       console.error('Error loading cards:', error)
@@ -42,6 +46,8 @@ function App() {
       const mockPrice = Math.random() * 200 + 10
       const mockPriceCount = Math.floor(Math.random() * 50) + 1
       
+      console.log('Adding card with price:', mockPrice)
+      
       const { data, error } = await supabase
         .from('cards_with_prices')
         .insert([
@@ -56,6 +62,7 @@ function App() {
 
       if (error) throw error
       
+      console.log('Inserted card data:', data)
       setSearchStatus(`✅ Added "${searchQuery}" with price $${mockPrice.toFixed(2)}`)
       await loadCards() // Refresh the list
     } catch (error) {

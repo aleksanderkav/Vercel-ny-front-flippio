@@ -1,6 +1,8 @@
 import { isSupabaseConfigured } from '../lib/supabase'
 
 const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
+  console.log('CardGrid received cards:', cards)
+  console.log('Cards with prices:', cards.filter(card => card.latest_price > 0))
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
