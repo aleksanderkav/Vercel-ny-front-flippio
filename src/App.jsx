@@ -1,27 +1,100 @@
 import { useState, useEffect } from 'react'
+import { supabase, isSupabaseConfigured } from './lib/supabase'
+import Header from './components/Header'
+import Hero from './components/Hero'
+import CardLibrary from './components/CardLibrary'
 
 function App() {
-  const [isLoaded, setIsLoaded] = useState(false)
+  const [cards, setCards] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [libraryLoading, setLibraryLoading] = useState(true)
+  const [searchStatus, setSearchStatus] = useState('')
   
-  console.log('🚀 Minimal App component rendering...')
+  // Version tracking - prominently displayed
+  const APP_VERSION = '1.0.0'
+
+  console.log('🚀 Full App component rendering...', { APP_VERSION, isSupabaseConfigured })
 
   useEffect(() => {
-    console.log('🔄 Minimal App useEffect running...')
-    setIsLoaded(true)
+    console.log('🔄 Full App useEffect running...')
+    fetchCards()
   }, [])
 
-  console.log('🎨 Rendering minimal App component with isLoaded:', isLoaded)
+  const fetchCards = async () => {
+    try {
+      setLibraryLoading(true)
+      console.log('=== FETCHING CARDS WITH PRICES (v1.0.0) ===')
+      
+      if (!isSupabaseConfigured) {
+        throw new Error('Supabase environment variables not configured')
+      }
+      
+      console.log('✅ Supabase configured - proceeding with API call')
+      
+      // Use Supabase client for better error handling
+      const { data, error } = await supabase
+        .from('cards_with_prices')
+        .select('*')
+        .order('created_at', { ascending: false })
+      
+      if (error) {
+        throw new Error(`Supabase error: ${error.message}`)
+      }
+
+      if (Array.isArray(data)) {
+        setCards(data)
+        console.log('✅ Cards updated successfully:', data.length)
+      } else {
+        setCards([])
+        console.log('⚠️ No cards data received')
+      }
+    } catch (error) {
+      console.error('❌ Error fetching cards:', error)
+      setSearchStatus(`Error loading card library: ${error.message}`)
+      setCards([])
+    } finally {
+      setLibraryLoading(false)
+    }
+  }
+
+  const handleSearch = async (searchQuery) => {
+    try {
+      setLoading(true)
+      setSearchStatus('Scraping prices...')
+
+      const scraperUrl = `https://scraper-production-22f6.up.railway.app/scrape?query=${encodeURIComponent(searchQuery)}`
+      const response = await fetch(scraperUrl)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const result = await response.json()
+
+      if (result.status === 'success') {
+        setSearchStatus('✅ Card scraped successfully! Refreshing library...')
+        setTimeout(() => {
+          fetchCards()
+          setSearchStatus('')
+        }, 2000)
+      } else {
+        setSearchStatus('❌ Failed to scrape card. Please try again.')
+      }
+    } catch (error) {
+      console.error('Error scraping card:', error)
+      setSearchStatus('❌ Error scraping card. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  console.log('🎨 Rendering full App component with:', { cards: cards.length, loading, libraryLoading })
 
   return (
     <div style={{
       minHeight: '100vh',
       background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '20px'
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* Debug indicator */}
       <div style={{
@@ -35,125 +108,20 @@ function App() {
         fontSize: '12px',
         zIndex: 9999
       }}>
-        App Loading... v1.0.0
+        React App v{APP_VERSION}
       </div>
-
-      {/* Main content */}
-      <div style={{
-        background: 'rgba(255, 255, 255, 0.9)',
-        borderRadius: '20px',
-        padding: '40px',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-        textAlign: 'center',
-        maxWidth: '600px',
-        width: '100%'
-      }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '80px',
-          height: '80px',
-          backgroundColor: '#2563eb',
-          borderRadius: '20px',
-          margin: '0 auto 20px',
-          boxShadow: '0 10px 25px -5px rgba(37, 99, 235, 0.3)'
-        }}>
-          <span style={{ fontSize: '2rem' }}>🎴</span>
-        </div>
-
-        <h1 style={{
-          fontSize: '2.5rem',
-          fontWeight: 700,
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          marginBottom: '1rem'
-        }}>
-          Trading Card Tracker
-        </h1>
-
-        <p style={{
-          fontSize: '1.2rem',
-          color: '#475569',
-          marginBottom: '2rem'
-        }}>
-          v1.0.0 • Live Market Prices
-        </p>
-
-        <div style={{
-          background: '#ecfdf5',
-          border: '1px solid #a7f3d0',
-          borderRadius: '10px',
-          padding: '15px',
-          marginBottom: '2rem'
-        }}>
-          <p style={{
-            color: '#065f46',
-            margin: 0,
-            fontWeight: 500
-          }}>
-            ✅ Application is working!
-          </p>
-          <p style={{
-            color: '#047857',
-            margin: '5px 0 0 0',
-            fontSize: '0.9rem'
-          }}>
-            Loaded: {isLoaded ? 'Yes' : 'No'}
-          </p>
-        </div>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '15px',
-          marginTop: '2rem'
-        }}>
-          <div style={{
-            background: '#ffffff',
-            borderRadius: '10px',
-            padding: '20px',
-            border: '1px solid #e2e8f0',
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
-          }}>
-            <h3 style={{ margin: '0 0 10px 0', color: '#1e293b' }}>Search Cards</h3>
-            <p style={{ margin: 0, color: '#64748b', fontSize: '0.9rem' }}>
-              Find and track card prices
-            </p>
-          </div>
-
-          <div style={{
-            background: '#ffffff',
-            borderRadius: '10px',
-            padding: '20px',
-            border: '1px solid #e2e8f0',
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
-          }}>
-            <h3 style={{ margin: '0 0 10px 0', color: '#1e293b' }}>Live Prices</h3>
-            <p style={{ margin: 0, color: '#64748b', fontSize: '0.9rem' }}>
-              Real-time market data
-            </p>
-          </div>
-        </div>
-
-        <div style={{
-          marginTop: '2rem',
-          padding: '15px',
-          background: '#f8fafc',
-          borderRadius: '10px',
-          border: '1px solid #e2e8f0'
-        }}>
-          <p style={{
-            margin: 0,
-            color: '#64748b',
-            fontSize: '0.9rem'
-          }}>
-            🚀 Ready for full functionality
-          </p>
-        </div>
-      </div>
+      
+      <Header version={APP_VERSION} />
+      <Hero 
+        onSearch={handleSearch}
+        loading={loading}
+        searchStatus={searchStatus}
+      />
+      <CardLibrary 
+        cards={cards}
+        loading={libraryLoading}
+        onRefresh={fetchCards}
+      />
     </div>
   )
 }
