@@ -10,6 +10,7 @@ function App() {
   // Version tracking - prominently displayed
   const APP_VERSION = '8.0.1'
 
+  // Get environment variables - Railway deployment compatible
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
   const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
   
@@ -17,6 +18,8 @@ function App() {
   console.log('🔍 Environment Variables Debug:')
   console.log('VITE_SUPABASE_URL:', supabaseUrl ? 'Set' : 'NOT SET')
   console.log('VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? 'Set' : 'NOT SET')
+  console.log('Full URL:', supabaseUrl)
+  console.log('Key length:', supabaseAnonKey ? supabaseAnonKey.length : 0)
 
   useEffect(() => {
     fetchCards()
@@ -135,8 +138,12 @@ function App() {
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <div className="bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-sm font-medium">
-                🟢 Live
+              <div className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
+                supabaseUrl && supabaseAnonKey 
+                  ? 'bg-emerald-500 text-white' 
+                  : 'bg-orange-500 text-white'
+              }`}>
+                {supabaseUrl && supabaseAnonKey ? '🟢 Connected' : '🟡 Config'}
               </div>
               <div className="bg-blue-500 text-white px-3 py-1.5 rounded-lg text-sm font-medium">
                 🚀 v{APP_VERSION}
