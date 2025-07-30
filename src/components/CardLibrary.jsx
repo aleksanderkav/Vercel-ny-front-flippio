@@ -4,6 +4,7 @@ const CardLibrary = ({
   cards = [], 
   loading = false, 
   onRefresh,
+  onRefreshPrices,
   filterCategory = 'all',
   setFilterCategory,
   sortBy = 'name',
@@ -226,41 +227,81 @@ const CardLibrary = ({
               </div>
             </div>
             
-            <button
-              onClick={onRefresh}
-              disabled={loading}
-              style={{
-                padding: '0.75rem 1.5rem',
-                fontSize: '1rem',
-                fontWeight: 600,
-                color: '#ffffff',
-                backgroundColor: '#10b981',
-                border: 'none',
-                borderRadius: '0.5rem',
-                cursor: loading ? 'not-allowed' : 'pointer',
-                transition: 'all 0.2s',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                alignSelf: 'flex-start'
-              }}
-            >
-              {loading ? (
-                <>
-                  <div style={{
-                    width: '1rem',
-                    height: '1rem',
-                    border: '2px solid #ffffff',
-                    borderTop: '2px solid transparent',
-                    borderRadius: '50%',
-                    animation: 'spin 1s linear infinite'
-                  }}></div>
-                  <span>Loading...</span>
-                </>
-              ) : (
-                '🔄 Refresh'
-              )}
-            </button>
+            <div style={{
+              display: 'flex',
+              gap: '1rem',
+              flexWrap: 'wrap'
+            }}>
+              <button
+                onClick={onRefresh}
+                disabled={loading}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  color: '#ffffff',
+                  backgroundColor: '#10b981',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+              >
+                {loading ? (
+                  <>
+                    <div style={{
+                      width: '1rem',
+                      height: '1rem',
+                      border: '2px solid #ffffff',
+                      borderTop: '2px solid transparent',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite'
+                    }}></div>
+                    <span>Loading...</span>
+                  </>
+                ) : (
+                  '🔄 Refresh Cards'
+                )}
+              </button>
+              
+              <button
+                onClick={onRefreshPrices}
+                disabled={loading}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  color: '#ffffff',
+                  backgroundColor: '#f59e0b',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+              >
+                {loading ? (
+                  <>
+                    <div style={{
+                      width: '1rem',
+                      height: '1rem',
+                      border: '2px solid #ffffff',
+                      borderTop: '2px solid transparent',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite'
+                    }}></div>
+                    <span>Loading...</span>
+                  </>
+                ) : (
+                  '💰 Refresh Prices'
+                )}
+              </button>
+            </div>
           </div>
           
           <CardGrid 
