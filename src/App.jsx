@@ -24,6 +24,13 @@ function App() {
     url: process.env.VITE_SUPABASE_URL ? 'Set' : 'NOT SET',
     key: process.env.VITE_SUPABASE_ANON_KEY ? 'Set' : 'NOT SET'
   })
+  
+  // Direct process.env debugging
+  console.log('🔍 Direct process.env Debug:')
+  console.log('URL:', process.env.VITE_SUPABASE_URL)
+  console.log('Key length:', process.env.VITE_SUPABASE_ANON_KEY ? process.env.VITE_SUPABASE_ANON_KEY.length : 'undefined')
+  console.log('URL type:', typeof process.env.VITE_SUPABASE_URL)
+  console.log('Key type:', typeof process.env.VITE_SUPABASE_ANON_KEY)
 
   useEffect(() => {
     fetchCards()
@@ -35,9 +42,18 @@ function App() {
       console.log('=== FETCHING CARDS WITH PRICES (v8.0.1) ===')
       
       // Check if environment variables are set
+      console.log('🔍 fetchCards - Environment Check:')
+      console.log('URL exists:', !!process.env.VITE_SUPABASE_URL)
+      console.log('Key exists:', !!process.env.VITE_SUPABASE_ANON_KEY)
+      console.log('URL value:', process.env.VITE_SUPABASE_URL)
+      console.log('Key preview:', process.env.VITE_SUPABASE_ANON_KEY ? `${process.env.VITE_SUPABASE_ANON_KEY.substring(0, 20)}...` : 'undefined')
+      
       if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY) {
+        console.log('❌ Environment variables missing - throwing error')
         throw new Error('Supabase environment variables not configured')
       }
+      
+      console.log('✅ Environment variables found - proceeding with API call')
       
       const apiUrl = `${process.env.VITE_SUPABASE_URL}/rest/v1/cards_with_prices?select=*&order=created_at.desc`
       const headers = {
