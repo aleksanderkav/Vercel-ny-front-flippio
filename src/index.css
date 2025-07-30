@@ -116,6 +116,10 @@ body {
   margin-bottom: 4rem;
 }
 
+.mt-4 {
+  margin-top: 1rem;
+}
+
 .rounded-lg {
   border-radius: 0.5rem;
 }
@@ -144,8 +148,20 @@ body {
   border: 1px solid #e5e7eb;
 }
 
+.border-b {
+  border-bottom: 1px solid #e5e7eb;
+}
+
 .border-slate-200 {
   border-color: #e2e8f0;
+}
+
+.border-slate-200\/60 {
+  border-color: rgba(226, 232, 240, 0.6);
+}
+
+.border-slate-200\/50 {
+  border-color: rgba(226, 232, 240, 0.5);
 }
 
 .bg-white {
@@ -172,6 +188,10 @@ body {
   background-color: #94a3b8;
 }
 
+.bg-orange-100 {
+  background-color: #ffedd5;
+}
+
 .text-white {
   color: #ffffff;
 }
@@ -194,6 +214,18 @@ body {
 
 .text-slate-400 {
   color: #94a3b8;
+}
+
+.text-purple-600 {
+  color: #9333ea;
+}
+
+.text-orange-600 {
+  color: #ea580c;
+}
+
+.text-emerald-600 {
+  color: #059669;
 }
 
 .text-lg {
@@ -299,14 +331,6 @@ body {
   background-color: rgba(255, 255, 255, 0.95);
 }
 
-.border-slate-200\/60 {
-  border-color: rgba(226, 232, 240, 0.6);
-}
-
-.border-slate-200\/50 {
-  border-color: rgba(226, 232, 240, 0.5);
-}
-
 .bg-white\/80 {
   background-color: rgba(255, 255, 255, 0.8);
 }
@@ -318,10 +342,6 @@ body {
 
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
-}
-
-.gap-6 {
-  gap: 1.5rem;
 }
 
 /* Responsive utilities */

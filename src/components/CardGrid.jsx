@@ -11,22 +11,22 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
   }
 
   const getPriceColor = (price) => {
-    if (price >= 100) return 'from-violet-600 to-purple-600'
-    if (price >= 50) return 'from-orange-500 to-red-500'
-    return 'from-emerald-500 to-teal-500'
+    if (price >= 100) return 'text-purple-600'
+    if (price >= 50) return 'text-orange-600'
+    return 'text-emerald-600'
   }
 
   const getPriceBadgeColor = (price) => {
-    if (price >= 100) return 'bg-violet-50 text-violet-700 border-violet-200'
-    if (price >= 50) return 'bg-orange-50 text-orange-700 border-orange-200'
-    return 'bg-emerald-50 text-emerald-700 border-emerald-200'
+    if (price >= 100) return 'badge-info'
+    if (price >= 50) return 'badge-warning'
+    return 'badge-success'
   }
 
   if (loading) {
     return (
       <div className="text-center py-24">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full shadow-sm mb-6">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+          <div className="spinner"></div>
         </div>
         <p className="text-lg text-slate-600">Loading your card collection...</p>
       </div>
@@ -64,7 +64,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
         <p className="text-lg font-semibold text-slate-700">
           Found {cards.length} card{cards.length !== 1 ? 's' : ''}
         </p>
-        <div className="bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-medium">
+        <div className="badge badge-success">
           💰 Live Prices
         </div>
       </div>
@@ -73,11 +73,11 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
         {cards.map((card, index) => (
           <div 
             key={index} 
-            className="group bg-white rounded-xl shadow-sm hover:shadow-lg border border-slate-200 overflow-hidden transition-all duration-200 hover:-translate-y-1"
+            className="card"
           >
             {/* Card Header */}
             <div className="bg-slate-50 px-6 py-4 border-b border-slate-200">
-              <h3 className="font-semibold text-slate-900 text-lg truncate mb-1">
+              <h3 className="font-semibold text-slate-900 text-lg mb-1">
                 {card.name || 'Unknown Card'}
               </h3>
               <p className="text-slate-500 text-sm">
@@ -86,24 +86,24 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
             </div>
             
             {/* Card Content */}
-            <div className="p-6 space-y-4">
+            <div className="p-6 gap-4">
               {card.latest_price && card.latest_price > 0 ? (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
+                <div className="gap-4">
+                  <div className="flex items-center justify-between mb-4">
                     <span className="text-sm text-slate-500">
                       Latest Price
                     </span>
-                    <span className={`text-2xl font-bold bg-gradient-to-r ${getPriceColor(card.latest_price)} bg-clip-text text-transparent`}>
+                    <span className={`text-2xl font-bold ${getPriceColor(card.latest_price)}`}>
                       {formatPrice(card.latest_price)}
                     </span>
                   </div>
                   
                   <div className="flex items-center justify-between gap-2">
-                    <span className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${getPriceBadgeColor(card.latest_price)}`}>
+                    <span className={`badge ${getPriceBadgeColor(card.latest_price)}`}>
                       📊 {card.price_count} entries
                     </span>
                     {card.last_price_update && (
-                      <span className="px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+                      <span className="badge badge-info">
                         📅 {new Date(card.last_price_update).toLocaleDateString()}
                       </span>
                     )}
@@ -117,14 +117,14 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                   <p className="font-medium text-orange-700 mb-4">
                     No Price Data
                   </p>
-                  <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                  <button className="btn btn-orange">
                     🚀 Scrape Prices
                   </button>
                 </div>
               )}
               
               {/* Card Footer */}
-              <div className="pt-4 border-t border-slate-200">
+              <div className="pt-4 border-t border-slate-200 mt-4">
                 <p className="text-xs text-slate-400 text-center">
                   Added: {new Date(card.created_at).toLocaleDateString()}
                 </p>

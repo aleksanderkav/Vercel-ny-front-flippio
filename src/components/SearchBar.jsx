@@ -13,9 +13,9 @@ const SearchBar = ({ onSearch, loading = false, searchStatus = '' }) => {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200/50 p-8">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
+      <div className="glass rounded-2xl shadow-xl border border-slate-200/50 p-8">
+        <form onSubmit={handleSubmit} className="gap-6">
+          <div className="mb-6">
             <label className="block text-lg font-semibold text-slate-700 mb-3">
               Search for Cards
             </label>
@@ -24,7 +24,7 @@ const SearchBar = ({ onSearch, loading = false, searchStatus = '' }) => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="e.g., Pikachu PSA 10, Charizard PSA 9"
-              className="w-full px-4 py-4 text-lg border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="form-input"
               required
               disabled={loading}
             />
@@ -32,11 +32,11 @@ const SearchBar = ({ onSearch, loading = false, searchStatus = '' }) => {
           <button
             type="submit"
             disabled={loading || !searchQuery.trim()}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white font-semibold py-4 px-6 rounded-xl text-lg transition-colors disabled:cursor-not-allowed"
+            className="btn btn-primary w-full text-lg"
           >
             {loading ? (
               <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                <div className="spinner mr-3"></div>
                 <span>Scraping Prices...</span>
               </div>
             ) : (
@@ -46,10 +46,10 @@ const SearchBar = ({ onSearch, loading = false, searchStatus = '' }) => {
         </form>
         
         {searchStatus && (
-          <div className={`mt-6 p-4 rounded-xl border transition-all ${
+          <div className={`mt-6 p-4 rounded-xl border ${
             searchStatus.includes('Error') 
-              ? 'bg-red-50 border-red-200 text-red-700' 
-              : 'bg-emerald-50 border-emerald-200 text-emerald-700'
+              ? 'badge-warning' 
+              : 'badge-success'
           }`}>
             <div className="flex items-center">
               <span className="text-lg mr-3">

@@ -86,7 +86,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/30">
+    <div className="min-h-screen">
       <Header version={APP_VERSION} />
       <Hero 
         onSearch={handleSearch}
