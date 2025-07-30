@@ -94,84 +94,133 @@
         font-size: 12px;
         z-index: 9999;
       }
+      
+      .error {
+        background: #fee2e2;
+        border: 1px solid #fecaca;
+        border-radius: 10px;
+        padding: 15px;
+        margin: 10px 0;
+        color: #dc2626;
+      }
     </style>
   </head>
   <body>
-    <div class="debug">Direct JS Test v1.0.0</div>
+    <div class="debug">Build Debug v1.0.0</div>
     
     <div class="container">
       <div class="icon">🎴</div>
       
       <h1 class="title">Trading Card Tracker</h1>
       
-      <p class="subtitle">v1.0.0 • Testing Built JavaScript</p>
+      <p class="subtitle">v1.0.0 • Build Debug</p>
       
       <div class="status">
-        <p class="status-title">✅ HTML Page Working!</p>
-        <p class="status-text">Testing built JavaScript file...</p>
+        <p class="status-title">🔍 Build Analysis</p>
+        <p class="status-text">Checking build output and module loading...</p>
       </div>
       
       <div id="root">
-        <p style="color: #666;">Loading React component from built JS...</p>
+        <p style="color: #666;">Analyzing build process...</p>
       </div>
     </div>
     
     <script>
-      console.log('🚀 Direct JS test starting...');
+      console.log('🚀 Build debug starting...');
       console.log('📅 Current time:', new Date().toISOString());
       
-      // Try to load the built JavaScript file
-      const script = document.createElement('script');
-      script.type = 'module';
-      
-      // Try different possible file names based on build logs
-      const possibleFiles = [
-        '/assets/index-2b0dc3d6.js',
-        '/assets/index.js',
-        '/assets/main.js',
-        '/src/main.jsx'
-      ];
-      
-      let currentFileIndex = 0;
-      
-      function tryNextFile() {
-        if (currentFileIndex >= possibleFiles.length) {
-          console.error('❌ All JavaScript files failed to load');
-          document.getElementById('root').innerHTML = `
-            <div style="
-              background: #fee2e2;
-              border: 1px solid #fecaca;
-              border-radius: 10px;
-              padding: 15px;
-              margin: 10px 0;
-              color: #dc2626;
-            ">
-              <h3 style="margin: 0 0 10px 0;">❌ All JavaScript Files Failed</h3>
-              <p style="margin: 0; font-size: 0.9rem;">Tried: ${possibleFiles.join(', ')}</p>
-            </div>
-          `;
-          return;
-        }
+      // Test 1: Check if we can load React from CDN
+      function testReactCDN() {
+        console.log('🔍 Test 1: Loading React from CDN...');
         
-        const filePath = possibleFiles[currentFileIndex];
-        console.log(`🔍 Trying to load: ${filePath}`);
-        
-        script.src = filePath;
-        script.onload = () => {
-          console.log(`✅ Successfully loaded: ${filePath}`);
-          document.querySelector('.status-title').textContent = '✅ JavaScript Loaded!';
-          document.querySelector('.status-text').textContent = `Loaded: ${filePath}`;
+        const reactScript = document.createElement('script');
+        reactScript.src = 'https://unpkg.com/react@18/umd/react.production.min.js';
+        reactScript.onload = () => {
+          console.log('✅ React CDN loaded successfully');
+          testReactDOMCDN();
         };
-        script.onerror = (error) => {
-          console.error(`❌ Failed to load: ${filePath}`, error);
-          currentFileIndex++;
-          tryNextFile();
+        reactScript.onerror = () => {
+          console.error('❌ React CDN failed');
+          updateStatus('❌ React CDN failed', 'CDN loading issue');
         };
-        
-        document.head.appendChild(script);
+        document.head.appendChild(reactScript);
       }
       
-      tryNextFile();
+      // Test 2: Check if we can load ReactDOM from CDN
+      function testReactDOMCDN() {
+        console.log('🔍 Test 2: Loading ReactDOM from CDN...');
+        
+        const reactDOMScript = document.createElement('script');
+        reactDOMScript.src = 'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js';
+        reactDOMScript.onload = () => {
+          console.log('✅ ReactDOM CDN loaded successfully');
+          testBuiltFiles();
+        };
+        reactDOMScript.onerror = () => {
+          console.error('❌ ReactDOM CDN failed');
+          updateStatus('❌ ReactDOM CDN failed', 'CDN loading issue');
+        };
+        document.head.appendChild(reactDOMScript);
+      }
+      
+      // Test 3: Try to load built files
+      function testBuiltFiles() {
+        console.log('🔍 Test 3: Testing built files...');
+        
+        const possibleFiles = [
+          '/assets/index-2b0dc3d6.js',
+          '/assets/index.js',
+          '/assets/main.js',
+          '/src/main.jsx'
+        ];
+        
+        let currentFileIndex = 0;
+        
+        function tryNextFile() {
+          if (currentFileIndex >= possibleFiles.length) {
+            console.error('❌ All built files failed');
+            updateStatus('❌ All built files failed', 'Build issue detected');
+            return;
+          }
+          
+          const filePath = possibleFiles[currentFileIndex];
+          console.log(`🔍 Trying built file: ${filePath}`);
+          
+          fetch(filePath)
+            .then(response => {
+              if (response.ok) {
+                console.log(`✅ File exists: ${filePath}`);
+                updateStatus('✅ Built file found', `Found: ${filePath}`);
+                return response.text();
+              } else {
+                throw new Error(`HTTP ${response.status}`);
+              }
+            })
+            .then(content => {
+              console.log(`📄 File content length: ${content.length} chars`);
+              if (content.length > 0) {
+                updateStatus('✅ Built file has content', `${filePath} (${content.length} chars)`);
+              } else {
+                throw new Error('Empty file');
+              }
+            })
+            .catch(error => {
+              console.error(`❌ File failed: ${filePath}`, error);
+              currentFileIndex++;
+              tryNextFile();
+            });
+        }
+        
+        tryNextFile();
+      }
+      
+      function updateStatus(title, text) {
+        document.querySelector('.status-title').textContent = title;
+        document.querySelector('.status-text').textContent = text;
+      }
+      
+      // Start the test sequence
+      testReactCDN();
     </script>
   </body>
 </html> 
