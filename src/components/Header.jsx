@@ -1,6 +1,6 @@
 import { isSupabaseConfigured } from '../lib/supabase'
 
-const Header = ({ version = '1.0.0' }) => {
+const Header = ({ version = '1.1.0' }) => {
   return (
     <div style={{
       position: 'sticky',
