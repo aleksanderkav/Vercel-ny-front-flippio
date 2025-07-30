@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import CardGrid from './CardGrid'
+import { supabase } from '../lib/supabase'
 
 const CardLibrary = ({ 
   cards = [], 
@@ -24,6 +25,7 @@ const CardLibrary = ({
   const [scrapingStatus, setScrapingStatus] = useState('')
   const [lastResult, setLastResult] = useState(null)
   const [searchResults, setSearchResults] = useState(null)
+  const [fixingPrices, setFixingPrices] = useState(false)
 
   // Scraping functions
   const handleSingleScrape = async () => {
@@ -112,6 +114,83 @@ const CardLibrary = ({
 
   const loadSampleCards = () => {
     setBatchCardNames(sampleCards.join('\n'))
+  }
+
+  // Function to fix price updates by updating existing cards
+  const handleFixPriceUpdates = async () => {
+    setFixingPrices(true)
+    setScrapingStatus('🔧 Fixing price updates for all cards...')
+    
+    try {
+      // First, get all cards that need price updates
+      const { data: cards, error: fetchError } = await supabase
+        .from('cards')
+        .select('id, name')
+      
+      if (fetchError) {
+        throw new Error(`Failed to fetch cards: ${fetchError.message}`)
+      }
+      
+      setScrapingStatus(`🔧 Processing ${cards.length} cards...`)
+      
+      // Update each card with its latest price and count
+      let updatedCount = 0
+      
+      for (const card of cards) {
+        try {
+          // Get the latest price for this card
+          const { data: latestPrice } = await supabase
+            .from('price_entries')
+            .select('price')
+            .eq('card_id', card.id)
+            .order('timestamp', { ascending: false })
+            .limit(1)
+            .single()
+          
+          // Get the count of price entries for this card
+          const { count: priceCount } = await supabase
+            .from('price_entries')
+            .select('*', { count: 'exact', head: true })
+            .eq('card_id', card.id)
+          
+          // Update the card with the latest price and count
+          const { error: updateError } = await supabase
+            .from('cards')
+            .update({
+              latest_price: latestPrice?.price || null,
+              price_entries_count: priceCount || 0,
+              last_updated: new Date().toISOString()
+            })
+            .eq('id', card.id)
+          
+          if (!updateError) {
+            updatedCount++
+          }
+          
+          // Update progress every 5 cards
+          if (updatedCount % 5 === 0) {
+            setScrapingStatus(`🔧 Updated ${updatedCount}/${cards.length} cards...`)
+          }
+          
+        } catch (cardError) {
+          console.error(`Error updating card ${card.name}:`, cardError)
+        }
+      }
+      
+      setScrapingStatus(`✅ Successfully updated ${updatedCount}/${cards.length} cards! Refreshing...`)
+      
+      // Refresh the cards to show updated data
+      setTimeout(() => {
+        onRefresh()
+        setScrapingStatus(`✅ Price updates completed! ${updatedCount} cards updated.`)
+      }, 1000)
+      
+    } catch (error) {
+      console.error('Error fixing price updates:', error)
+      setScrapingStatus(`❌ Error fixing prices: ${error.message}`)
+    } finally {
+      setFixingPrices(false)
+    }
   }
 
   return (
@@ -396,7 +475,12 @@ const CardLibrary = ({
               )}
 
               {/* Advanced Options */}
-              <div style={{ marginBottom: '1rem' }}>
+              <div style={{ 
+                marginBottom: '1rem',
+                display: 'flex',
+                gap: '0.5rem',
+                flexWrap: 'wrap'
+              }}>
                 <button
                   onClick={handleGetStats}
                   disabled={loading}
@@ -413,6 +497,42 @@ const CardLibrary = ({
                   }}
                 >
                   📊 Get Statistics
+                </button>
+                
+                <button
+                  onClick={handleFixPriceUpdates}
+                  disabled={fixingPrices || loading}
+                  title="Fix automatic price updates for all cards"
+                  style={{
+                    padding: '0.5rem 1rem',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    color: '#ffffff',
+                    backgroundColor: fixingPrices || loading ? '#9ca3af' : '#dc2626',
+                    border: 'none',
+                    borderRadius: '0.375rem',
+                    cursor: fixingPrices || loading ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.2s',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.25rem'
+                  }}
+                >
+                  {fixingPrices ? (
+                    <>
+                      <div style={{
+                        width: '0.5rem',
+                        height: '0.5rem',
+                        border: '1px solid #ffffff',
+                        borderTop: '1px solid transparent',
+                        borderRadius: '50%',
+                        animation: 'spin 1s linear infinite'
+                      }}></div>
+                      <span>Fixing...</span>
+                    </>
+                  ) : (
+                    '🔧 Fix Price Updates'
+                  )}
                 </button>
               </div>
 
