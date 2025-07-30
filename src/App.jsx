@@ -8,7 +8,7 @@ function App() {
   const [libraryLoading, setLibraryLoading] = useState(true)
   
   // Version tracking - prominently displayed
-  const APP_VERSION = '7.0.1'
+  const APP_VERSION = '8.0.0'
 
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
   const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
@@ -20,7 +20,7 @@ function App() {
   const fetchCards = async () => {
     try {
       setLibraryLoading(true)
-      console.log('=== FETCHING CARDS WITH PRICES (v7.0.1) ===')
+      console.log('=== FETCHING CARDS WITH PRICES (v8.0.0) ===')
       
       const apiUrl = `${supabaseUrl}/rest/v1/cards_with_prices?select=*&order=created_at.desc`
       const headers = {

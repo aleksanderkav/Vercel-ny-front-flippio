@@ -2,7 +2,7 @@
 
 A modern React frontend for tracking trading card prices with real-time market data.
 
-**🚀 Deployment Status: PUBLISHING v7.0.1 - Latest version with optimized Tailwind CSS**
+**🚀 Deployment Status: RAILWAY v8.0.0 - Optimized for Railway deployment with Nixpacks**
 
 ## 🚀 Features
 
@@ -45,8 +45,13 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
+### Railway Deployment (Recommended)
+1. Connect your GitHub repository to Railway
+2. Railway will use the `railway.json` and `nixpacks.toml` configuration
+3. Set environment variables in Railway dashboard
+4. Deploy automatically on push to main branch
 
+### Vercel Deployment
 1. Connect your GitHub repository to Vercel
 2. Set environment variables in Vercel dashboard
 3. Deploy automatically on push to main branch
