@@ -204,40 +204,85 @@ function App() {
 
   const filteredCards = getFilteredAndSortedCards()
 
-  return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
-      {/* Version Update Banner */}
-      <div style={{
-        background: 'linear-gradient(90deg, #dc2626, #ea580c, #dc2626)',
-        color: 'white',
-        textAlign: 'center',
-        padding: '0.75rem',
-        fontSize: '1.125rem',
-        fontWeight: 600,
-        textShadow: '0 1px 2px rgba(0,0,0,0.3)',
-        animation: 'pulse 2s infinite'
-      }}>
-        🎉 UPDATED TO VERSION 1.0.5 - Enhanced Search & Price Management! 🎉
+  try {
+    return (
+      <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+        {/* Version Update Banner */}
+        <div style={{
+          background: 'linear-gradient(90deg, #dc2626, #ea580c, #dc2626)',
+          color: 'white',
+          textAlign: 'center',
+          padding: '0.75rem',
+          fontSize: '1.125rem',
+          fontWeight: 600,
+          textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+          animation: 'pulse 2s infinite'
+        }}>
+          🎉 UPDATED TO VERSION 1.0.5 - Enhanced Search & Price Management! 🎉
+        </div>
+        
+        <Header version="1.0.5" />
+        <Hero 
+          onSearch={handleSearch}
+          loading={loading}
+          searchStatus={searchStatus}
+        />
+        <CardLibrary 
+          cards={filteredCards}
+          loading={loading}
+          onRefresh={loadCards}
+          onRefreshPrices={refreshPrices}
+          filterCategory={filterCategory}
+          setFilterCategory={setFilterCategory}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+        />
       </div>
-      
-      <Header version="1.0.5" />
-      <Hero 
-        onSearch={handleSearch}
-        loading={loading}
-        searchStatus={searchStatus}
-      />
-      <CardLibrary 
-        cards={filteredCards}
-        loading={loading}
-        onRefresh={loadCards}
-        onRefreshPrices={refreshPrices}
-        filterCategory={filterCategory}
-        setFilterCategory={setFilterCategory}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-      />
-    </div>
-  )
+    )
+  } catch (error) {
+    console.error('❌ App rendering error:', error)
+    return (
+      <div style={{
+        minHeight: '100vh',
+        backgroundColor: '#fee2e2',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '2rem'
+      }}>
+        <div style={{
+          background: 'white',
+          padding: '2rem',
+          borderRadius: '1rem',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+          textAlign: 'center',
+          maxWidth: '500px'
+        }}>
+          <h1 style={{ color: '#dc2626', marginBottom: '1rem' }}>❌ App Error</h1>
+          <p style={{ color: '#6b7280', marginBottom: '1rem' }}>
+            Something went wrong while loading the app.
+          </p>
+          <p style={{ color: '#dc2626', fontSize: '0.875rem' }}>
+            Error: {error.message}
+          </p>
+          <button 
+            onClick={() => window.location.reload()}
+            style={{
+              marginTop: '1rem',
+              padding: '0.75rem 1.5rem',
+              backgroundColor: '#dc2626',
+              color: 'white',
+              border: 'none',
+              borderRadius: '0.5rem',
+              cursor: 'pointer'
+            }}
+          >
+            🔄 Reload Page
+          </button>
+        </div>
+      </div>
+    )
+  }
 }
 
 export default App

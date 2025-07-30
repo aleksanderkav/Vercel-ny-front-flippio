@@ -24,11 +24,29 @@ if (!supabaseUrl || !supabaseAnonKey) {
   })
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
+// Create a mock Supabase client if environment variables are missing
+const createMockSupabase = () => {
+  console.log('⚠️ Using mock Supabase client - environment variables not set')
+  return {
+    from: () => ({
+      select: () => Promise.resolve({ data: [], error: null }),
+      insert: () => Promise.resolve({ data: [], error: null }),
+      update: () => Promise.resolve({ data: [], error: null }),
+      eq: () => ({
+        single: () => Promise.resolve({ data: null, error: null })
+      }),
+      order: () => Promise.resolve({ data: [], error: null })
+    })
   }
-})
+}
+
+export const supabase = (supabaseUrl && supabaseAnonKey) 
+  ? createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    })
+  : createMockSupabase()
 
 export const isSupabaseConfigured = !!(supabaseUrl && supabaseAnonKey) 
