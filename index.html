@@ -203,6 +203,9 @@
                   console.log('🔍 Supabase URL test response:', response.status, response.statusText);
                 } catch (fetchError) {
                   console.error('❌ Supabase URL fetch error:', fetchError);
+                  // If URL is not accessible, use mock mode
+                  setSupabaseStatus('Mock Mode (URL not accessible)');
+                  return;
                 }
                 
                 // Test basic connection
@@ -215,20 +218,28 @@
                 
                 if (testError) {
                   console.error('❌ Supabase connection error:', testError);
-                  setSupabaseStatus(`Connection Error: ${testError.message}`);
+                  setSupabaseStatus(`Mock Mode (${testError.message})`);
                 } else {
                   console.log('✅ Supabase connected successfully');
                   setSupabaseStatus('Connected');
                 }
               } catch (error) {
                 console.error('❌ Supabase test error:', error);
-                setSupabaseStatus(`Connection Failed: ${error.message}`);
+                setSupabaseStatus('Mock Mode (Connection Failed)');
               }
             };
             
             const loadLibraryCards = async () => {
               try {
                 console.log('🔍 Loading library cards...');
+                
+                // Check if we're in mock mode
+                if (supabaseStatus.includes('Mock Mode')) {
+                  console.log('🔍 Using mock data (Supabase not accessible)');
+                  setLibraryCards(getMockLibraryCards());
+                  return;
+                }
+                
                 // Join cards with card_prices to get comprehensive data
                 const { data, error } = await supabase
                   .from('cards')
@@ -329,6 +340,49 @@
               
               try {
                 console.log('🔍 Searching for:', query);
+                
+                // Check if we're in mock mode
+                if (supabaseStatus.includes('Mock Mode')) {
+                  console.log('🔍 Using mock search (Supabase not accessible)');
+                  // Show mock data for demonstration
+                  const mockResults = [
+                    {
+                      id: 1,
+                      name: 'Pikachu',
+                      card_set: 'Base Set',
+                      condition: 'PSA 10',
+                      current_price: 299.99,
+                      emoji: '⚡',
+                      last_updated: new Date().toISOString(),
+                      market: 'eBay'
+                    },
+                    {
+                      id: 2,
+                      name: 'Charizard',
+                      card_set: 'Base Set',
+                      condition: 'PSA 9',
+                      current_price: 899.99,
+                      emoji: '🔥',
+                      last_updated: new Date().toISOString(),
+                      market: 'TCGPlayer'
+                    },
+                    {
+                      id: 3,
+                      name: 'Ekans',
+                      card_set: 'Base Set',
+                      condition: 'PSA 10',
+                      current_price: 45.99,
+                      emoji: '🐍',
+                      last_updated: new Date().toISOString(),
+                      market: 'eBay'
+                    }
+                  ];
+                  setSearchResults(mockResults);
+                  setSearchStatus(`✅ Found ${mockResults.length} cards for "${query}" (mock data)`);
+                  setLoading(false);
+                  return;
+                }
+                
                 // Search in the cards table by name
                 const { data, error } = await supabase
                   .from('cards')
