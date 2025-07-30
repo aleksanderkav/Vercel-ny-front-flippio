@@ -65,7 +65,7 @@
       
       .status {
         background: #ecfdf5;
-        border: '1px solid #a7f3d0';
+        border: 1px solid #a7f3d0;
         border-radius: 10px;
         padding: 15px;
         margin-bottom: 2rem;
@@ -79,7 +79,7 @@
       
       .status-text {
         color: #047857;
-        margin: '5px 0 0 0';
+        margin: 5px 0 0 0;
         font-size: 0.9rem;
       }
       
@@ -123,28 +123,55 @@
       // Try to load the built JavaScript file
       const script = document.createElement('script');
       script.type = 'module';
-      script.src = '/assets/index-2b0dc3d6.js'; // Use the actual built file name
-      script.onload = () => {
-        console.log('✅ Built JavaScript file loaded successfully!');
-      };
-      script.onerror = (error) => {
-        console.error('❌ Error loading built JavaScript:', error);
-        document.getElementById('root').innerHTML = `
-          <div style="
-            background: #fee2e2;
-            border: 1px solid #fecaca;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 10px 0;
-            color: #dc2626;
-          ">
-            <h3 style="margin: 0 0 10px 0;">❌ JavaScript Load Error</h3>
-            <p style="margin: 0; font-size: 0.9rem;">Failed to load built JavaScript file</p>
-          </div>
-        `;
-      };
       
-      document.head.appendChild(script);
+      // Try different possible file names based on build logs
+      const possibleFiles = [
+        '/assets/index-2b0dc3d6.js',
+        '/assets/index.js',
+        '/assets/main.js',
+        '/src/main.jsx'
+      ];
+      
+      let currentFileIndex = 0;
+      
+      function tryNextFile() {
+        if (currentFileIndex >= possibleFiles.length) {
+          console.error('❌ All JavaScript files failed to load');
+          document.getElementById('root').innerHTML = `
+            <div style="
+              background: #fee2e2;
+              border: 1px solid #fecaca;
+              border-radius: 10px;
+              padding: 15px;
+              margin: 10px 0;
+              color: #dc2626;
+            ">
+              <h3 style="margin: 0 0 10px 0;">❌ All JavaScript Files Failed</h3>
+              <p style="margin: 0; font-size: 0.9rem;">Tried: ${possibleFiles.join(', ')}</p>
+            </div>
+          `;
+          return;
+        }
+        
+        const filePath = possibleFiles[currentFileIndex];
+        console.log(`🔍 Trying to load: ${filePath}`);
+        
+        script.src = filePath;
+        script.onload = () => {
+          console.log(`✅ Successfully loaded: ${filePath}`);
+          document.querySelector('.status-title').textContent = '✅ JavaScript Loaded!';
+          document.querySelector('.status-text').textContent = `Loaded: ${filePath}`;
+        };
+        script.onerror = (error) => {
+          console.error(`❌ Failed to load: ${filePath}`, error);
+          currentFileIndex++;
+          tryNextFile();
+        };
+        
+        document.head.appendChild(script);
+      }
+      
+      tryNextFile();
     </script>
   </body>
 </html> 
