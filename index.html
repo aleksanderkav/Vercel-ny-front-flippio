@@ -137,7 +137,83 @@
     </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <div class="debug">CDN React Test v1.0.0</div>
+    
+    <div class="container">
+      <div class="icon">🎴</div>
+      
+      <h1 class="title">Trading Card Tracker</h1>
+      
+      <p class="subtitle">v1.0.0 • CDN React Test</p>
+      
+      <div class="status">
+        <p class="status-title">✅ HTML Page Working!</p>
+        <p class="status-text">Testing React from CDN...</p>
+      </div>
+      
+      <div id="react-root">
+        <p style="color: #666;">Loading React component...</p>
+      </div>
+    </div>
+    
+    <!-- Load React from CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <script>
+      console.log('🚀 CDN React test starting...');
+      console.log('React version:', React.version);
+      console.log('ReactDOM version:', ReactDOM.version);
+      
+      try {
+        // Create a simple React component
+        const App = () => {
+          console.log('🎨 React component rendering...');
+          return React.createElement('div', {
+            style: {
+              background: '#eff6ff',
+              border: '1px solid #93c5fd',
+              borderRadius: '10px',
+              padding: '15px',
+              margin: '10px 0'
+            }
+          }, [
+            React.createElement('h3', { key: 'title', style: { margin: '0 0 10px 0', color: '#1e40af' } }, '✅ React from CDN Working!'),
+            React.createElement('p', { key: 'text', style: { margin: 0, color: '#1e40af', fontSize: '0.9rem' } }, 'React version: ' + React.version)
+          ]);
+        };
+        
+        // Render the component
+        const root = ReactDOM.createRoot(document.getElementById('react-root'));
+        root.render(React.createElement(App));
+        
+        console.log('✅ React component rendered successfully!');
+        
+        // Update status
+        document.querySelector('.status-title').textContent = '✅ React from CDN Working!';
+        document.querySelector('.status-text').textContent = 'React version: ' + React.version;
+        
+      } catch (error) {
+        console.error('❌ Error with React from CDN:', error);
+        
+        // Show error in the page
+        document.getElementById('react-root').innerHTML = `
+          <div style="
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            color: #dc2626;
+          ">
+            <h3 style="margin: 0 0 10px 0;">❌ React Error</h3>
+            <p style="margin: 0; font-size: 0.9rem;">${error.message}</p>
+          </div>
+        `;
+        
+        document.querySelector('.status-title').textContent = '❌ React Error';
+        document.querySelector('.status-text').textContent = error.message;
+      }
+    </script>
   </body>
 </html> 
