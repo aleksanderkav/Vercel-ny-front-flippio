@@ -8,6 +8,9 @@ const Embed = () => {
   const maxCards = parseInt(urlParams.get('maxCards')) || 20
   const showStats = urlParams.get('showStats') !== 'false'
   const showScraper = urlParams.get('showScraper') === 'true'
+  const showSearch = urlParams.get('showSearch') !== 'false'
+  const showPagination = urlParams.get('showPagination') !== 'false'
+  const showSorting = urlParams.get('showSorting') !== 'false'
 
   return (
     <div style={{
@@ -22,6 +25,9 @@ const Embed = () => {
         maxCards={maxCards}
         showStats={showStats}
         showScraper={showScraper}
+        showSearch={showSearch}
+        showPagination={showPagination}
+        showSorting={showSorting}
       />
     </div>
   )

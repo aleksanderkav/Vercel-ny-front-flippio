@@ -7,11 +7,18 @@ const PublicCardTracker = ({
   showScraper = false,
   maxCards = 20,
   theme = 'light',
-  showStats = true
+  showStats = true,
+  showSearch = true,
+  showPagination = true,
+  showSorting = true
 }) => {
   const [cards, setCards] = useState([])
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState(null)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [sortBy, setSortBy] = useState('date-new')
+  const [currentPage, setCurrentPage] = useState(1)
+  const [cardsPerPage] = useState(12)
 
   useEffect(() => {
     loadCards()
@@ -26,7 +33,6 @@ const PublicCardTracker = ({
         .from('cards')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(maxCards)
 
       if (error) throw error
       setCards(data || [])
@@ -35,6 +41,53 @@ const PublicCardTracker = ({
     } finally {
       setLoading(false)
     }
+  }
+
+  // Filter and sort cards
+  const getFilteredAndSortedCards = () => {
+    let filtered = cards
+
+    // Apply search filter
+    if (searchTerm) {
+      filtered = filtered.filter(card => 
+        card.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (card.category && card.category.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    }
+
+    // Apply sorting
+    switch (sortBy) {
+      case 'name':
+        filtered.sort((a, b) => a.name.localeCompare(b.name))
+        break
+      case 'price-high':
+        filtered.sort((a, b) => (b.latest_price || 0) - (a.latest_price || 0))
+        break
+      case 'price-low':
+        filtered.sort((a, b) => (a.latest_price || 0) - (b.latest_price || 0))
+        break
+      case 'date-new':
+        filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        break
+      case 'date-old':
+        filtered.sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+        break
+      default:
+        filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    }
+
+    return filtered
+  }
+
+  // Pagination logic
+  const filteredCards = getFilteredAndSortedCards()
+  const totalPages = Math.ceil(filteredCards.length / cardsPerPage)
+  const startIndex = (currentPage - 1) * cardsPerPage
+  const endIndex = startIndex + cardsPerPage
+  const currentCards = filteredCards.slice(startIndex, endIndex)
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page)
   }
 
   const loadStats = async () => {
@@ -229,8 +282,70 @@ const PublicCardTracker = ({
         </div>
       )}
 
+      {/* Search and Controls */}
+      {(showSearch || showSorting) && (
+        <div style={{
+          display: 'flex',
+          gap: spacing.md,
+          marginBottom: spacing.lg,
+          flexWrap: 'wrap',
+          alignItems: 'center'
+        }}>
+          {showSearch && (
+            <div style={{ flex: 1, minWidth: '200px' }}>
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value)
+                  setCurrentPage(1) // Reset to first page
+                }}
+                placeholder="Search cards..."
+                style={{
+                  width: '100%',
+                  padding: `${spacing.sm} ${spacing.md}`,
+                  fontSize: typography.fontSize.sm,
+                  border: `1px solid ${theme === 'dark' ? '#4A5568' : colors.border}`,
+                  borderRadius: borderRadius.md,
+                  background: theme === 'dark' ? '#2D3748' : colors.surface,
+                  color: theme === 'dark' ? '#FFFFFF' : colors.textPrimary,
+                  outline: 'none',
+                  transition: 'all 0.2s ease'
+                }}
+              />
+            </div>
+          )}
+
+          {showSorting && (
+            <div style={{ minWidth: '150px' }}>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: `${spacing.sm} ${spacing.md}`,
+                  fontSize: typography.fontSize.sm,
+                  border: `1px solid ${theme === 'dark' ? '#4A5568' : colors.border}`,
+                  borderRadius: borderRadius.md,
+                  background: theme === 'dark' ? '#2D3748' : colors.surface,
+                  color: theme === 'dark' ? '#FFFFFF' : colors.textPrimary,
+                  outline: 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value="date-new">Newest First</option>
+                <option value="date-old">Oldest First</option>
+                <option value="name">Name A-Z</option>
+                <option value="price-high">Price High-Low</option>
+                <option value="price-low">Price Low-High</option>
+              </select>
+            </div>
+          )}
+        </div>
+      )}
+
       <div style={gridStyle}>
-        {cards.map((card, index) => (
+        {currentCards.map((card, index) => (
           <div key={card.id || index} style={cardStyle}>
             <div style={cardHeaderStyle}>
               <div>
@@ -261,17 +376,107 @@ const PublicCardTracker = ({
         ))}
       </div>
 
-      {cards.length === 0 && (
+      {currentCards.length === 0 && (
         <div style={{
           textAlign: 'center',
           padding: spacing.xl,
           color: theme === 'dark' ? '#A0AEC0' : colors.textSecondary
         }}>
-          No cards found
+          {searchTerm ? 'No cards match your search' : 'No cards found'}
         </div>
       )}
     </div>
-  )
+
+    {/* Pagination */}
+    {showPagination && totalPages > 1 && (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: spacing.sm,
+        marginTop: spacing.xl,
+        padding: spacing.md,
+        background: theme === 'dark' ? '#2D3748' : colors.surface,
+        borderRadius: borderRadius.md,
+        border: `1px solid ${theme === 'dark' ? '#4A5568' : colors.border}`
+      }}>
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          style={{
+            padding: `${spacing.sm} ${spacing.md}`,
+            fontSize: typography.fontSize.sm,
+            fontWeight: typography.fontWeight.semibold,
+            color: currentPage === 1 ? (theme === 'dark' ? '#4A5568' : '#9CA3AF') : (theme === 'dark' ? '#FFFFFF' : colors.textPrimary),
+            backgroundColor: currentPage === 1 ? (theme === 'dark' ? '#1A202C' : '#F3F4F6') : (theme === 'dark' ? '#2D3748' : colors.surface),
+            border: `1px solid ${theme === 'dark' ? '#4A5568' : colors.border}`,
+            borderRadius: borderRadius.md,
+            cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+            transition: 'all 0.2s ease'
+          }}
+        >
+          ← Previous
+        </button>
+
+        <div style={{
+          display: 'flex',
+          gap: spacing.xs,
+          alignItems: 'center'
+        }}>
+          {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+            const page = i + 1
+            return (
+              <button
+                key={page}
+                onClick={() => handlePageChange(page)}
+                style={{
+                  padding: `${spacing.sm} ${spacing.md}`,
+                  fontSize: typography.fontSize.sm,
+                  fontWeight: typography.fontWeight.semibold,
+                  color: currentPage === page ? colors.white : (theme === 'dark' ? '#FFFFFF' : colors.textPrimary),
+                  backgroundColor: currentPage === page ? colors.primary : (theme === 'dark' ? '#2D3748' : colors.surface),
+                  border: `1px solid ${theme === 'dark' ? '#4A5568' : colors.border}`,
+                  borderRadius: borderRadius.sm,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  minWidth: '2.5rem'
+                }}
+              >
+                {page}
+              </button>
+            )
+          })}
+        </div>
+
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          style={{
+            padding: `${spacing.sm} ${spacing.md}`,
+            fontSize: typography.fontSize.sm,
+            fontWeight: typography.fontWeight.semibold,
+            color: currentPage === totalPages ? (theme === 'dark' ? '#4A5568' : '#9CA3AF') : (theme === 'dark' ? '#FFFFFF' : colors.textPrimary),
+            backgroundColor: currentPage === totalPages ? (theme === 'dark' ? '#1A202C' : '#F3F4F6') : (theme === 'dark' ? '#2D3748' : colors.surface),
+            border: `1px solid ${theme === 'dark' ? '#4A5568' : colors.border}`,
+            borderRadius: borderRadius.md,
+            cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+            transition: 'all 0.2s ease'
+          }}
+        >
+          Next →
+        </button>
+
+        <span style={{
+          fontSize: typography.fontSize.sm,
+          color: theme === 'dark' ? '#A0AEC0' : colors.textSecondary,
+          marginLeft: spacing.md
+        }}>
+          Page {currentPage} of {totalPages} ({filteredCards.length} cards)
+        </span>
+      </div>
+    )}
+  </div>
+)
 }
 
 export default PublicCardTracker 

@@ -1,4 +1,6 @@
 // Modern Design System - Minimalist & Premium
+console.log('🎨 Design system loaded:', new Date().toISOString())
+
 export const colors = {
   // Primary palette
   white: '#FFFFFF',

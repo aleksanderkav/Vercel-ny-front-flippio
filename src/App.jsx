@@ -12,7 +12,7 @@ import Embed from './pages/Embed'
 function App() {
   // Build timestamp for cache busting
   console.log('🚀 App loaded at:', new Date().toISOString())
-  console.log('📦 Version: 1.3.3')
+  console.log('📦 Version: 1.3.4')
   
   // Check if this is an embed request
   const isEmbed = window.location.pathname === '/embed' || window.location.search.includes('embed=true')
@@ -378,7 +378,7 @@ function App() {
       <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
 
         
-        <Header version="1.3.3" />
+        <Header version="1.3.4" />
         <CardLibrary 
           cards={filteredCards}
           loading={loading}
@@ -416,7 +416,7 @@ function App() {
               margin: 0,
               fontWeight: 600
             }}>
-              Trading Card Tracker v1.3.3
+              Trading Card Tracker v1.3.4
             </p>
             <p style={{
               color: '#6b7280',
