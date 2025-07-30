@@ -3,38 +3,37 @@ import SearchBar from './SearchBar'
 const Hero = ({ onSearch, loading, searchStatus }) => {
   return (
     <div style={{
-      paddingTop: '6rem',
-      paddingBottom: '6rem',
+      paddingTop: '3rem',
+      paddingBottom: '4rem',
       paddingLeft: '1rem',
       paddingRight: '1rem'
     }}>
       <div style={{
-        maxWidth: '52rem',
+        maxWidth: '48rem',
         margin: '0 auto',
         textAlign: 'center'
       }}>
-        <div style={{ marginBottom: '4rem' }}>
+        <div style={{ marginBottom: '2rem' }}>
           <h2 style={{
-            fontSize: '3.5rem',
-            fontWeight: 800,
-            color: '#0f172a',
+            fontSize: '2rem',
+            fontWeight: 700,
+            color: '#1e293b',
             margin: 0,
-            marginBottom: '2.5rem',
+            marginBottom: '1rem',
             letterSpacing: '-0.025em',
-            lineHeight: '1.1',
-            textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+            lineHeight: '1.2'
           }}>
-            Track Card Prices
+            Add New Cards
           </h2>
           <p style={{
-            fontSize: '1.25rem',
+            fontSize: '1rem',
             color: '#64748b',
-            maxWidth: '40rem',
+            maxWidth: '36rem',
             margin: '0 auto',
-            lineHeight: '1.7',
+            lineHeight: '1.6',
             fontWeight: 500
           }}>
-            Discover real-time market prices for trading cards from eBay and other marketplaces
+            Search and add new cards to your collection
           </p>
         </div>
 

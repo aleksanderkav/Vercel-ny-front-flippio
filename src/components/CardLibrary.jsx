@@ -173,9 +173,10 @@ const CardLibrary = ({
                       }}
                     >
                       <option value="all">🎴 All Categories</option>
-                      <option value="pokemon">⚡ Pokémon Cards</option>
-                      <option value="sports">🏀 Sports Cards</option>
-                      <option value="gaming">🎮 Gaming Cards</option>
+                      <option value="pokemon">⚡ Pokemon</option>
+                      <option value="sports">🏀 Sports</option>
+                      <option value="gaming">🎮 Gaming</option>
+                      <option value="other">📦 Other</option>
                     </select>
                   </div>
                   

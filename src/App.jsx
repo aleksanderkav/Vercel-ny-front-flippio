@@ -7,7 +7,7 @@ import { supabase } from './lib/supabase'
 function App() {
   // Build timestamp for cache busting
   console.log('🚀 App loaded at:', new Date().toISOString())
-  console.log('📦 Version: 1.2.4')
+  console.log('📦 Version: 1.2.5')
   
   const [cards, setCards] = useState([])
   const [loading, setLoading] = useState(false)
@@ -50,6 +50,33 @@ function App() {
     } finally {
       setLoading(false)
     }
+  }
+
+  // Function to automatically detect card category based on name
+  const detectCategory = (cardName) => {
+    const name = cardName.toLowerCase()
+    
+    // Pokemon cards
+    if (name.includes('pikachu') || name.includes('charizard') || name.includes('abra') || 
+        name.includes('jigglypuff') || name.includes('pokemon') || name.includes('pokémon')) {
+      return 'Pokemon'
+    }
+    
+    // Gaming cards
+    if (name.includes('yugioh') || name.includes('magic') || name.includes('mtg') || 
+        name.includes('hearthstone') || name.includes('card game')) {
+      return 'Gaming'
+    }
+    
+    // Sports cards
+    if (name.includes('football') || name.includes('basketball') || name.includes('baseball') || 
+        name.includes('messi') || name.includes('ronaldo') || name.includes('bastoni') ||
+        name.includes('soccer') || name.includes('nba') || name.includes('nfl') || 
+        name.includes('mlb')) {
+      return 'Sports'
+    }
+    
+    return 'Other'
   }
 
   const handleSearch = async (searchQuery) => {
@@ -100,8 +127,12 @@ function App() {
       const mockPrice = basePrice + (Math.random() * variance)
       const mockPriceCount = Math.floor(Math.random() * 20) + 5
       
+      // Detect category automatically
+      const category = detectCategory(searchQuery)
+      
       console.log('🔍 Simulating price scraping for:', searchQuery)
       console.log('💰 Generated price:', mockPrice)
+      console.log('🏷️ Detected category:', category)
       
       // Insert into the view (which will trigger the INSTEAD OF INSERT)
       const { data, error } = await supabase
@@ -110,7 +141,8 @@ function App() {
           {
             name: searchQuery,
             latest_price: mockPrice,
-            price_count: mockPriceCount
+            price_count: mockPriceCount,
+            category: category
             // Note: last_price_update will be handled by database default
           }
         ])
@@ -122,7 +154,7 @@ function App() {
       }
       
       console.log('✅ Inserted card data:', data)
-      setSearchStatus(`✅ Added "${searchQuery}" with price $${mockPrice.toFixed(2)}`)
+      setSearchStatus(`✅ Added "${searchQuery}" (${category}) with price $${mockPrice.toFixed(2)}`)
       await loadCards() // Refresh the list
     } catch (error) {
       console.error('❌ Error adding card:', error)
@@ -138,11 +170,8 @@ function App() {
     // Apply category filter
     if (filterCategory !== 'all') {
       filteredCards = filteredCards.filter(card => {
-        const name = card.name.toLowerCase()
-        if (filterCategory === 'pokemon') return name.includes('pikachu') || name.includes('charizard') || name.includes('pokemon')
-        if (filterCategory === 'sports') return name.includes('basketball') || name.includes('football') || name.includes('baseball')
-        if (filterCategory === 'gaming') return name.includes('magic') || name.includes('yugioh') || name.includes('mtg')
-        return true
+        const cardCategory = card.category || detectCategory(card.name)
+        return cardCategory.toLowerCase() === filterCategory.toLowerCase()
       })
     }
     
@@ -211,12 +240,7 @@ function App() {
       <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
 
         
-        <Header version="1.2.4" />
-        <Hero 
-          onSearch={handleSearch}
-          loading={loading}
-          searchStatus={searchStatus}
-        />
+        <Header version="1.2.5" />
         <CardLibrary 
           cards={filteredCards}
           loading={loading}
@@ -227,14 +251,19 @@ function App() {
           sortBy={sortBy}
           setSortBy={setSortBy}
         />
+        <Hero 
+          onSearch={handleSearch}
+          loading={loading}
+          searchStatus={searchStatus}
+        />
         
         {/* Footer */}
         <footer style={{
           background: 'rgba(255, 255, 255, 0.85)',
           backdropFilter: 'blur(16px)',
           borderTop: '2px solid rgba(226, 232, 240, 0.6)',
-          padding: '3rem 1rem',
-          marginTop: '5rem',
+          padding: '2rem 1rem',
+          marginTop: '3rem',
           boxShadow: '0 -10px 15px -3px rgba(0, 0, 0, 0.1), 0 -4px 6px -2px rgba(0, 0, 0, 0.05)'
         }}>
           <div style={{
@@ -248,7 +277,7 @@ function App() {
               margin: 0,
               fontWeight: 600
             }}>
-              Trading Card Tracker v1.2.4 • Built with React & Supabase
+              Trading Card Tracker v1.2.5
             </p>
             <p style={{
               color: '#6b7280',
@@ -256,7 +285,7 @@ function App() {
               margin: '0.75rem 0 0 0',
               fontWeight: 500
             }}>
-              © 2024 • Real-time market price tracking for trading cards
+              © 2024 • Market price tracking
             </p>
           </div>
         </footer>
