@@ -476,7 +476,7 @@ const PublicCardTracker = ({
       </div>
     )}
   </div>
-)
+  )
 }
 
 export default PublicCardTracker 
