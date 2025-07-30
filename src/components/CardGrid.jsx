@@ -1,5 +1,6 @@
 import React from 'react'
 import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts'
+import AdSlot from './AdSlot'
 import { isSupabaseConfigured } from '../lib/supabase'
 import { colors, typography, spacing, borderRadius, shadows, getPriceColor, formatPrice } from '../styles/designSystem'
 
@@ -226,7 +227,25 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
         gap: spacing.xl,
         fontFamily: typography.fontFamily.primary
       }}>
-        {cards.map((card, index) => (
+        {cards.map((card, index) => {
+          // Add ad every 10th card
+          const shouldShowAd = (index + 1) % 10 === 0
+          
+          return (
+            <React.Fragment key={index}>
+              {shouldShowAd && (
+                <div style={{
+                  gridColumn: `1 / -1`,
+                  margin: `${spacing.lg} 0`
+                }}>
+                  <AdSlot 
+                    adSlot={`card-grid-${Math.floor(index / 10) + 1}`}
+                    adFormat="auto"
+                    className="grid-ad-slot"
+                  />
+                </div>
+              )}
+              <div
           <div 
             key={index} 
             style={{
@@ -488,7 +507,9 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
 
             </div>
           </div>
-        ))}
+            </React.Fragment>
+          )
+        })}
       </div>
     </div>
   )

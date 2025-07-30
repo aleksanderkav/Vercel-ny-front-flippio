@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import CardGrid from './CardGrid'
+import AdSlot from './AdSlot'
 import { supabase } from '../lib/supabase'
 import { colors, typography, spacing, borderRadius, shadows, components } from '../styles/designSystem'
 
@@ -1038,6 +1039,13 @@ const CardLibrary = ({
             </button>
           </div>
           
+          {/* Ad Slot - Below Search */}
+          <AdSlot 
+            adSlot="search-below"
+            adFormat="auto"
+            className="search-ad-slot"
+          />
+
           {/* Card Grid */}
           <CardGrid 
             cards={currentCards}
@@ -1136,6 +1144,13 @@ const CardLibrary = ({
               </span>
             </div>
           )}
+
+          {/* Ad Slot - Bottom of Page */}
+          <AdSlot 
+            adSlot="bottom-page"
+            adFormat="auto"
+            className="bottom-ad-slot"
+          />
         </div>
       </div>
     </div>
