@@ -1,104 +1,155 @@
-# Trading Card Tracker Frontend v8.0.1
+# Trading Card Tracker v1.0.0
 
-A modern React frontend for tracking trading card prices with real-time market data.
-
-**🚀 Deployment Status: RAILWAY v8.0.1 - Environment variables debugging added**
+A modern, responsive web application for tracking real-time market prices of trading cards from eBay and other marketplaces. Built with React, Vite, TailwindCSS, and Supabase.
 
 ## 🚀 Features
 
-- **Clean Modern UI** - Built with TailwindCSS utility classes only
-- **Real-time Price Tracking** - Live market prices from eBay and other marketplaces
-- **Responsive Design** - Works perfectly on all devices
-- **Search & Scrape** - Add new cards to your collection
-- **Card Library** - View all tracked cards with price history
+- **Real-time Price Tracking**: Scrape and display current market prices for trading cards
+- **Modern UI/UX**: Clean, responsive design with smooth animations
+- **Supabase Integration**: Secure backend data storage and retrieval
+- **Search Functionality**: Easy card search with instant price scraping
+- **Mobile Responsive**: Optimized for both desktop and mobile devices
+- **Live Updates**: Automatic refresh and real-time data updates
 
-## 🛠 Tech Stack
+## 🛠️ Tech Stack
 
-- **React 18** - Modern React with hooks
-- **Vite** - Fast build tool and dev server
-- **TailwindCSS 3.4** - Utility-first CSS framework
-- **Supabase** - Backend database and API
-- **Railway** - Scraper service
+- **Frontend**: React 18 + Vite
+- **Styling**: TailwindCSS
+- **Backend**: Supabase (PostgreSQL)
+- **Deployment**: Vercel
+- **Package Manager**: npm
 
 ## 📦 Installation
 
-```bash
-# Clone the repository
-git clone https://github.com/aleksanderkav/rail-flipping-front.git
-cd rail-flipping-front
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/aleksanderkav/Vercel-ny-front-flippio.git
+   cd Vercel-ny-front-flippio
+   ```
 
-# Install dependencies
-npm install
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-# Start development server
-npm run dev
+3. **Set up environment variables**
+   Create a `.env.local` file in the root directory:
+   ```env
+   VITE_SUPABASE_URL=https://jvkxyjycpomtzfngocge.supabase.co
+   VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2a3h5anljcG9tdHpmbmdvY2dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3NTM1OTMsImV4cCI6MjA2OTMyOTU5M30.r3p4y2sl2RFROdKN-MsAsI1Z_8TBn6tK-aZ2claU32Q
+   ```
+
+4. **Run development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Build for production**
+   ```bash
+   npm run build
+   ```
+
+## 🚀 Deployment on Vercel
+
+### Automatic Deployment (Recommended)
+
+1. **Connect to GitHub**: The repository is already connected to Vercel
+2. **Environment Variables**: Add the following environment variables in Vercel dashboard:
+   - `VITE_SUPABASE_URL`: `https://jvkxyjycpomtzfngocge.supabase.co`
+   - `VITE_SUPABASE_ANON_KEY`: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2a3h5anljcG9tdHpmbmdvY2dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3NTM1OTMsImV4cCI6MjA2OTMyOTU5M30.r3p4y2sl2RFROdKN-MsAsI1Z_8TBn6tK-aZ2claU32Q`
+
+3. **Deploy**: Push changes to the `main` branch to trigger automatic deployment
+
+### Manual Deployment
+
+1. **Install Vercel CLI**
+   ```bash
+   npm i -g vercel
+   ```
+
+2. **Deploy**
+   ```bash
+   vercel --prod
+   ```
+
+## 📁 Project Structure
+
+```
+src/
+├── components/          # React components
+│   ├── Header.jsx      # App header with version and status
+│   ├── Hero.jsx        # Hero section with search
+│   ├── SearchBar.jsx   # Search functionality
+│   ├── CardGrid.jsx    # Card display grid
+│   └── CardLibrary.jsx # Library wrapper component
+├── lib/
+│   └── supabase.js     # Supabase client configuration
+├── App.jsx             # Main application component
+├── main.jsx            # Application entry point
+└── index.css           # Global styles (TailwindCSS)
 ```
 
-## 🔧 Environment Variables
+## 🔧 Configuration
 
-### Local Development
-Create a `.env` file in the root directory:
+### Environment Variables
 
-```env
-VITE_SUPABASE_URL=https://jvkxyjycpomtzfngocge.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2a3h5anljcG9tdHpmbmdvY2dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3NTM1OTMsImV4cCI6MjA2OTMyOTU5M30.r3p4y2sl2RFROdKN-MsAsI1Z_8TBn6tK-aZ2claU32Q
-```
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `VITE_SUPABASE_URL` | Supabase project URL | Yes |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous key | Yes |
 
-### Railway Deployment
-Set these environment variables in your Railway dashboard:
+### Supabase Setup
 
-1. Go to your Railway project dashboard
-2. Click on "Variables" tab
-3. Add the following variables:
-   - `VITE_SUPABASE_URL` = `https://jvkxyjycpomtzfngocge.supabase.co`
-   - `VITE_SUPABASE_ANON_KEY` = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2a3h5anljcG9tdHpmbmdvY2dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3NTM1OTMsImV4cCI6MjA2OTMyOTU5M30.r3p4y2sl2RFROdKN-MsAsI1Z_8TBn6tK-aZ2claU32Q`
+1. Create a Supabase project
+2. Set up the `cards_with_prices` table with the following schema:
+   ```sql
+   CREATE TABLE cards_with_prices (
+     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+     name TEXT NOT NULL,
+     latest_price DECIMAL(10,2),
+     price_count INTEGER DEFAULT 0,
+     last_price_update TIMESTAMP,
+     created_at TIMESTAMP DEFAULT NOW()
+   );
+   ```
 
-## 🚀 Deployment
+## 🎨 UI Components
 
-### Railway Deployment (Recommended)
-1. Connect your GitHub repository to Railway
-2. Railway will use the `railway.json` and `nixpacks.toml` configuration
-3. Set environment variables in Railway dashboard
-4. Deploy automatically on push to main branch
+- **Header**: Displays app title, version, and connection status
+- **Hero**: Main landing section with search functionality
+- **SearchBar**: Card search with price scraping
+- **CardGrid**: Responsive grid layout for displaying cards
+- **CardLibrary**: Wrapper component for the card collection
 
-### Vercel Deployment
-1. Connect your GitHub repository to Vercel
-2. Set environment variables in Vercel dashboard
-3. Deploy automatically on push to main branch
+## 🔄 API Integration
 
-### Manual Build
+- **Supabase**: For data storage and retrieval
+- **Scraper API**: For fetching real-time card prices from eBay
 
-```bash
-# Build for production
-npm run build
+## 📱 Responsive Design
 
-# Preview production build
-npm run preview
-```
+The application is fully responsive and optimized for:
+- Desktop (1920px+)
+- Tablet (768px - 1024px)
+- Mobile (320px - 767px)
 
-## 📊 Build Stats
+## 🚀 Performance
 
-- **CSS Bundle**: ~17.37 kB (3.91 kB gzipped)
-- **JS Bundle**: ~151.93 kB (48.59 kB gzipped)
-- **Total Size**: Optimized for fast loading
+- **Build Size**: ~272KB (gzipped: ~81KB)
+- **Loading Time**: Optimized for fast initial load
+- **Caching**: Efficient caching strategies
+- **Lazy Loading**: Components loaded on demand
 
-## 🎨 Design Features
+## 🔒 Security
 
-- **Sticky Header** with gradient and blur effects
-- **Responsive Grid** layout for card display
-- **Hover Effects** and smooth transitions
-- **Modern Color Scheme** with price-based gradients
-- **Clean Typography** using system fonts
+- Environment variables for sensitive data
+- Supabase Row Level Security (RLS)
+- CORS configuration for API calls
+- Input validation and sanitization
 
-## 🔗 Backend Services
+## 📈 Version History
 
-- **Supabase Database**: `https://jvkxyjycpomtzfngocge.supabase.co`
-- **Scraper Service**: `https://scraper-production-22f6.up.railway.app`
-
-## 📝 Version History
-
-- **v6.0.0** - Clean modern UI, removed legacy styling, optimized for Vercel deployment
-- **v5.2.0** - Previous version with dark mode support
+- **v1.0.0**: Initial release with modern UI and Supabase integration
 
 ## 🤝 Contributing
 
@@ -111,3 +162,14 @@ npm run preview
 ## 📄 License
 
 This project is licensed under the MIT License.
+
+## 🆘 Support
+
+For support and questions:
+- Create an issue in the GitHub repository
+- Check the documentation
+- Review the Supabase setup guide
+
+---
+
+**Built with ❤️ using React, Vite, and TailwindCSS**
