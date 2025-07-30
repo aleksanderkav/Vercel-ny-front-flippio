@@ -193,9 +193,9 @@ function App() {
       console.log('🌐 Scraping completed for:', searchQuery)
       console.log('💰 Scraped data:', scrapedData)
       
-      // Insert into the view (which will trigger the INSTEAD OF INSERT)
+      // Insert directly into the cards table
       const { data, error } = await supabase
-        .from('cards_with_prices')
+        .from('cards')
         .insert([scrapedData])
         .select()
 

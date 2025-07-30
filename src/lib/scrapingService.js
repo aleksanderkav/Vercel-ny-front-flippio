@@ -59,7 +59,7 @@ export class ScrapingService {
       }
       
       // Generate realistic eBay-like prices
-      const basePrice = this.getBasePrice(searchQuery)
+      const basePrice = ScrapingService.getBasePrice(searchQuery)
       const priceVariation = basePrice * 0.3 // 30% variation
       const latestPrice = basePrice + (Math.random() - 0.5) * priceVariation
       
@@ -80,7 +80,7 @@ export class ScrapingService {
     try {
       await new Promise(resolve => setTimeout(resolve, 1200))
       
-      const basePrice = this.getBasePrice(searchQuery) * 0.9 // TCGPlayer often cheaper
+      const basePrice = ScrapingService.getBasePrice(searchQuery) * 0.9 // TCGPlayer often cheaper
       const priceVariation = basePrice * 0.25
       const latestPrice = basePrice + (Math.random() - 0.5) * priceVariation
       
@@ -100,7 +100,7 @@ export class ScrapingService {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000))
       
-      const basePrice = this.getBasePrice(searchQuery) * 0.85 // CardMarket often cheapest
+      const basePrice = ScrapingService.getBasePrice(searchQuery) * 0.85 // CardMarket often cheapest
       const priceVariation = basePrice * 0.2
       const latestPrice = basePrice + (Math.random() - 0.5) * priceVariation
       
@@ -133,7 +133,7 @@ export class ScrapingService {
 
   // Fallback pricing when scraping fails
   static getFallbackPrices(searchQuery) {
-    const basePrice = this.getBasePrice(searchQuery)
+    const basePrice = ScrapingService.getBasePrice(searchQuery)
     const priceVariation = basePrice * 0.4
     
     return {
@@ -147,7 +147,7 @@ export class ScrapingService {
   // Get price history for charts (simulated)
   static async getPriceHistory(searchQuery, days = 30) {
     try {
-      const basePrice = this.getBasePrice(searchQuery)
+      const basePrice = ScrapingService.getBasePrice(searchQuery)
       const history = []
       
       for (let i = days; i >= 0; i--) {
