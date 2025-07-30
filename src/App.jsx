@@ -209,19 +209,31 @@ function App() {
       <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
         {/* Version Update Banner */}
         <div style={{
-          background: 'linear-gradient(90deg, #dc2626, #ea580c, #dc2626)',
-          color: 'white',
+          background: 'linear-gradient(135deg, #7c3aed, #3b82f6)',
+          color: '#ffffff',
+          padding: '1.25rem',
           textAlign: 'center',
-          padding: '0.75rem',
-          fontSize: '1.125rem',
-          fontWeight: 600,
-          textShadow: '0 1px 2px rgba(0,0,0,0.3)',
-          animation: 'pulse 2s infinite'
+          fontWeight: 700,
+          fontSize: '1.25rem',
+          animation: 'pulse 2s infinite',
+          boxShadow: '0 8px 25px -5px rgba(124, 58, 237, 0.3)',
+          borderBottom: '3px solid rgba(255, 255, 255, 0.2)',
+          position: 'relative',
+          overflow: 'hidden'
         }}>
-          🎉 UPDATED TO VERSION 1.0.5 - Enhanced Search & Price Management! 🎉
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '2px',
+            background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent)',
+            animation: 'pulse 1s infinite'
+          }}></div>
+          🚀 UPDATED TO VERSION 1.1.0 - Enhanced Design & Performance! 🚀
         </div>
         
-        <Header version="1.0.5" />
+                  <Header version="1.1.0" />
         <Hero 
           onSearch={handleSearch}
           loading={loading}

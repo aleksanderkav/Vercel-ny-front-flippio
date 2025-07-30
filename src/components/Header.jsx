@@ -1,6 +1,6 @@
 import { isSupabaseConfigured } from '../lib/supabase'
 
-const Header = ({ version = '1.0.5' }) => {
+const Header = ({ version = '1.1.0' }) => {
   console.log('🎴 Header rendered with version:', version)
   return (
     <div style={{
@@ -42,15 +42,19 @@ const Header = ({ version = '1.0.5' }) => {
               <span style={{ fontSize: '1.25rem' }}>🎴</span>
             </div>
             <div>
-              <h1 style={{
-                fontSize: '1.5rem',
-                fontWeight: 700,
-                color: '#dc2626',
-                margin: 0,
-                textShadow: '0 0 10px rgba(220, 38, 38, 0.3)'
-              }}>
-                🚀 Trading Card Tracker v1.0.5 🚀
-              </h1>
+                              <h1 style={{
+                  fontSize: '1.75rem',
+                  fontWeight: 800,
+                  background: 'linear-gradient(135deg, #7c3aed, #3b82f6)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  margin: 0,
+                  textShadow: '0 2px 4px rgba(124, 58, 237, 0.2)',
+                  letterSpacing: '0.025em'
+                }}>
+                  🚀 Trading Card Tracker v1.1.0 🚀
+                </h1>
               <p style={{
                 color: '#64748b',
                 margin: 0
