@@ -164,21 +164,27 @@
             const testSupabaseConnection = async () => {
               try {
                 console.log('🔍 Testing Supabase connection...');
-                const { data, error } = await supabase
+                console.log('🔍 Supabase URL:', supabaseUrl);
+                console.log('🔍 Testing basic connection...');
+                
+                // First test basic connection
+                const { data: testData, error: testError } = await supabase
                   .from('cards')
                   .select('count')
                   .limit(1);
                 
-                if (error) {
-                  console.error('❌ Supabase connection error:', error);
-                  setSupabaseStatus('Connection Error');
+                console.log('🔍 Test query result:', { testData, testError });
+                
+                if (testError) {
+                  console.error('❌ Supabase connection error:', testError);
+                  setSupabaseStatus(`Connection Error: ${testError.message}`);
                 } else {
                   console.log('✅ Supabase connected successfully');
                   setSupabaseStatus('Connected');
                 }
               } catch (error) {
                 console.error('❌ Supabase test error:', error);
-                setSupabaseStatus('Connection Failed');
+                setSupabaseStatus(`Connection Failed: ${error.message}`);
               }
             };
             
@@ -199,6 +205,8 @@
                     )
                   `)
                   .limit(10);
+                
+                console.log('🔍 Library query result:', { data, error });
                 
                 if (error) {
                   console.error('❌ Error loading library cards:', error);
