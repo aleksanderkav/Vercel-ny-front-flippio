@@ -5,6 +5,10 @@ import CardLibrary from './components/CardLibrary'
 import { supabase } from './lib/supabase'
 
 function App() {
+  // Build timestamp for cache busting
+  console.log('🚀 App loaded at:', new Date().toISOString())
+  console.log('📦 Version: 1.0.5')
+  
   const [cards, setCards] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchStatus, setSearchStatus] = useState('')
