@@ -2,7 +2,7 @@
 
 A modern React frontend for tracking trading card prices with real-time market data.
 
-**🚀 Deployment Status: Back to Vite v4.5.2 with simplified config**
+**🚀 Deployment Status: Fixed PostCSS config for Vite v4.5.2**
 
 ## 🚀 Features
 
