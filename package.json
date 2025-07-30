@@ -2,13 +2,12 @@
   "name": "flippio-frontend",
   "private": true,
   "version": "1.0.0",
-  "type": "module",
   "engines": {
     "node": ">=18.0.0"
   },
   "scripts": {
     "dev": "vite",
-    "build": "echo '🔍 Build-time env check:' && echo 'VITE_SUPABASE_URL:' $VITE_SUPABASE_URL && echo 'VITE_SUPABASE_ANON_KEY length:' ${#VITE_SUPABASE_ANON_KEY} && vite build",
+    "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "serve dist -s -l $PORT --single"
   },
