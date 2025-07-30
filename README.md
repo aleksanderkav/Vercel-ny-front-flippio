@@ -2,7 +2,7 @@
 
 A modern React frontend for tracking trading card prices with real-time market data.
 
-**🚀 Deployment Status: Fixed Webpack v5.101.0 with acorn dependency**
+**🚀 Deployment Status: Back to Vite v4.5.2 with simplified config**
 
 ## 🚀 Features
 
