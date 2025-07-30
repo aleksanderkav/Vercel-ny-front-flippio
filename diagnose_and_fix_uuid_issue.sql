@@ -96,7 +96,7 @@ BEGIN
             sync_status, 
             updated_at
         ) VALUES (
-            actual_card_id,  -- Use the actual inserted ID
+            actual_card_id::uuid,  -- Cast TEXT to UUID
             NEW.latest_price, 
             COALESCE(NEW.last_price_update, NOW()), 
             'pending', 
@@ -111,7 +111,7 @@ BEGIN
                 timestamp,
                 source
             ) VALUES (
-                actual_card_id,  -- Use the actual inserted ID
+                actual_card_id::uuid,  -- Cast TEXT to UUID
                 NEW.latest_price,
                 NOW(),
                 'app'
