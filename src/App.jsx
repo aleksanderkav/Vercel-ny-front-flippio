@@ -1,7 +1,7 @@
 import React from 'react'
 
 function App() {
-  console.log('🚀 Minimal React App rendering...')
+  console.log('🚀 Vite React App rendering...')
 
   return (
     <div style={{
@@ -26,7 +26,7 @@ function App() {
         fontSize: '12px',
         zIndex: 9999
       }}>
-        React Working v1.0.0
+        Vite React v1.0.0
       </div>
 
       {/* Main content */}
@@ -70,7 +70,7 @@ function App() {
           color: '#475569',
           marginBottom: '2rem'
         }}>
-          v1.0.0 • React is Working!
+          v1.0.0 • Vite React Working!
         </p>
 
         <div style={{
@@ -85,14 +85,14 @@ function App() {
             margin: 0,
             fontWeight: 500
           }}>
-            ✅ React Component Rendered Successfully!
+            ✅ Vite React App Rendered Successfully!
           </p>
           <p style={{
             color: '#047857',
             margin: '5px 0 0 0',
             fontSize: '0.9rem'
           }}>
-            JavaScript execution is working
+            Module bundling is working
           </p>
         </div>
 
