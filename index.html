@@ -105,7 +105,7 @@
         reactDOMScript.src = 'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js';
         reactDOMScript.onload = () => {
           console.log('✅ ReactDOM CDN loaded successfully');
-          renderReactApp();
+          loadSupabase();
         };
         reactDOMScript.onerror = () => {
           console.error('❌ ReactDOM CDN failed');
@@ -114,10 +114,33 @@
         document.head.appendChild(reactDOMScript);
       }
       
+      function loadSupabase() {
+        console.log('🔍 Loading Supabase from CDN...');
+        
+        const supabaseScript = document.createElement('script');
+        supabaseScript.src = 'https://unpkg.com/@supabase/supabase-js@2';
+        supabaseScript.onload = () => {
+          console.log('✅ Supabase CDN loaded successfully');
+          renderReactApp();
+        };
+        supabaseScript.onerror = () => {
+          console.error('❌ Supabase CDN failed');
+          showError('Supabase CDN failed to load');
+        };
+        document.head.appendChild(supabaseScript);
+      }
+      
       function renderReactApp() {
         console.log('🔍 Rendering React app...');
         
         try {
+          // Initialize Supabase client
+          const supabaseUrl = 'https://jvkxjyjycpomtzfngocge.supabase.co';
+          const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2a3h5anljcG9tdHpmbmdvY2dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3NTM1OTMsImV4cCI6MjA2OTMyOTU5M30.r3p4y2sl2RFROdKN-MsAsI1Z_8TBn6tK-aZ2claU32Q';
+          
+          const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+          console.log('✅ Supabase client initialized');
+          
           // Create a complete trading card tracker app
           const rootElement = document.getElementById('root');
           const root = ReactDOM.createRoot(rootElement);
@@ -128,25 +151,70 @@
             const [searchResults, setSearchResults] = React.useState([]);
             const [loading, setLoading] = React.useState(false);
             const [searchStatus, setSearchStatus] = React.useState('');
-            const [activeTab, setActiveTab] = React.useState('search'); // 'search' or 'library'
+            const [activeTab, setActiveTab] = React.useState('search');
+            const [libraryCards, setLibraryCards] = React.useState([]);
+            const [supabaseStatus, setSupabaseStatus] = React.useState('Connecting...');
             
-            // Mock library data with advanced pricing
-            const [libraryCards] = React.useState([
+            // Test Supabase connection on mount
+            React.useEffect(() => {
+              testSupabaseConnection();
+              loadLibraryCards();
+            }, []);
+            
+            const testSupabaseConnection = async () => {
+              try {
+                const { data, error } = await supabase
+                  .from('cards')
+                  .select('count')
+                  .limit(1);
+                
+                if (error) {
+                  console.error('❌ Supabase connection error:', error);
+                  setSupabaseStatus('Connection Error');
+                } else {
+                  console.log('✅ Supabase connected successfully');
+                  setSupabaseStatus('Connected');
+                }
+              } catch (error) {
+                console.error('❌ Supabase test error:', error);
+                setSupabaseStatus('Connection Failed');
+              }
+            };
+            
+            const loadLibraryCards = async () => {
+              try {
+                const { data, error } = await supabase
+                  .from('cards')
+                  .select('*')
+                  .limit(10);
+                
+                if (error) {
+                  console.error('❌ Error loading library cards:', error);
+                  // Fallback to mock data if no database
+                  setLibraryCards(getMockLibraryCards());
+                } else {
+                  console.log('✅ Library cards loaded:', data);
+                  setLibraryCards(data || getMockLibraryCards());
+                }
+              } catch (error) {
+                console.error('❌ Library cards error:', error);
+                setLibraryCards(getMockLibraryCards());
+              }
+            };
+            
+            const getMockLibraryCards = () => [
               {
                 id: 1,
                 name: 'Pikachu',
                 set: 'Base Set',
                 condition: 'PSA 10',
-                currentPrice: 299.99,
-                averagePrice: 285.50,
-                lowestPrice: 245.00,
-                highestPrice: 350.00,
-                priceHistory: [245, 260, 275, 285, 299],
-                marketDistribution: { 'eBay': 45, 'TCGPlayer': 35, 'CardMarket': 20 },
-                conditionBreakdown: { 'PSA 10': 60, 'PSA 9': 30, 'PSA 8': 10 },
-                lastUpdated: new Date().toISOString(),
-                totalListings: 127,
-                image: null, // Will use emoji fallback
+                current_price: 299.99,
+                average_price: 285.50,
+                lowest_price: 245.00,
+                highest_price: 350.00,
+                market_distribution: { 'eBay': 45, 'TCGPlayer': 35, 'CardMarket': 20 },
+                last_updated: new Date().toISOString(),
+                total_listings: 127,
                 emoji: '⚡'
               },
               {
@@ -154,120 +222,69 @@
                 name: 'Charizard',
                 set: 'Base Set',
                 condition: 'PSA 9',
-                currentPrice: 899.99,
-                averagePrice: 875.25,
-                lowestPrice: 820.00,
-                highestPrice: 950.00,
-                priceHistory: [820, 840, 860, 875, 899],
-                marketDistribution: { 'eBay': 40, 'TCGPlayer': 40, 'CardMarket': 20 },
-                conditionBreakdown: { 'PSA 10': 20, 'PSA 9': 50, 'PSA 8': 30 },
-                lastUpdated: new Date().toISOString(),
-                totalListings: 89,
-                image: null,
+                current_price: 899.99,
+                average_price: 875.25,
+                lowest_price: 820.00,
+                highest_price: 950.00,
+                market_distribution: { 'eBay': 40, 'TCGPlayer': 40, 'CardMarket': 20 },
+                last_updated: new Date().toISOString(),
+                total_listings: 89,
                 emoji: '🔥'
-              },
-              {
-                id: 3,
-                name: 'Blastoise',
-                set: 'Base Set',
-                condition: 'PSA 8',
-                currentPrice: 199.99,
-                averagePrice: 185.75,
-                lowestPrice: 165.00,
-                highestPrice: 220.00,
-                priceHistory: [165, 175, 180, 185, 199],
-                marketDistribution: { 'eBay': 50, 'TCGPlayer': 30, 'CardMarket': 20 },
-                conditionBreakdown: { 'PSA 10': 15, 'PSA 9': 25, 'PSA 8': 60 },
-                lastUpdated: new Date().toISOString(),
-                totalListings: 156,
-                image: null,
-                emoji: '💧'
-              },
-              {
-                id: 4,
-                name: 'Venusaur',
-                set: 'Base Set',
-                condition: 'PSA 10',
-                currentPrice: 450.00,
-                averagePrice: 435.80,
-                lowestPrice: 395.00,
-                highestPrice: 485.00,
-                priceHistory: [395, 410, 425, 435, 450],
-                marketDistribution: { 'eBay': 35, 'TCGPlayer': 45, 'CardMarket': 20 },
-                conditionBreakdown: { 'PSA 10': 40, 'PSA 9': 40, 'PSA 8': 20 },
-                lastUpdated: new Date().toISOString(),
-                totalListings: 94,
-                image: null,
-                emoji: '🌿'
-              },
-              {
-                id: 5,
-                name: 'Mewtwo',
-                set: 'Base Set',
-                condition: 'PSA 9',
-                currentPrice: 650.00,
-                averagePrice: 625.40,
-                lowestPrice: 580.00,
-                highestPrice: 690.00,
-                priceHistory: [580, 600, 610, 625, 650],
-                marketDistribution: { 'eBay': 45, 'TCGPlayer': 35, 'CardMarket': 20 },
-                conditionBreakdown: { 'PSA 10': 25, 'PSA 9': 45, 'PSA 8': 30 },
-                lastUpdated: new Date().toISOString(),
-                totalListings: 67,
-                image: null,
-                emoji: '🧬'
               }
-            ]);
+            ];
             
             const handleSearch = async (query) => {
               setLoading(true);
               setSearchStatus('🔍 Searching for cards...');
               
               try {
-                // Simulate API call - replace with actual Supabase query
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                // Real Supabase search
+                const { data, error } = await supabase
+                  .from('cards')
+                  .select('*')
+                  .or(`name.ilike.%${query}%,set.ilike.%${query}%,condition.ilike.%${query}%`)
+                  .limit(10);
                 
-                // Mock data for demonstration - replace with Supabase data
-                const mockResults = [
-                  {
-                    id: 1,
-                    name: 'Pikachu',
-                    set: 'Base Set',
-                    condition: 'PSA 10',
-                    price: 299.99,
-                    image: null,
-                    emoji: '⚡',
-                    lastUpdated: new Date().toISOString(),
-                    market: 'eBay'
-                  },
-                  {
-                    id: 2,
-                    name: 'Charizard',
-                    set: 'Base Set',
-                    condition: 'PSA 9',
-                    price: 899.99,
-                    image: null,
-                    emoji: '🔥',
-                    lastUpdated: new Date().toISOString(),
-                    market: 'TCGPlayer'
-                  },
-                  {
-                    id: 3,
-                    name: 'Blastoise',
-                    set: 'Base Set',
-                    condition: 'PSA 8',
-                    price: 199.99,
-                    image: null,
-                    emoji: '💧',
-                    lastUpdated: new Date().toISOString(),
-                    market: 'eBay'
+                if (error) {
+                  console.error('❌ Search error:', error);
+                  setSearchStatus('❌ Error searching for cards');
+                  setSearchResults([]);
+                } else {
+                  console.log('✅ Search results:', data);
+                  
+                  if (data && data.length > 0) {
+                    setSearchResults(data);
+                    setSearchStatus(`✅ Found ${data.length} cards for "${query}"`);
+                  } else {
+                    // If no results, show mock data for demonstration
+                    const mockResults = [
+                      {
+                        id: 1,
+                        name: 'Ekans',
+                        set: 'Base Set',
+                        condition: 'PSA 10',
+                        current_price: 45.99,
+                        emoji: '🐍',
+                        last_updated: new Date().toISOString(),
+                        market: 'eBay'
+                      },
+                      {
+                        id: 2,
+                        name: 'Arbok',
+                        set: 'Base Set',
+                        condition: 'PSA 9',
+                        current_price: 35.50,
+                        emoji: '🐍',
+                        last_updated: new Date().toISOString(),
+                        market: 'TCGPlayer'
+                      }
+                    ];
+                    setSearchResults(mockResults);
+                    setSearchStatus(`✅ Found ${mockResults.length} similar cards for "${query}" (demo data)`);
                   }
-                ];
-                
-                setSearchResults(mockResults);
-                setSearchStatus(`✅ Found ${mockResults.length} cards for "${query}"`);
+                }
               } catch (error) {
-                console.error('Search error:', error);
+                console.error('❌ Search error:', error);
                 setSearchStatus('❌ Error searching for cards');
                 setSearchResults([]);
               } finally {
@@ -284,6 +301,7 @@
             };
             
             const getPriceChange = (current, average) => {
+              if (!current || !average) return { value: 0, isPositive: false, formatted: '0.0%' };
               const change = ((current - average) / average) * 100;
               return {
                 value: change,
@@ -320,39 +338,87 @@
                     padding: '1.5rem 1rem',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '1rem'
+                    justifyContent: 'space-between'
                   }
                 }, [
                   React.createElement('div', {
-                    key: 'logo',
+                    key: 'header-left',
                     style: {
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center',
-                      width: '3rem',
-                      height: '3rem',
-                      backgroundColor: '#2563eb',
-                      borderRadius: '0.75rem',
-                      boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+                      gap: '1rem'
                     }
-                  }, React.createElement('span', { style: { fontSize: '1.25rem' } }, '🎴')),
-                  React.createElement('div', { key: 'title' }, [
-                    React.createElement('h1', {
-                      key: 'title-text',
+                  }, [
+                    React.createElement('div', {
+                      key: 'logo',
                       style: {
-                        fontSize: '1.5rem',
-                        fontWeight: 700,
-                        color: '#0f172a',
-                        margin: 0
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '3rem',
+                        height: '3rem',
+                        backgroundColor: '#2563eb',
+                        borderRadius: '0.75rem',
+                        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
                       }
-                    }, 'Trading Card Tracker'),
-                    React.createElement('p', {
-                      key: 'subtitle',
+                    }, React.createElement('span', { style: { fontSize: '1.25rem' } }, '🎴')),
+                    React.createElement('div', { key: 'title' }, [
+                      React.createElement('h1', {
+                        key: 'title-text',
+                        style: {
+                          fontSize: '1.5rem',
+                          fontWeight: 700,
+                          color: '#0f172a',
+                          margin: 0
+                        }
+                      }, 'Trading Card Tracker'),
+                      React.createElement('p', {
+                        key: 'subtitle',
+                        style: {
+                          color: '#64748b',
+                          margin: 0
+                        }
+                      }, 'v1.0.0 • Live Market Prices')
+                    ])
+                  ]),
+                  React.createElement('div', {
+                    key: 'header-right',
+                    style: {
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.75rem'
+                    }
+                  }, [
+                    React.createElement('div', {
+                      key: 'supabase-status',
                       style: {
-                        color: '#64748b',
-                        margin: 0
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        padding: '0.375rem 0.75rem',
+                        fontSize: '0.75rem',
+                        fontWeight: 500,
+                        borderRadius: '0.5rem',
+                        border: '1px solid',
+                        backgroundColor: supabaseStatus === 'Connected' ? '#ecfdf5' : '#fffbeb',
+                        color: supabaseStatus === 'Connected' ? '#065f46' : '#92400e',
+                        borderColor: supabaseStatus === 'Connected' ? '#a7f3d0' : '#fcd34d'
                       }
-                    }, 'v1.0.0 • Live Market Prices')
+                    }, `${supabaseStatus === 'Connected' ? '🟢' : '🟡'} ${supabaseStatus}`),
+                    React.createElement('div', {
+                      key: 'version',
+                      style: {
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        padding: '0.375rem 0.75rem',
+                        fontSize: '0.75rem',
+                        fontWeight: 500,
+                        borderRadius: '0.5rem',
+                        border: '1px solid',
+                        backgroundColor: '#eff6ff',
+                        color: '#1e40af',
+                        borderColor: '#93c5fd'
+                      }
+                    }, '🚀 v1.0.0')
                   ])
                 ])
               ]),
@@ -485,7 +551,7 @@
                             type: 'text',
                             value: searchQuery,
                             onChange: (e) => setSearchQuery(e.target.value),
-                            placeholder: 'e.g., Pikachu PSA 10, Charizard PSA 9',
+                            placeholder: 'e.g., Ekans PSA 10, Charizard PSA 9',
                             style: {
                               width: '100%',
                               padding: '1rem',
@@ -532,7 +598,7 @@
                               animation: 'spin 1s linear infinite'
                             }
                           }),
-                          'Scraping Prices...'
+                          'Searching Database...'
                         ] : '🚀 Search & Scrape Prices')
                       ]),
                       
@@ -658,7 +724,7 @@
                               fontWeight: 700,
                               color: '#059669'
                             }
-                          }, formatPrice(card.price))
+                          }, formatPrice(card.current_price || card.price))
                         ]),
                         React.createElement('div', {
                           key: 'card-footer',
@@ -670,8 +736,8 @@
                             color: '#64748b'
                           }
                         }, [
-                          React.createElement('span', { key: 'market' }, `Market: ${card.market}`),
-                          React.createElement('span', { key: 'updated' }, `Updated: ${new Date(card.lastUpdated).toLocaleDateString()}`)
+                          React.createElement('span', { key: 'market' }, `Market: ${card.market || 'Multiple'}`),
+                          React.createElement('span', { key: 'updated' }, `Updated: ${new Date(card.last_updated || card.lastUpdated).toLocaleDateString()}`)
                         ])
                       ])
                     ))
@@ -751,7 +817,7 @@
                       gap: '2rem'
                     }
                   }, libraryCards.map(card => {
-                    const priceChange = getPriceChange(card.currentPrice, card.averagePrice);
+                    const priceChange = getPriceChange(card.current_price, card.average_price);
                     
                     return React.createElement('div', {
                       key: card.id,
@@ -786,7 +852,7 @@
                             justifyContent: 'center',
                             fontSize: '3rem'
                           }
-                        }, card.emoji),
+                        }, card.emoji || '🎴'),
                         React.createElement('div', { key: 'card-info' }, [
                           React.createElement('h3', {
                             key: 'card-name',
@@ -812,7 +878,7 @@
                               margin: '0.25rem 0 0 0',
                               fontSize: '0.875rem'
                             }
-                          }, `${card.totalListings} active listings`)
+                          }, `${card.total_listings || 0} active listings`)
                         ])
                       ]),
                       
@@ -852,7 +918,7 @@
                               fontWeight: 700,
                               margin: 0
                             }
-                          }, formatPrice(card.currentPrice)),
+                          }, formatPrice(card.current_price)),
                           React.createElement('p', {
                             key: 'current-change',
                             style: {
@@ -889,7 +955,7 @@
                               fontWeight: 700,
                               margin: 0
                             }
-                          }, formatPrice(card.averagePrice))
+                          }, formatPrice(card.average_price))
                         ])
                       ]),
                       
@@ -929,7 +995,7 @@
                               fontWeight: 700,
                               margin: 0
                             }
-                          }, formatPrice(card.lowestPrice))
+                          }, formatPrice(card.lowest_price))
                         ]),
                         React.createElement('div', {
                           key: 'highest-price',
@@ -957,12 +1023,12 @@
                               fontWeight: 700,
                               margin: 0
                             }
-                          }, formatPrice(card.highestPrice))
+                          }, formatPrice(card.highest_price))
                         ])
                       ]),
                       
                       // Market Distribution
-                      React.createElement('div', {
+                      card.market_distribution && React.createElement('div', {
                         key: 'market-distribution',
                         style: {
                           marginBottom: '1rem'
@@ -984,7 +1050,7 @@
                             gap: '0.5rem',
                             height: '1.5rem'
                           }
-                        }, Object.entries(card.marketDistribution).map(([market, percentage]) =>
+                        }, Object.entries(card.market_distribution).map(([market, percentage]) =>
                           React.createElement('div', {
                             key: market,
                             style: {
@@ -1015,8 +1081,8 @@
                           paddingTop: '1rem'
                         }
                       }, [
-                        React.createElement('span', { key: 'updated' }, `Updated: ${new Date(card.lastUpdated).toLocaleDateString()}`),
-                        React.createElement('span', { key: 'listings' }, `${card.totalListings} listings`)
+                        React.createElement('span', { key: 'updated' }, `Updated: ${new Date(card.last_updated).toLocaleDateString()}`),
+                        React.createElement('span', { key: 'listings' }, `${card.total_listings || 0} listings`)
                       ])
                     ]);
                   }))
