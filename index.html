@@ -43,8 +43,15 @@
         margin: 10px 0;
         color: #92400e;
       }
+      .success {
+        background: #ecfdf5;
+        border: 1px solid #a7f3d0;
+        border-radius: 10px;
+        padding: 15px;
+        margin: 10px 0;
+        color: #065f46;
+      }
     </style>
-    <script type="module" src="/src/main.jsx"></script>
   </head>
   <body>
     <div id="root">
@@ -69,9 +76,111 @@
         // Update the fallback message
         const loadingDiv = document.querySelector('.loading');
         if (loadingDiv) {
-          loadingDiv.innerHTML = '<p>✅ DOM loaded, waiting for React...</p>';
+          loadingDiv.innerHTML = '<p>✅ DOM loaded, testing React...</p>';
         }
+        
+        // Test React from CDN first
+        testReactCDN();
       });
+      
+      function testReactCDN() {
+        console.log('🔍 Testing React from CDN...');
+        
+        // Load React from CDN
+        const reactScript = document.createElement('script');
+        reactScript.src = 'https://unpkg.com/react@18/umd/react.production.min.js';
+        reactScript.onload = () => {
+          console.log('✅ React CDN loaded successfully');
+          loadReactDOM();
+        };
+        reactScript.onerror = () => {
+          console.error('❌ React CDN failed');
+          showError('React CDN failed to load');
+        };
+        document.head.appendChild(reactScript);
+      }
+      
+      function loadReactDOM() {
+        console.log('🔍 Loading ReactDOM from CDN...');
+        
+        const reactDOMScript = document.createElement('script');
+        reactDOMScript.src = 'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js';
+        reactDOMScript.onload = () => {
+          console.log('✅ ReactDOM CDN loaded successfully');
+          renderReactApp();
+        };
+        reactDOMScript.onerror = () => {
+          console.error('❌ ReactDOM CDN failed');
+          showError('ReactDOM CDN failed to load');
+        };
+        document.head.appendChild(reactDOMScript);
+      }
+      
+      function renderReactApp() {
+        console.log('🔍 Rendering React app...');
+        
+        try {
+          // Create a simple React app using CDN React
+          const rootElement = document.getElementById('root');
+          const root = ReactDOM.createRoot(rootElement);
+          
+          const App = () => {
+            return React.createElement('div', {
+              style: {
+                padding: '20px',
+                textAlign: 'center',
+                backgroundColor: '#f0f0f0',
+                minHeight: '100vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column'
+              }
+            }, [
+              React.createElement('h1', { 
+                key: 'title',
+                style: { color: '#2563eb', marginBottom: '20px' }
+              }, '🎴 Trading Card Tracker'),
+              React.createElement('p', { 
+                key: 'subtitle',
+                style: { color: '#475569', marginBottom: '20px' }
+              }, 'v1.0.0 • React is working!'),
+              React.createElement('div', { 
+                key: 'status',
+                style: {
+                  backgroundColor: '#4CAF50',
+                  color: 'white',
+                  padding: '15px',
+                  borderRadius: '10px',
+                  marginTop: '20px'
+                }
+              }, '✅ React App Loaded Successfully!')
+            ]);
+          };
+          
+          root.render(React.createElement(App));
+          console.log('✅ React app rendered successfully');
+          
+          // Update the loading message
+          const loadingDiv = document.querySelector('.loading');
+          if (loadingDiv) {
+            loadingDiv.className = 'success';
+            loadingDiv.innerHTML = '<p>✅ React loaded successfully!</p>';
+          }
+          
+        } catch (error) {
+          console.error('❌ React rendering error:', error);
+          showError(`React rendering error: ${error.message}`);
+        }
+      }
+      
+      function showError(message) {
+        const loadingDiv = document.querySelector('.loading');
+        if (loadingDiv) {
+          loadingDiv.className = 'error';
+          loadingDiv.innerHTML = `<p>❌ ${message}</p>`;
+        }
+      }
     </script>
   </body>
 </html> 
