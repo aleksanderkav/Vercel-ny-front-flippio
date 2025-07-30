@@ -1,63 +1,60 @@
 import { isSupabaseConfigured } from '../lib/supabase'
 
-const Header = ({ version = '1.2.1' }) => {
+const Header = ({ version = '1.2.2' }) => {
   console.log('🎴 Header rendered with version:', version)
   return (
     <div style={{
       position: 'sticky',
       top: 0,
       zIndex: 50,
-      background: 'rgba(255, 255, 255, 0.95)',
-      backdropFilter: 'blur(24px)',
-      borderBottom: '1px solid rgba(226, 232, 240, 0.6)',
-      boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+      background: 'rgba(255, 255, 255, 0.98)',
+      backdropFilter: 'blur(20px)',
+      borderBottom: '1px solid rgba(226, 232, 240, 0.4)',
+      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
     }}>
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
-        padding: '0 1rem',
-        paddingTop: '1.5rem',
-        paddingBottom: '1.5rem'
+        padding: '0 1.5rem',
+        paddingTop: '1rem',
+        paddingBottom: '1rem'
       }}>
         <div style={{
           display: 'flex',
-          flexDirection: 'column',
-          gap: '1rem'
+          alignItems: 'center',
+          justifyContent: 'space-between'
         }}>
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '1rem'
+            gap: '0.75rem'
           }}>
             <div style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '3rem',
-              height: '3rem',
-              backgroundColor: '#2563eb',
-              borderRadius: '0.75rem',
-              boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+              width: '2.5rem',
+              height: '2.5rem',
+              backgroundColor: '#f8fafc',
+              borderRadius: '0.5rem',
+              border: '1px solid rgba(226, 232, 240, 0.6)'
             }}>
-              <span style={{ fontSize: '1.25rem' }}>🎴</span>
+              <span style={{ fontSize: '1rem' }}>🎴</span>
             </div>
             <div>
-                              <h1 style={{
-                  fontSize: '1.75rem',
-                  fontWeight: 800,
-                  background: 'linear-gradient(135deg, #7c3aed, #3b82f6)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  margin: 0,
-                  textShadow: '0 2px 4px rgba(124, 58, 237, 0.2)',
-                  letterSpacing: '0.025em'
-                }}>
-                  🚀 Trading Card Tracker v1.2.1 🚀
-                </h1>
+              <h1 style={{
+                fontSize: '1.5rem',
+                fontWeight: 600,
+                color: '#1e293b',
+                margin: 0,
+                letterSpacing: '-0.025em'
+              }}>
+                Trading Card Tracker
+              </h1>
               <p style={{
                 color: '#64748b',
-                margin: 0
+                margin: 0,
+                fontSize: '0.875rem'
               }}>
                 v{version} • Live Market Prices
               </p>
@@ -66,35 +63,19 @@ const Header = ({ version = '1.2.1' }) => {
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '0.75rem'
+            gap: '0.5rem'
           }}>
             <div style={{
               display: 'inline-flex',
               alignItems: 'center',
-              padding: '0.375rem 0.75rem',
+              padding: '0.25rem 0.5rem',
               fontSize: '0.75rem',
               fontWeight: 500,
-              borderRadius: '0.5rem',
-              border: '1px solid',
-              backgroundColor: isSupabaseConfigured ? '#ecfdf5' : '#fffbeb',
-              color: isSupabaseConfigured ? '#065f46' : '#92400e',
-              borderColor: isSupabaseConfigured ? '#a7f3d0' : '#fcd34d'
+              borderRadius: '0.375rem',
+              backgroundColor: isSupabaseConfigured ? '#f0fdf4' : '#fffbeb',
+              color: isSupabaseConfigured ? '#166534' : '#92400e'
             }}>
               {isSupabaseConfigured ? '🟢 Connected' : '🟡 Config'}
-            </div>
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              padding: '0.375rem 0.75rem',
-              fontSize: '0.75rem',
-              fontWeight: 500,
-              borderRadius: '0.5rem',
-              border: '1px solid',
-              backgroundColor: '#eff6ff',
-              color: '#1e40af',
-              borderColor: '#93c5fd'
-            }}>
-              🚀 v{version}
             </div>
           </div>
         </div>

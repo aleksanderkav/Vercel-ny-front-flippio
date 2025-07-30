@@ -7,7 +7,7 @@ import { supabase } from './lib/supabase'
 function App() {
   // Build timestamp for cache busting
   console.log('🚀 App loaded at:', new Date().toISOString())
-  console.log('📦 Version: 1.0.5')
+  console.log('📦 Version: 1.2.2')
   
   const [cards, setCards] = useState([])
   const [loading, setLoading] = useState(false)
@@ -209,33 +209,9 @@ function App() {
   try {
     return (
       <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
-        {/* Version Update Banner */}
-        <div style={{
-          background: 'linear-gradient(135deg, #7c3aed, #3b82f6)',
-          color: '#ffffff',
-          padding: '1.25rem',
-          textAlign: 'center',
-          fontWeight: 700,
-          fontSize: '1.25rem',
-          animation: 'pulse 2s infinite',
-          boxShadow: '0 8px 25px -5px rgba(124, 58, 237, 0.3)',
-          borderBottom: '3px solid rgba(255, 255, 255, 0.2)',
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: '2px',
-            background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent)',
-            animation: 'pulse 1s infinite'
-          }}></div>
-          🚀 UPDATED TO VERSION 1.2.1 - Refined Compact Design & Schema Fix! 🚀
-        </div>
+
         
-                  <Header version="1.2.1" />
+        <Header version="1.2.2" />
         <Hero 
           onSearch={handleSearch}
           loading={loading}
