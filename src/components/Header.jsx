@@ -45,10 +45,11 @@ const Header = ({ version = '1.0.5' }) => {
               <h1 style={{
                 fontSize: '1.5rem',
                 fontWeight: 700,
-                color: '#0f172a',
-                margin: 0
+                color: '#dc2626',
+                margin: 0,
+                textShadow: '0 0 10px rgba(220, 38, 38, 0.3)'
               }}>
-                Trading Card Tracker
+                🚀 Trading Card Tracker v1.0.5 🚀
               </h1>
               <p style={{
                 color: '#64748b',

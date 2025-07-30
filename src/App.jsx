@@ -206,6 +206,20 @@ function App() {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+      {/* Version Update Banner */}
+      <div style={{
+        background: 'linear-gradient(90deg, #dc2626, #ea580c, #dc2626)',
+        color: 'white',
+        textAlign: 'center',
+        padding: '0.75rem',
+        fontSize: '1.125rem',
+        fontWeight: 600,
+        textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+        animation: 'pulse 2s infinite'
+      }}>
+        🎉 UPDATED TO VERSION 1.0.5 - Enhanced Search & Price Management! 🎉
+      </div>
+      
       <Header version="1.0.5" />
       <Hero 
         onSearch={handleSearch}

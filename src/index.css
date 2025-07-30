@@ -25,6 +25,12 @@ body {
   }
 }
 
+/* Add pulse animation for version banner */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
 /* Basic utility classes */
 .container {
   max-width: 1200px;
