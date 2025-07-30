@@ -2,7 +2,7 @@
 
 A modern React frontend for tracking trading card prices with real-time market data.
 
-**🚀 Deployment Status: Final push - Ready for live deployment v6.0.0**
+**🚀 Deployment Status: Force update - Live deployment v6.0.0 ready**
 
 ## 🚀 Features
 
