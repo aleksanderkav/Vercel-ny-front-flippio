@@ -245,8 +245,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
                   />
                 </div>
               )}
-              <div
-          <div 
+              <div 
             key={index} 
             style={{
               background: colors.surface,

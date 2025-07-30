@@ -343,10 +343,10 @@ const PublicCardTracker = ({
               Category: {card.category || 'Other'}
             </div>
             
-            {card.latest_price ? (
-              <div style={priceStyle} style={{ color: getPriceColor(card.latest_price) }}>
-                {formatPrice(card.latest_price)}
-              </div>
+                         {card.latest_price ? (
+               <div style={{ ...priceStyle, color: getPriceColor(card.latest_price) }}>
+                 {formatPrice(card.latest_price)}
+               </div>
             ) : (
               <div style={{ ...priceStyle, color: colors.textMuted }}>
                 No Price Data
