@@ -323,7 +323,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                         fontWeight: 700,
                         color: '#15803d'
                       }}>
-                        {card.price_count || 0}
+                        {card.price_entries_count || 0}
                       </div>
                     </div>
                   </div>
@@ -362,7 +362,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                   )}
 
                   {/* Price History Chart */}
-                  {card.price_count > 1 && (
+                  {card.price_entries_count > 1 && (
                     <div style={{
                       padding: '0.75rem',
                       background: 'rgba(243, 244, 246, 0.5)',
@@ -385,7 +385,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                         </span>
                       </div>
                       <SparklineChart 
-                        data={generatePriceHistory(card.latest_price, card.price_count)}
+                        data={generatePriceHistory(card.latest_price, card.price_entries_count)}
                         color={getPriceColor(card.latest_price)}
                       />
                     </div>
@@ -415,23 +415,17 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                   <p style={{
                     fontSize: '0.875rem',
                     color: '#6b7280',
-                    marginBottom: '1rem'
+                    marginBottom: '0.5rem'
                   }}>
                     Price: {card.latest_price === null ? 'null' : card.latest_price === undefined ? 'undefined' : card.latest_price}
                   </p>
-                  <button style={{
-                    padding: '0.75rem 1.5rem',
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                    color: '#ffffff',
-                    backgroundColor: '#ea580c',
-                    border: 'none',
-                    borderRadius: '0.5rem',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s'
+                  <p style={{
+                    fontSize: '0.75rem',
+                    color: '#9ca3af',
+                    fontStyle: 'italic'
                   }}>
-                    🚀 Scrape Prices
-                  </button>
+                    Use the scraper above to add price data
+                  </p>
                 </div>
               )}
               

@@ -154,63 +154,7 @@ const CardLibrary = ({
 
           </div>
 
-          {/* Library Search */}
-          <div style={{
-            display: 'flex',
-            gap: '0.5rem',
-            alignItems: 'center',
-            marginBottom: '1.5rem'
-          }}>
-            <div style={{
-              position: 'relative',
-              flex: 1,
-              maxWidth: '400px'
-            }}>
-              <input
-                type="text"
-                value={librarySearch}
-                onChange={(e) => setLibrarySearch(e.target.value)}
-                placeholder="🔍 Search cards in library..."
-                style={{
-                  width: '100%',
-                  padding: '0.75rem 1rem 0.75rem 2.5rem',
-                  fontSize: '0.875rem',
-                  border: '1px solid rgba(203, 213, 225, 0.6)',
-                  borderRadius: '0.5rem',
-                  outline: 'none',
-                  transition: 'all 0.2s',
-                  backgroundColor: 'rgba(255, 255, 255, 0.8)'
-                }}
-              />
-              <span style={{
-                position: 'absolute',
-                left: '0.75rem',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                fontSize: '1rem',
-                color: '#6b7280'
-              }}>
-                🔍
-              </span>
-            </div>
-            {librarySearch && (
-              <button
-                onClick={() => setLibrarySearch('')}
-                style={{
-                  padding: '0.5rem 0.75rem',
-                  fontSize: '0.75rem',
-                  color: '#6b7280',
-                  backgroundColor: 'rgba(243, 244, 246, 0.8)',
-                  border: '1px solid rgba(203, 213, 225, 0.6)',
-                  borderRadius: '0.375rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s'
-                }}
-              >
-                Clear
-              </button>
-            )}
-          </div>
+
           
           {showScraper && (
             <div style={{
@@ -677,6 +621,75 @@ const CardLibrary = ({
                 gap: '1rem',
                 flexWrap: 'wrap'
               }}>
+                {/* Library Search */}
+                <div style={{ 
+                  minWidth: '250px',
+                  flex: 1,
+                  maxWidth: '400px'
+                }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.625rem',
+                    fontWeight: 600,
+                    color: '#374151',
+                    marginBottom: '0.375rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em'
+                  }}>
+                    🔍 Search Library
+                  </label>
+                  <div style={{
+                    position: 'relative',
+                    display: 'flex',
+                    gap: '0.5rem'
+                  }}>
+                    <input
+                      type="text"
+                      value={librarySearch}
+                      onChange={(e) => setLibrarySearch(e.target.value)}
+                      placeholder="Search by name, category, type..."
+                      style={{
+                        flex: 1,
+                        padding: '0.5rem 0.75rem 0.5rem 2rem',
+                        fontSize: '0.75rem',
+                        border: '1px solid rgba(203, 213, 225, 0.6)',
+                        borderRadius: '0.375rem',
+                        outline: 'none',
+                        transition: 'all 0.2s',
+                        backgroundColor: 'rgba(255, 255, 255, 0.8)'
+                      }}
+                    />
+                    <span style={{
+                      position: 'absolute',
+                      left: '0.5rem',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      fontSize: '0.75rem',
+                      color: '#6b7280'
+                    }}>
+                      🔍
+                    </span>
+                    {librarySearch && (
+                      <button
+                        onClick={() => setLibrarySearch('')}
+                        style={{
+                          padding: '0.5rem 0.75rem',
+                          fontSize: '0.625rem',
+                          color: '#6b7280',
+                          backgroundColor: 'rgba(243, 244, 246, 0.8)',
+                          border: '1px solid rgba(203, 213, 225, 0.6)',
+                          borderRadius: '0.375rem',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                </div>
+
                 {/* Category Filter */}
                 <div style={{ minWidth: '180px' }}>
                   <label style={{
@@ -782,6 +795,7 @@ const CardLibrary = ({
             <button
               onClick={onRefresh}
               disabled={loading}
+              title="Reload all cards from database"
               style={{
                 padding: '0.375rem 0.75rem',
                 fontSize: '0.75rem',
@@ -817,6 +831,7 @@ const CardLibrary = ({
             <button
               onClick={onRefreshPrices}
               disabled={loading}
+              title="Update all card prices with random variations"
               style={{
                 padding: '0.375rem 0.75rem',
                 fontSize: '0.75rem',
