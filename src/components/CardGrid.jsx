@@ -125,37 +125,37 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
       
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-        gap: '1.5rem'
+        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+        gap: '1rem'
       }}>
         {cards.map((card, index) => (
           <div 
             key={index} 
             style={{
               background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9))',
-              backdropFilter: 'blur(24px)',
-              borderRadius: '1.5rem',
-              boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.1), 0 8px 16px -4px rgba(0, 0, 0, 0.05)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: '1rem',
+              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.05)',
               border: '1px solid rgba(226, 232, 240, 0.6)',
               overflow: 'hidden',
-              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+              transition: 'all 0.3s ease',
               transform: 'translateY(0)',
               cursor: 'pointer',
               position: 'relative'
             }}
             onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-8px)'
-              e.target.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 12px 24px -6px rgba(0, 0, 0, 0.08)'
+              e.target.style.transform = 'translateY(-4px)'
+              e.target.style.boxShadow = '0 15px 30px -8px rgba(0, 0, 0, 0.12), 0 6px 12px -3px rgba(0, 0, 0, 0.06)'
             }}
             onMouseLeave={(e) => {
               e.target.style.transform = 'translateY(0)'
-              e.target.style.boxShadow = '0 20px 40px -10px rgba(0, 0, 0, 0.1), 0 8px 16px -4px rgba(0, 0, 0, 0.05)'
+              e.target.style.boxShadow = '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.05)'
             }}
           >
             {/* Card Header */}
             <div style={{
               background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.05), rgba(59, 130, 246, 0.05))',
-              padding: '1.5rem',
+              padding: '1rem',
               borderBottom: '1px solid rgba(226, 232, 240, 0.4)',
               position: 'relative',
               overflow: 'hidden'
@@ -178,19 +178,19 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: '2.5rem',
-                  height: '2.5rem',
+                  width: '2rem',
+                  height: '2rem',
                   backgroundColor: 'rgba(124, 58, 237, 0.1)',
-                  borderRadius: '0.75rem',
+                  borderRadius: '0.5rem',
                   border: '1px solid rgba(124, 58, 237, 0.2)'
                 }}>
-                  <span style={{ fontSize: '1.25rem' }}>🎴</span>
+                  <span style={{ fontSize: '1rem' }}>🎴</span>
                 </div>
                 <div style={{ flex: 1 }}>
                   <h3 style={{
                     fontWeight: 700,
                     color: '#1e293b',
-                    fontSize: '1.25rem',
+                    fontSize: '1.125rem',
                     margin: 0,
                     marginBottom: '0.25rem'
                   }}>
@@ -209,120 +209,69 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
             </div>
             
             {/* Card Content */}
-            <div style={{ padding: '2rem' }}>
+            <div style={{ padding: '1rem' }}>
               {card.latest_price !== null && card.latest_price !== undefined && card.latest_price > 0 ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {/* Compact single row for all info */}
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    marginBottom: '1.5rem',
-                    padding: '1rem',
+                    padding: '0.75rem',
                     background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.05), rgba(59, 130, 246, 0.05))',
-                    borderRadius: '1rem',
+                    borderRadius: '0.75rem',
                     border: '1px solid rgba(124, 58, 237, 0.1)'
                   }}>
                     <div style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '0.5rem'
+                      gap: '1rem'
                     }}>
                       <div style={{
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center',
-                        width: '2rem',
-                        height: '2rem',
-                        backgroundColor: 'rgba(124, 58, 237, 0.1)',
-                        borderRadius: '0.5rem'
+                        gap: '0.5rem'
                       }}>
-                        <span style={{ fontSize: '1rem' }}>💰</span>
-                      </div>
-                      <span style={{
-                        fontSize: '1rem',
-                        fontWeight: 600,
-                        color: '#374151'
-                      }}>
-                        Latest Price
-                      </span>
-                    </div>
-                    <span style={{
-                      fontSize: '2rem',
-                      fontWeight: 800,
-                      background: `linear-gradient(135deg, ${getPriceColor(card.latest_price)}, ${getPriceColor(card.latest_price)}dd)`,
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      backgroundClip: 'text',
-                      textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-                    }}>
-                      {formatPrice(card.latest_price)}
-                    </span>
-                  </div>
-                  
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: '1rem'
-                  }}>
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      padding: '0.75rem 1rem',
-                      background: 'rgba(124, 58, 237, 0.05)',
-                      borderRadius: '0.75rem',
-                      border: '1px solid rgba(124, 58, 237, 0.1)'
-                    }}>
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: '1.5rem',
-                        height: '1.5rem',
-                        backgroundColor: 'rgba(124, 58, 237, 0.1)',
-                        borderRadius: '0.375rem'
-                      }}>
-                        <span style={{ fontSize: '0.75rem' }}>📊</span>
-                      </div>
-                      <span style={{
-                        fontSize: '0.875rem',
-                        fontWeight: 600,
-                        color: '#374151'
-                      }}>
-                        {card.price_count} entries
-                      </span>
-                    </div>
-                    {card.last_price_update && (
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        padding: '0.75rem 1rem',
-                        background: 'rgba(59, 130, 246, 0.05)',
-                        borderRadius: '0.75rem',
-                        border: '1px solid rgba(59, 130, 246, 0.1)'
-                      }}>
-                        <div style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          width: '1.5rem',
-                          height: '1.5rem',
-                          backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                          borderRadius: '0.375rem'
+                        <span style={{ fontSize: '0.875rem', color: '#64748b' }}>💰</span>
+                        <span style={{
+                          fontSize: '1.25rem',
+                          fontWeight: 700,
+                          color: getPriceColor(card.latest_price)
                         }}>
-                          <span style={{ fontSize: '0.75rem' }}>📅</span>
-                        </div>
+                          {formatPrice(card.latest_price)}
+                        </span>
+                      </div>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                      }}>
+                        <span style={{ fontSize: '0.875rem', color: '#64748b' }}>📊</span>
                         <span style={{
                           fontSize: '0.875rem',
                           fontWeight: 600,
                           color: '#374151'
                         }}>
-                          {new Date(card.last_price_update).toLocaleDateString()}
+                          {card.price_count} entries
                         </span>
                       </div>
-                    )}
+                      {card.last_price_update && (
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem'
+                        }}>
+                          <span style={{ fontSize: '0.875rem', color: '#64748b' }}>📅</span>
+                          <span style={{
+                            fontSize: '0.875rem',
+                            fontWeight: 600,
+                            color: '#374151'
+                          }}>
+                            {new Date(card.last_price_update).toLocaleDateString()}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ) : (

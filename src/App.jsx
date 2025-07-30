@@ -102,8 +102,9 @@ function App() {
       console.log('🔍 Simulating price scraping for:', searchQuery)
       console.log('💰 Generated price:', mockPrice)
       
+      // Insert into the base table instead of the view
       const { data, error } = await supabase
-        .from('cards_with_prices')
+        .from('cards')
         .insert([
           {
             name: searchQuery,
@@ -230,10 +231,10 @@ function App() {
             background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent)',
             animation: 'pulse 1s infinite'
           }}></div>
-          🚀 UPDATED TO VERSION 1.1.0 - Enhanced Design & Performance! 🚀
+          🚀 UPDATED TO VERSION 1.2.0 - Compact Design & Search Fix! 🚀
         </div>
         
-                  <Header version="1.1.0" />
+                  <Header version="1.2.0" />
         <Hero 
           onSearch={handleSearch}
           loading={loading}

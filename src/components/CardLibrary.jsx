@@ -69,14 +69,14 @@ const CardLibrary = ({
               </div>
             </div>
             
-            {/* Filter and Sort Controls - Enhanced Glassmorphism Design */}
+            {/* Filter and Sort Controls - Compact Design */}
             <div style={{
               background: 'rgba(255, 255, 255, 0.9)',
-              backdropFilter: 'blur(24px)',
-              borderRadius: '1.5rem',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: '1rem',
+              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.05)',
               border: '1px solid rgba(226, 232, 240, 0.6)',
-              padding: '2rem',
+              padding: '1.5rem',
               position: 'relative',
               overflow: 'hidden'
             }}>
@@ -90,28 +90,28 @@ const CardLibrary = ({
                 background: 'linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent)'
               }}></div>
               
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '1rem',
+                  gap: '0.75rem',
                   marginBottom: '0.5rem'
                 }}>
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    width: '2.5rem',
-                    height: '2.5rem',
+                    width: '2rem',
+                    height: '2rem',
                     backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    borderRadius: '0.75rem',
+                    borderRadius: '0.5rem',
                     border: '1px solid rgba(59, 130, 246, 0.2)'
                   }}>
-                    <span style={{ fontSize: '1.125rem' }}>🔍</span>
+                    <span style={{ fontSize: '1rem' }}>🔍</span>
                   </div>
                   <div>
                     <h3 style={{
-                      fontSize: '1.25rem',
+                      fontSize: '1.125rem',
                       fontWeight: 700,
                       color: '#1e293b',
                       margin: 0
@@ -129,32 +129,33 @@ const CardLibrary = ({
                 </div>
                 
                 <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                  gap: '1.5rem'
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '1rem',
+                  flexWrap: 'wrap'
                 }}>
                   {/* Category Filter */}
-                  <div>
+                  <div style={{ minWidth: '200px' }}>
                     <label style={{
                       display: 'block',
-                      fontSize: '0.875rem',
+                      fontSize: '0.75rem',
                       fontWeight: 600,
                       color: '#374151',
-                      marginBottom: '0.75rem',
+                      marginBottom: '0.5rem',
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em'
                     }}>
-                      📂 Category Filter
+                      📂 Category
                     </label>
                     <select
                       value={filterCategory}
                       onChange={(e) => setFilterCategory(e.target.value)}
                       style={{
                         width: '100%',
-                        padding: '1rem',
-                        fontSize: '1rem',
+                        padding: '0.75rem',
+                        fontSize: '0.875rem',
                         border: '1px solid rgba(203, 213, 225, 0.6)',
-                        borderRadius: '1rem',
+                        borderRadius: '0.75rem',
                         outline: 'none',
                         transition: 'all 0.3s ease',
                         backgroundColor: 'rgba(255, 255, 255, 0.8)',
@@ -179,13 +180,13 @@ const CardLibrary = ({
                   </div>
                   
                   {/* Sort Options */}
-                  <div>
+                  <div style={{ minWidth: '200px' }}>
                     <label style={{
                       display: 'block',
-                      fontSize: '0.875rem',
+                      fontSize: '0.75rem',
                       fontWeight: 600,
                       color: '#374151',
-                      marginBottom: '0.75rem',
+                      marginBottom: '0.5rem',
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em'
                     }}>
@@ -196,10 +197,10 @@ const CardLibrary = ({
                       onChange={(e) => setSortBy(e.target.value)}
                       style={{
                         width: '100%',
-                        padding: '1rem',
-                        fontSize: '1rem',
+                        padding: '0.75rem',
+                        fontSize: '0.875rem',
                         border: '1px solid rgba(203, 213, 225, 0.6)',
-                        borderRadius: '1rem',
+                        borderRadius: '0.75rem',
                         outline: 'none',
                         transition: 'all 0.3s ease',
                         backgroundColor: 'rgba(255, 255, 255, 0.8)',
@@ -227,81 +228,81 @@ const CardLibrary = ({
               </div>
             </div>
             
-            <div style={{
-              display: 'flex',
-              gap: '1rem',
-              flexWrap: 'wrap'
-            }}>
-              <button
-                onClick={onRefresh}
-                disabled={loading}
-                style={{
-                  padding: '0.75rem 1.5rem',
-                  fontSize: '1rem',
-                  fontWeight: 600,
-                  color: '#ffffff',
-                  backgroundColor: '#10b981',
-                  border: 'none',
-                  borderRadius: '0.5rem',
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  transition: 'all 0.2s',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
-                }}
-              >
-                {loading ? (
-                  <>
-                    <div style={{
-                      width: '1rem',
-                      height: '1rem',
-                      border: '2px solid #ffffff',
-                      borderTop: '2px solid transparent',
-                      borderRadius: '50%',
-                      animation: 'spin 1s linear infinite'
-                    }}></div>
-                    <span>Loading...</span>
-                  </>
-                ) : (
-                  '🔄 Refresh Cards'
-                )}
-              </button>
-              
-              <button
-                onClick={onRefreshPrices}
-                disabled={loading}
-                style={{
-                  padding: '0.75rem 1.5rem',
-                  fontSize: '1rem',
-                  fontWeight: 600,
-                  color: '#ffffff',
-                  backgroundColor: '#f59e0b',
-                  border: 'none',
-                  borderRadius: '0.5rem',
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  transition: 'all 0.2s',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
-                }}
-              >
-                {loading ? (
-                  <>
-                    <div style={{
-                      width: '1rem',
-                      height: '1rem',
-                      border: '2px solid #ffffff',
-                      borderTop: '2px solid transparent',
-                      borderRadius: '50%',
-                      animation: 'spin 1s linear infinite'
-                    }}></div>
-                    <span>Loading...</span>
-                  </>
-                ) : (
-                  '💰 Refresh Prices'
-                )}
-              </button>
-            </div>
+                      <div style={{
+            display: 'flex',
+            gap: '0.75rem',
+            flexWrap: 'wrap'
+          }}>
+            <button
+              onClick={onRefresh}
+              disabled={loading}
+              style={{
+                padding: '0.5rem 1rem',
+                fontSize: '0.875rem',
+                fontWeight: 600,
+                color: '#ffffff',
+                backgroundColor: '#10b981',
+                border: 'none',
+                borderRadius: '0.5rem',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+            >
+              {loading ? (
+                <>
+                  <div style={{
+                    width: '0.875rem',
+                    height: '0.875rem',
+                    border: '2px solid #ffffff',
+                    borderTop: '2px solid transparent',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }}></div>
+                  <span>Loading...</span>
+                </>
+              ) : (
+                '🔄 Refresh Cards'
+              )}
+            </button>
+            
+            <button
+              onClick={onRefreshPrices}
+              disabled={loading}
+              style={{
+                padding: '0.5rem 1rem',
+                fontSize: '0.875rem',
+                fontWeight: 600,
+                color: '#ffffff',
+                backgroundColor: '#f59e0b',
+                border: 'none',
+                borderRadius: '0.5rem',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+            >
+              {loading ? (
+                <>
+                  <div style={{
+                    width: '0.875rem',
+                    height: '0.875rem',
+                    border: '2px solid #ffffff',
+                    borderTop: '2px solid transparent',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }}></div>
+                  <span>Loading...</span>
+                </>
+              ) : (
+                '💰 Refresh Prices'
+              )}
+            </button>
+          </div>
           </div>
           
           <CardGrid 
