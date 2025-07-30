@@ -86,7 +86,11 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
       <Header version={APP_VERSION} />
       <Hero 
         onSearch={handleSearch}
