@@ -7,7 +7,7 @@ import { supabase } from './lib/supabase'
 function App() {
   // Build timestamp for cache busting
   console.log('🚀 App loaded at:', new Date().toISOString())
-  console.log('📦 Version: 1.2.5')
+  console.log('📦 Version: 1.2.6')
   
   const [cards, setCards] = useState([])
   const [loading, setLoading] = useState(false)
@@ -79,6 +79,58 @@ function App() {
     return 'Other'
   }
 
+  // Function to simulate eBay scraping with enhanced metadata
+  const simulateEbayScraping = (searchQuery) => {
+    const queryLower = searchQuery.toLowerCase()
+    
+    // Simulate eBay card type detection
+    let cardType = 'Other'
+    if (queryLower.includes('pokemon') || queryLower.includes('pikachu') || queryLower.includes('charizard')) {
+      cardType = 'Pokémon'
+    } else if (queryLower.includes('football') || queryLower.includes('basketball') || queryLower.includes('baseball')) {
+      cardType = 'Sports Trading Card'
+    } else if (queryLower.includes('magic') || queryLower.includes('mtg')) {
+      cardType = 'Magic: The Gathering'
+    } else if (queryLower.includes('yugioh')) {
+      cardType = 'Yu-Gi-Oh!'
+    }
+    
+    // Determine category based on card type first, then fallback to keyword matching
+    let category = 'Other'
+    if (cardType === 'Pokémon') {
+      category = 'Pokemon'
+    } else if (cardType === 'Sports Trading Card') {
+      category = 'Sports'
+    } else if (cardType === 'Magic: The Gathering' || cardType === 'Yu-Gi-Oh!') {
+      category = 'Gaming'
+    } else {
+      // Fallback to keyword matching
+      category = detectCategory(searchQuery)
+    }
+    
+    // Simulate other eBay metadata
+    const setNames = ['Base Set', 'Jungle', 'Fossil', 'Team Rocket', 'Gym Heroes', 'Champions Path', 'Vivid Voltage']
+    const years = [1999, 2000, 2001, 2002, 2003, 2020, 2021, 2022, 2023, 2024]
+    const gradings = ['PSA 10', 'PSA 9', 'PSA 8', 'BGS 10', 'BGS 9.5', 'Raw']
+    const rarities = ['Common', 'Uncommon', 'Rare', 'Ultra Rare', 'Secret Rare', 'Holo']
+    
+    const mockPrice = 25 + (Math.random() * 150) // $25-$175 range
+    const mockPriceCount = Math.floor(Math.random() * 20) + 5
+    
+    return {
+      name: searchQuery,
+      latest_price: mockPrice,
+      price_count: mockPriceCount,
+      category: category,
+      card_type: cardType,
+      card_set: setNames[Math.floor(Math.random() * setNames.length)],
+      card_year: years[Math.floor(Math.random() * years.length)],
+      grading: gradings[Math.floor(Math.random() * gradings.length)],
+      rarity: rarities[Math.floor(Math.random() * rarities.length)],
+      serial_number: Math.floor(Math.random() * 1000000).toString().padStart(6, '0')
+    }
+  }
+
   const handleSearch = async (searchQuery) => {
     setLoading(true)
     setSearchStatus('🔍 Searching for card prices...')
@@ -99,53 +151,16 @@ function App() {
         return
       }
 
-      // Simulate real price scraping with more realistic data
-      const cardTypes = {
-        'pikachu': { basePrice: 15, variance: 10 },
-        'charizard': { basePrice: 150, variance: 50 },
-        'magic': { basePrice: 25, variance: 15 },
-        'yugioh': { basePrice: 20, variance: 12 },
-        'basketball': { basePrice: 45, variance: 25 },
-        'football': { basePrice: 35, variance: 20 },
-        'baseball': { basePrice: 30, variance: 18 }
-      }
-
-      let basePrice = 25 // Default price
-      let variance = 15
-
-      // Check for specific card types
-      const queryLower = searchQuery.toLowerCase()
-      for (const [type, config] of Object.entries(cardTypes)) {
-        if (queryLower.includes(type)) {
-          basePrice = config.basePrice
-          variance = config.variance
-          break
-        }
-      }
-
-      // Generate realistic price
-      const mockPrice = basePrice + (Math.random() * variance)
-      const mockPriceCount = Math.floor(Math.random() * 20) + 5
+      // Simulate eBay scraping with enhanced metadata
+      const scrapedData = simulateEbayScraping(searchQuery)
       
-      // Detect category automatically
-      const category = detectCategory(searchQuery)
-      
-      console.log('🔍 Simulating price scraping for:', searchQuery)
-      console.log('💰 Generated price:', mockPrice)
-      console.log('🏷️ Detected category:', category)
+      console.log('🔍 Simulating eBay scraping for:', searchQuery)
+      console.log('💰 Generated data:', scrapedData)
       
       // Insert into the view (which will trigger the INSTEAD OF INSERT)
       const { data, error } = await supabase
         .from('cards_with_prices')
-        .insert([
-          {
-            name: searchQuery,
-            latest_price: mockPrice,
-            price_count: mockPriceCount,
-            category: category
-            // Note: last_price_update will be handled by database default
-          }
-        ])
+        .insert([scrapedData])
         .select()
 
       if (error) {
@@ -154,7 +169,7 @@ function App() {
       }
       
       console.log('✅ Inserted card data:', data)
-      setSearchStatus(`✅ Added "${searchQuery}" (${category}) with price $${mockPrice.toFixed(2)}`)
+      setSearchStatus(`✅ Added "${searchQuery}" (${scrapedData.category}) with price $${scrapedData.latest_price.toFixed(2)}`)
       await loadCards() // Refresh the list
     } catch (error) {
       console.error('❌ Error adding card:', error)
@@ -240,7 +255,7 @@ function App() {
       <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
 
         
-        <Header version="1.2.5" />
+        <Header version="1.2.6" />
         <CardLibrary 
           cards={filteredCards}
           loading={loading}
@@ -250,10 +265,7 @@ function App() {
           setFilterCategory={setFilterCategory}
           sortBy={sortBy}
           setSortBy={setSortBy}
-        />
-        <Hero 
           onSearch={handleSearch}
-          loading={loading}
           searchStatus={searchStatus}
         />
         
@@ -277,7 +289,7 @@ function App() {
               margin: 0,
               fontWeight: 600
             }}>
-              Trading Card Tracker v1.2.5
+              Trading Card Tracker v1.2.6
             </p>
             <p style={{
               color: '#6b7280',

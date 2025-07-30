@@ -1,8 +1,11 @@
+import React from 'react'
+import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts'
 import { isSupabaseConfigured } from '../lib/supabase'
 
 const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
   console.log('CardGrid received cards:', cards)
   console.log('Cards with prices:', cards.filter(card => card.latest_price > 0))
+  
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -17,6 +20,72 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
     if (price >= 50) return '#ea580c'
     return '#059669'
   }
+
+  // Generate mock price history data for sparkline chart
+  const generatePriceHistory = (currentPrice, count) => {
+    const history = []
+    const basePrice = currentPrice * 0.8 // Start 20% lower
+    const variance = currentPrice * 0.3 // 30% variance
+    
+    for (let i = 0; i < Math.min(count, 10); i++) { // Max 10 data points
+      const price = basePrice + (Math.random() * variance)
+      const date = new Date()
+      date.setDate(date.getDate() - (count - i) * 2) // Spread over time
+      
+      history.push({
+        date: date.toLocaleDateString(),
+        price: Math.max(0.01, price)
+      })
+    }
+    
+    // Add current price as last point
+    history.push({
+      date: new Date().toLocaleDateString(),
+      price: currentPrice
+    })
+    
+    return history
+  }
+
+  // Sparkline Chart Component
+  const SparklineChart = ({ data, color }) => (
+    <div style={{ width: '100%', height: '60px' }}>
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+          <Line
+            type="monotone"
+            dataKey="price"
+            stroke={color}
+            strokeWidth={2}
+            dot={false}
+            activeDot={{ r: 3, fill: color }}
+          />
+          <Tooltip
+            content={({ active, payload, label }) => {
+              if (active && payload && payload.length) {
+                return (
+                  <div style={{
+                    background: '#1e293b',
+                    color: 'white',
+                    padding: '0.5rem',
+                    borderRadius: '0.375rem',
+                    fontSize: '0.75rem',
+                    border: 'none'
+                  }}>
+                    <p style={{ margin: 0 }}>{label}</p>
+                    <p style={{ margin: 0, fontWeight: 'bold' }}>
+                      {formatPrice(payload[0].value)}
+                    </p>
+                  </div>
+                )
+              }
+              return null
+            }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  )
 
   const getPriceBadgeColor = (price) => {
     if (price >= 100) return { bg: '#eff6ff', color: '#1e40af', border: '#93c5fd' }
@@ -289,6 +358,36 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                       }}>
                         {new Date(card.last_price_update).toLocaleString()}
                       </div>
+                    </div>
+                  )}
+
+                  {/* Price History Chart */}
+                  {card.price_count > 1 && (
+                    <div style={{
+                      padding: '0.75rem',
+                      background: 'rgba(243, 244, 246, 0.5)',
+                      borderRadius: '0.75rem',
+                      border: '1px solid rgba(156, 163, 175, 0.2)'
+                    }}>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        marginBottom: '0.5rem'
+                      }}>
+                        <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>📊</span>
+                        <span style={{
+                          fontSize: '0.875rem',
+                          fontWeight: 600,
+                          color: '#374151'
+                        }}>
+                          Price History
+                        </span>
+                      </div>
+                      <SparklineChart 
+                        data={generatePriceHistory(card.latest_price, card.price_count)}
+                        color={getPriceColor(card.latest_price)}
+                      />
                     </div>
                   )}
                 </div>
