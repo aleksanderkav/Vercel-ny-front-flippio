@@ -26,6 +26,9 @@ const CardLibrary = ({
   const [lastResult, setLastResult] = useState(null)
   const [searchResults, setSearchResults] = useState(null)
   const [fixingPrices, setFixingPrices] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [cardsPerPage, setCardsPerPage] = useState(20)
+  const [gridColumns, setGridColumns] = useState(4)
 
   // Scraping functions
   const handleSingleScrape = async () => {
@@ -114,6 +117,16 @@ const CardLibrary = ({
 
   const loadSampleCards = () => {
     setBatchCardNames(sampleCards.join('\n'))
+  }
+
+  // Pagination logic
+  const totalPages = Math.ceil(cards.length / cardsPerPage)
+  const startIndex = (currentPage - 1) * cardsPerPage
+  const endIndex = startIndex + cardsPerPage
+  const currentCards = cards.slice(startIndex, endIndex)
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page)
   }
 
   // Function to fix price updates by updating existing cards
@@ -810,6 +823,91 @@ const CardLibrary = ({
                   </div>
                 </div>
 
+                {/* Display Controls */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '1rem',
+                  flexWrap: 'wrap'
+                }}>
+                  {/* Cards Per Page */}
+                  <div style={{ minWidth: '120px' }}>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.625rem',
+                      fontWeight: 600,
+                      color: '#374151',
+                      marginBottom: '0.375rem',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em'
+                    }}>
+                      📄 Per Page
+                    </label>
+                    <select
+                      value={cardsPerPage}
+                      onChange={(e) => {
+                        setCardsPerPage(Number(e.target.value))
+                        setCurrentPage(1) // Reset to first page
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        fontSize: '0.75rem',
+                        border: '1px solid rgba(203, 213, 225, 0.6)',
+                        borderRadius: '0.5rem',
+                        outline: 'none',
+                        transition: 'all 0.3s ease',
+                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                        backdropFilter: 'blur(12px)',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <option value={10}>10</option>
+                      <option value={20}>20</option>
+                      <option value={50}>50</option>
+                      <option value={100}>100</option>
+                    </select>
+                  </div>
+
+                  {/* Grid Columns */}
+                  <div style={{ minWidth: '120px' }}>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.625rem',
+                      fontWeight: 600,
+                      color: '#374151',
+                      marginBottom: '0.375rem',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em'
+                    }}>
+                      🎴 Columns
+                    </label>
+                    <select
+                      value={gridColumns}
+                      onChange={(e) => setGridColumns(Number(e.target.value))}
+                      style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        fontSize: '0.75rem',
+                        border: '1px solid rgba(203, 213, 225, 0.6)',
+                        borderRadius: '0.5rem',
+                        outline: 'none',
+                        transition: 'all 0.3s ease',
+                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                        backdropFilter: 'blur(12px)',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <option value={2}>2</option>
+                      <option value={3}>3</option>
+                      <option value={4}>4</option>
+                      <option value={6}>6</option>
+                      <option value={8}>8</option>
+                    </select>
+                  </div>
+                </div>
 
                 
                 {/* Sort Options */}
@@ -943,10 +1041,102 @@ const CardLibrary = ({
           
           {/* Card Grid */}
           <CardGrid 
-            cards={cards}
+            cards={currentCards}
             loading={loading}
             onRefresh={onRefresh}
+            gridColumns={gridColumns}
           />
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '0.5rem',
+              marginTop: '2rem',
+              padding: '1rem',
+              background: 'rgba(255, 255, 255, 0.98)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: '1rem',
+              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
+              border: '1px solid rgba(226, 232, 240, 0.8)'
+            }}>
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                style={{
+                  padding: '0.5rem 1rem',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  color: currentPage === 1 ? '#9ca3af' : '#374151',
+                  backgroundColor: currentPage === 1 ? '#f3f4f6' : '#ffffff',
+                  border: '1px solid rgba(203, 213, 225, 0.6)',
+                  borderRadius: '0.5rem',
+                  cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                ← Previous
+              </button>
+
+              <div style={{
+                display: 'flex',
+                gap: '0.25rem',
+                alignItems: 'center'
+              }}>
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  const page = i + 1
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => handlePageChange(page)}
+                      style={{
+                        padding: '0.5rem 0.75rem',
+                        fontSize: '0.875rem',
+                        fontWeight: 600,
+                        color: currentPage === page ? '#ffffff' : '#374151',
+                        backgroundColor: currentPage === page ? '#3b82f6' : '#ffffff',
+                        border: '1px solid rgba(203, 213, 225, 0.6)',
+                        borderRadius: '0.375rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        minWidth: '2.5rem'
+                      }}
+                    >
+                      {page}
+                    </button>
+                  )
+                })}
+              </div>
+
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                style={{
+                  padding: '0.5rem 1rem',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  color: currentPage === totalPages ? '#9ca3af' : '#374151',
+                  backgroundColor: currentPage === totalPages ? '#f3f4f6' : '#ffffff',
+                  border: '1px solid rgba(203, 213, 225, 0.6)',
+                  borderRadius: '0.5rem',
+                  cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                Next →
+              </button>
+
+              <span style={{
+                fontSize: '0.875rem',
+                color: '#6b7280',
+                marginLeft: '1rem'
+              }}>
+                Page {currentPage} of {totalPages} ({cards.length} total cards)
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>

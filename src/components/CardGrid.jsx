@@ -2,7 +2,7 @@ import React from 'react'
 import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts'
 import { isSupabaseConfigured } from '../lib/supabase'
 
-const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
+const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) => {
   console.log('CardGrid received cards:', cards)
   console.log('Cards with prices:', cards.filter(card => card.latest_price > 0))
   
@@ -234,7 +234,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
       
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+        gridTemplateColumns: `repeat(${gridColumns}, 1fr)`,
         gap: '2rem'
       }}>
         {cards.map((card, index) => (
@@ -350,7 +350,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                         fontWeight: 700,
                         color: '#92400e'
                       }}>
-                        {card.average_price ? formatPrice(card.average_price) : 'N/A'}
+                        {card.latest_price ? formatPrice(card.latest_price * 0.95) : 'N/A'}
                       </div>
                     </div>
 
