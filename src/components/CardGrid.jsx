@@ -270,20 +270,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                 }}>
                   {card.name || 'Unknown Card'}
                 </h3>
-                <div style={{
-                  padding: '0.25rem 0.5rem',
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
-                  borderRadius: '0.375rem',
-                  backgroundColor: card.category === 'Pokemon' ? '#fef3c7' : 
-                                   card.category === 'Sports' ? '#dbeafe' : 
-                                   card.category === 'Gaming' ? '#f3e8ff' : '#f3f4f6',
-                  color: card.category === 'Pokemon' ? '#92400e' : 
-                         card.category === 'Sports' ? '#1e40af' : 
-                         card.category === 'Gaming' ? '#7c3aed' : '#374151'
-                }}>
-                  {card.category || 'Other'}
-                </div>
+
               </div>
               <p style={{
                 color: '#6b7280',
@@ -302,7 +289,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                   {/* Price Information */}
                   <div style={{
                     display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
+                    gridTemplateColumns: '1fr 1fr 1fr',
                     gap: '1rem'
                   }}>
                     {/* Latest Price */}
@@ -333,6 +320,37 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                         color: getPriceColor(card.latest_price)
                       }}>
                         {formatPrice(card.latest_price)}
+                      </div>
+                    </div>
+
+                    {/* Average Price */}
+                    <div style={{
+                      padding: '0.75rem',
+                      background: 'rgba(254, 243, 199, 0.5)',
+                      borderRadius: '0.75rem',
+                      border: '1px solid rgba(245, 158, 11, 0.2)'
+                    }}>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        marginBottom: '0.25rem'
+                      }}>
+                        <span style={{ fontSize: '0.875rem', color: '#f59e0b' }}>📈</span>
+                        <span style={{
+                          fontSize: '0.875rem',
+                          fontWeight: 600,
+                          color: '#92400e'
+                        }}>
+                          Average Price
+                        </span>
+                      </div>
+                      <div style={{
+                        fontSize: '1.25rem',
+                        fontWeight: 700,
+                        color: '#92400e'
+                      }}>
+                        {card.average_price ? formatPrice(card.average_price) : 'N/A'}
                       </div>
                     </div>
 

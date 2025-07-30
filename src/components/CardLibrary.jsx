@@ -810,51 +810,7 @@ const CardLibrary = ({
                   </div>
                 </div>
 
-                {/* Category Filter */}
-                <div style={{ minWidth: '180px' }}>
-                  <label style={{
-                    display: 'block',
-                    fontSize: '0.625rem',
-                    fontWeight: 600,
-                    color: '#374151',
-                    marginBottom: '0.375rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em'
-                  }}>
-                    📂 Category
-                  </label>
-                  <select
-                    value={filterCategory}
-                    onChange={(e) => setFilterCategory(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '0.5rem',
-                      fontSize: '0.75rem',
-                      border: '1px solid rgba(203, 213, 225, 0.6)',
-                      borderRadius: '0.5rem',
-                      outline: 'none',
-                      transition: 'all 0.3s ease',
-                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                      backdropFilter: 'blur(12px)',
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                      cursor: 'pointer'
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = '#3b82f6'
-                      e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = 'rgba(203, 213, 225, 0.6)'
-                      e.target.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
-                    }}
-                  >
-                    <option value="all">🎴 All Categories</option>
-                    <option value="pokemon">⚡ Pokemon</option>
-                    <option value="sports">🏀 Sports</option>
-                    <option value="gaming">🎮 Gaming</option>
-                    <option value="other">📦 Other</option>
-                  </select>
-                </div>
+
                 
                 {/* Sort Options */}
                 <div style={{ minWidth: '180px' }}>

@@ -10,7 +10,7 @@ import { scrapeAndInsertCard, batchScrapeCards, getCardStats } from './lib/cardS
 function App() {
   // Build timestamp for cache busting
   console.log('🚀 App loaded at:', new Date().toISOString())
-  console.log('📦 Version: 1.2.9')
+  console.log('📦 Version: 1.3.0')
   
   const [cards, setCards] = useState([])
   const [loading, setLoading] = useState(false)
@@ -34,10 +34,10 @@ function App() {
     try {
       console.log('🔄 Loading cards from database...')
       
-      const { data, error } = await supabase
-        .from('cards_with_prices')
-        .select('*')
-        .order('created_at', { ascending: false })
+          const { data, error } = await supabase
+      .from('cards')
+      .select('*')
+      .order('created_at', { ascending: false })
 
       if (error) {
         console.error('❌ Database error:', error)
@@ -249,24 +249,25 @@ function App() {
     try {
       // Get all cards
       const { data: allCards, error } = await supabase
-        .from('cards_with_prices')
+        .from('cards')
         .select('*')
 
       if (error) throw error
 
       // Update each card with new prices
       for (const card of allCards) {
-        const newPrice = card.latest_price + (Math.random() * 10 - 5) // ±$5 variation
-        const updatedPrice = Math.max(0.01, newPrice) // Ensure positive price
-        
-        await supabase
-          .from('cards_with_prices')
-          .update({
-            latest_price: updatedPrice,
-            price_count: (card.price_count || 0) + 1,
-            last_price_update: new Date().toISOString()
-          })
-          .eq('id', card.id)
+        if (card.latest_price) {
+          const newPrice = card.latest_price + (Math.random() * 10 - 5) // ±$5 variation
+          const updatedPrice = Math.max(0.01, newPrice) // Ensure positive price
+          
+          await supabase
+            .from('cards')
+            .update({
+              latest_price: updatedPrice,
+              last_updated: new Date().toISOString()
+            })
+            .eq('id', card.id)
+        }
       }
 
       setSearchStatus('✅ All prices refreshed!')
@@ -368,7 +369,7 @@ function App() {
       <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
 
         
-        <Header version="1.2.9" />
+        <Header version="1.3.0" />
         <CardLibrary 
           cards={filteredCards}
           loading={loading}
@@ -406,7 +407,7 @@ function App() {
               margin: 0,
               fontWeight: 600
             }}>
-              Trading Card Tracker v1.2.9
+              Trading Card Tracker v1.3.0
             </p>
             <p style={{
               color: '#6b7280',
