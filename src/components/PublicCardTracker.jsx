@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import { colors, typography, spacing, borderRadius, shadows } from '../styles/designSystem'
+import { colors, typography, spacing, borderRadius } from '../styles/designSystem'
 
 const PublicCardTracker = ({ 
   embedMode = false, 
@@ -93,20 +93,10 @@ const PublicCardTracker = ({
   const loadStats = async () => {
     try {
       const { data, error } = await supabase
-        .from('cards')
-        .select('*')
+        .rpc('get_card_stats')
 
       if (error) throw error
-
-      const totalCards = data.length
-      const totalValue = data.reduce((sum, card) => sum + (card.latest_price || 0), 0)
-      const averagePrice = totalCards > 0 ? totalValue / totalCards : 0
-
-      setStats({
-        totalCards,
-        totalValue,
-        averagePrice
-      })
+      setStats(data)
     } catch (error) {
       console.error('Error loading stats:', error)
     }
@@ -129,97 +119,90 @@ const PublicCardTracker = ({
     return colors.pricePremium
   }
 
+  // Styles
   const containerStyle = {
+    maxWidth: '1200px',
+    margin: '0 auto',
+    padding: spacing.lg,
     fontFamily: typography.fontFamily.primary,
-    background: theme === 'dark' ? '#1A1A1A' : colors.background,
+    background: theme === 'dark' ? '#1A202C' : colors.background,
     color: theme === 'dark' ? '#FFFFFF' : colors.textPrimary,
-    padding: embedMode ? spacing.md : spacing.xl,
-    borderRadius: embedMode ? borderRadius.md : borderRadius.lg,
-    boxShadow: embedMode ? 'none' : shadows.lg,
-    maxWidth: '100%',
-    overflow: 'hidden'
+    minHeight: '100vh'
   }
 
   const headerStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: spacing.lg,
-    paddingBottom: spacing.md,
-    borderBottom: `1px solid ${theme === 'dark' ? '#374151' : colors.border}`
+    textAlign: 'center',
+    marginBottom: spacing.xl
   }
 
   const titleStyle = {
-    fontSize: typography.fontSize.xl,
+    fontSize: typography.fontSize['3xl'],
     fontWeight: typography.fontWeight.bold,
-    color: theme === 'dark' ? '#FFFFFF' : colors.textPrimary,
-    margin: 0
+    margin: 0,
+    marginBottom: spacing.sm,
+    color: theme === 'dark' ? '#FFFFFF' : colors.textPrimary
   }
 
   const statsStyle = {
-    display: 'flex',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
     gap: spacing.md,
-    marginBottom: spacing.lg,
-    flexWrap: 'wrap'
+    marginBottom: spacing.xl
   }
 
   const statCardStyle = {
     background: theme === 'dark' ? '#2D3748' : colors.surface,
-    padding: spacing.md,
-    borderRadius: borderRadius.md,
+    padding: spacing.lg,
+    borderRadius: borderRadius.lg,
     border: `1px solid ${theme === 'dark' ? '#4A5568' : colors.border}`,
-    minWidth: '120px',
     textAlign: 'center'
   }
 
   const statValueStyle = {
-    fontSize: typography.fontSize.lg,
+    fontSize: typography.fontSize['2xl'],
     fontWeight: typography.fontWeight.bold,
-    color: theme === 'dark' ? '#FFFFFF' : colors.textPrimary,
+    color: colors.primary,
     marginBottom: spacing.xs
   }
 
   const statLabelStyle = {
     fontSize: typography.fontSize.sm,
     color: theme === 'dark' ? '#A0AEC0' : colors.textSecondary,
-    fontWeight: typography.fontWeight.medium
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em'
   }
 
   const gridStyle = {
     display: 'grid',
-    gridTemplateColumns: embedMode ? 'repeat(auto-fit, minmax(280px, 1fr))' : 'repeat(auto-fit, minmax(320px, 1fr))',
-    gap: spacing.md,
-    marginTop: spacing.lg
+    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+    gap: spacing.lg,
+    marginBottom: spacing.xl
   }
 
   const cardStyle = {
     background: theme === 'dark' ? '#2D3748' : colors.surface,
-    border: `1px solid ${theme === 'dark' ? '#4A5568' : colors.border}`,
     borderRadius: borderRadius.lg,
-    padding: spacing.md,
-    transition: 'all 0.2s ease',
-    cursor: 'pointer'
+    border: `1px solid ${theme === 'dark' ? '#4A5568' : colors.border}`,
+    padding: spacing.lg,
+    transition: 'all 0.2s ease'
   }
 
   const cardHeaderStyle = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: spacing.sm
+    marginBottom: spacing.md
   }
 
-  const cardNameStyle = {
-    fontSize: typography.fontSize.base,
+  const cardTitleStyle = {
+    fontSize: typography.fontSize.lg,
     fontWeight: typography.fontWeight.semibold,
-    color: theme === 'dark' ? '#FFFFFF' : colors.textPrimary,
     margin: 0,
-    lineHeight: typography.lineHeight.tight
+    marginBottom: spacing.xs,
+    color: theme === 'dark' ? '#FFFFFF' : colors.textPrimary
   }
 
-  const cardDateStyle = {
+  const cardMetaStyle = {
     fontSize: typography.fontSize.sm,
     color: theme === 'dark' ? '#A0AEC0' : colors.textSecondary,
-    marginTop: spacing.xs
+    marginBottom: spacing.sm
   }
 
   const priceStyle = {
@@ -348,134 +331,136 @@ const PublicCardTracker = ({
         {currentCards.map((card, index) => (
           <div key={card.id || index} style={cardStyle}>
             <div style={cardHeaderStyle}>
-              <div>
-                <h3 style={cardNameStyle}>{card.name}</h3>
-                <p style={cardDateStyle}>
-                  Added: {new Date(card.created_at).toLocaleDateString()}
-                </p>
+              <h3 style={cardTitleStyle}>
+                {card.name || 'Unknown Card'}
+              </h3>
+              <div style={cardMetaStyle}>
+                Added: {new Date(card.created_at).toLocaleDateString()}
               </div>
             </div>
             
-            <div style={{
-              ...priceStyle,
-              color: getPriceColor(card.latest_price)
-            }}>
-              {formatPrice(card.latest_price)}
+            <div style={cardMetaStyle}>
+              Category: {card.category || 'Other'}
             </div>
             
+            {card.latest_price ? (
+              <div style={priceStyle} style={{ color: getPriceColor(card.latest_price) }}>
+                {formatPrice(card.latest_price)}
+              </div>
+            ) : (
+              <div style={{ ...priceStyle, color: colors.textMuted }}>
+                No Price Data
+              </div>
+            )}
+            
             {card.price_entries_count > 0 && (
-              <div style={{
-                fontSize: typography.fontSize.sm,
-                color: theme === 'dark' ? '#A0AEC0' : colors.textSecondary,
-                marginTop: spacing.xs
-              }}>
-                {card.price_entries_count} price entries
+              <div style={cardMetaStyle}>
+                Price Entries: {card.price_entries_count}
               </div>
             )}
           </div>
         ))}
+        
+        {currentCards.length === 0 && (
+          <div style={{
+            textAlign: 'center',
+            padding: spacing.xl,
+            color: theme === 'dark' ? '#A0AEC0' : colors.textSecondary
+          }}>
+            {searchTerm ? 'No cards match your search' : 'No cards found'}
+          </div>
+        )}
       </div>
 
-      {currentCards.length === 0 && (
+      {/* Pagination */}
+      {showPagination && totalPages > 1 && (
         <div style={{
-          textAlign: 'center',
-          padding: spacing.xl,
-          color: theme === 'dark' ? '#A0AEC0' : colors.textSecondary
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: spacing.sm,
+          marginTop: spacing.xl,
+          padding: spacing.md,
+          background: theme === 'dark' ? '#2D3748' : colors.surface,
+          borderRadius: borderRadius.md,
+          border: `1px solid ${theme === 'dark' ? '#4A5568' : colors.border}`
         }}>
-          {searchTerm ? 'No cards match your search' : 'No cards found'}
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            style={{
+              padding: `${spacing.sm} ${spacing.md}`,
+              fontSize: typography.fontSize.sm,
+              fontWeight: typography.fontWeight.semibold,
+              color: currentPage === 1 ? (theme === 'dark' ? '#4A5568' : '#9CA3AF') : (theme === 'dark' ? '#FFFFFF' : colors.textPrimary),
+              backgroundColor: currentPage === 1 ? (theme === 'dark' ? '#1A202C' : '#F3F4F6') : (theme === 'dark' ? '#2D3748' : colors.surface),
+              border: `1px solid ${theme === 'dark' ? '#4A5568' : colors.border}`,
+              borderRadius: borderRadius.md,
+              cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            ← Previous
+          </button>
+
+          <div style={{
+            display: 'flex',
+            gap: spacing.xs,
+            alignItems: 'center'
+          }}>
+            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+              const page = i + 1
+              return (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  style={{
+                    padding: `${spacing.sm} ${spacing.md}`,
+                    fontSize: typography.fontSize.sm,
+                    fontWeight: typography.fontWeight.semibold,
+                    color: currentPage === page ? colors.white : (theme === 'dark' ? '#FFFFFF' : colors.textPrimary),
+                    backgroundColor: currentPage === page ? colors.primary : (theme === 'dark' ? '#2D3748' : colors.surface),
+                    border: `1px solid ${theme === 'dark' ? '#4A5568' : colors.border}`,
+                    borderRadius: borderRadius.sm,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    minWidth: '2.5rem'
+                  }}
+                >
+                  {page}
+                </button>
+              )
+            })}
+          </div>
+
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            style={{
+              padding: `${spacing.sm} ${spacing.md}`,
+              fontSize: typography.fontSize.sm,
+              fontWeight: typography.fontWeight.semibold,
+              color: currentPage === totalPages ? (theme === 'dark' ? '#4A5568' : '#9CA3AF') : (theme === 'dark' ? '#FFFFFF' : colors.textPrimary),
+              backgroundColor: currentPage === totalPages ? (theme === 'dark' ? '#1A202C' : '#F3F4F6') : (theme === 'dark' ? '#2D3748' : colors.surface),
+              border: `1px solid ${theme === 'dark' ? '#4A5568' : colors.border}`,
+              borderRadius: borderRadius.md,
+              cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            Next →
+          </button>
+
+          <span style={{
+            fontSize: typography.fontSize.sm,
+            color: theme === 'dark' ? '#A0AEC0' : colors.textSecondary,
+            marginLeft: spacing.md
+          }}>
+            Page {currentPage} of {totalPages} ({filteredCards.length} cards)
+          </span>
         </div>
       )}
     </div>
-
-    {/* Pagination */}
-    {showPagination && totalPages > 1 && (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: spacing.sm,
-        marginTop: spacing.xl,
-        padding: spacing.md,
-        background: theme === 'dark' ? '#2D3748' : colors.surface,
-        borderRadius: borderRadius.md,
-        border: `1px solid ${theme === 'dark' ? '#4A5568' : colors.border}`
-      }}>
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          style={{
-            padding: `${spacing.sm} ${spacing.md}`,
-            fontSize: typography.fontSize.sm,
-            fontWeight: typography.fontWeight.semibold,
-            color: currentPage === 1 ? (theme === 'dark' ? '#4A5568' : '#9CA3AF') : (theme === 'dark' ? '#FFFFFF' : colors.textPrimary),
-            backgroundColor: currentPage === 1 ? (theme === 'dark' ? '#1A202C' : '#F3F4F6') : (theme === 'dark' ? '#2D3748' : colors.surface),
-            border: `1px solid ${theme === 'dark' ? '#4A5568' : colors.border}`,
-            borderRadius: borderRadius.md,
-            cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-            transition: 'all 0.2s ease'
-          }}
-        >
-          ← Previous
-        </button>
-
-        <div style={{
-          display: 'flex',
-          gap: spacing.xs,
-          alignItems: 'center'
-        }}>
-          {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-            const page = i + 1
-            return (
-              <button
-                key={page}
-                onClick={() => handlePageChange(page)}
-                style={{
-                  padding: `${spacing.sm} ${spacing.md}`,
-                  fontSize: typography.fontSize.sm,
-                  fontWeight: typography.fontWeight.semibold,
-                  color: currentPage === page ? colors.white : (theme === 'dark' ? '#FFFFFF' : colors.textPrimary),
-                  backgroundColor: currentPage === page ? colors.primary : (theme === 'dark' ? '#2D3748' : colors.surface),
-                  border: `1px solid ${theme === 'dark' ? '#4A5568' : colors.border}`,
-                  borderRadius: borderRadius.sm,
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  minWidth: '2.5rem'
-                }}
-              >
-                {page}
-              </button>
-            )
-          })}
-        </div>
-
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          style={{
-            padding: `${spacing.sm} ${spacing.md}`,
-            fontSize: typography.fontSize.sm,
-            fontWeight: typography.fontWeight.semibold,
-            color: currentPage === totalPages ? (theme === 'dark' ? '#4A5568' : '#9CA3AF') : (theme === 'dark' ? '#FFFFFF' : colors.textPrimary),
-            backgroundColor: currentPage === totalPages ? (theme === 'dark' ? '#1A202C' : '#F3F4F6') : (theme === 'dark' ? '#2D3748' : colors.surface),
-            border: `1px solid ${theme === 'dark' ? '#4A5568' : colors.border}`,
-            borderRadius: borderRadius.md,
-            cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-            transition: 'all 0.2s ease'
-          }}
-        >
-          Next →
-        </button>
-
-        <span style={{
-          fontSize: typography.fontSize.sm,
-          color: theme === 'dark' ? '#A0AEC0' : colors.textSecondary,
-          marginLeft: spacing.md
-        }}>
-          Page {currentPage} of {totalPages} ({filteredCards.length} cards)
-        </span>
-      </div>
-    )}
-  </div>
   )
 }
 
