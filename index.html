@@ -176,6 +176,10 @@
             const [searchStatus, setSearchStatus] = React.useState('');
             const [activeTab, setActiveTab] = React.useState('search');
             const [libraryCards, setLibraryCards] = React.useState([]);
+            const [filteredLibraryCards, setFilteredLibraryCards] = React.useState([]);
+            const [librarySearchQuery, setLibrarySearchQuery] = React.useState('');
+            const [libraryFilter, setLibraryFilter] = React.useState('all');
+            const [librarySortBy, setLibrarySortBy] = React.useState('name');
             const [supabaseStatus, setSupabaseStatus] = React.useState('Connecting...');
             
             // Test Supabase connection on mount
@@ -183,6 +187,58 @@
               testSupabaseConnection();
               loadLibraryCards();
             }, []);
+            
+            // Filter and sort library cards when data changes
+            React.useEffect(() => {
+              let filtered = [...libraryCards];
+              
+              // Apply search filter
+              if (librarySearchQuery) {
+                filtered = filtered.filter(card => 
+                  card.name.toLowerCase().includes(librarySearchQuery.toLowerCase()) ||
+                  (card.card_set && card.card_set.toLowerCase().includes(librarySearchQuery.toLowerCase())) ||
+                  (card.condition && card.condition.toLowerCase().includes(librarySearchQuery.toLowerCase()))
+                );
+              }
+              
+              // Apply category filter
+              if (libraryFilter !== 'all') {
+                switch (libraryFilter) {
+                  case 'high-value':
+                    filtered = filtered.filter(card => card.current_price >= 500);
+                    break;
+                  case 'mid-value':
+                    filtered = filtered.filter(card => card.current_price >= 100 && card.current_price < 500);
+                    break;
+                  case 'low-value':
+                    filtered = filtered.filter(card => card.current_price < 100);
+                    break;
+                  case 'pokemon':
+                    filtered = filtered.filter(card => 
+                      ['Pikachu', 'Charizard', 'Blastoise', 'Venusaur', 'Mewtwo', 'Ekans', 'Arbok', 'Raichu', 'Ninetales', 'Gyarados'].includes(card.name)
+                    );
+                    break;
+                }
+              }
+              
+              // Apply sorting
+              filtered.sort((a, b) => {
+                switch (librarySortBy) {
+                  case 'name':
+                    return a.name.localeCompare(b.name);
+                  case 'price-high':
+                    return b.current_price - a.current_price;
+                  case 'price-low':
+                    return a.current_price - b.current_price;
+                  case 'recent':
+                    return new Date(b.last_updated) - new Date(a.last_updated);
+                  default:
+                    return 0;
+                }
+              });
+              
+              setFilteredLibraryCards(filtered);
+            }, [libraryCards, librarySearchQuery, libraryFilter, librarySortBy]);
             
             const testSupabaseConnection = async () => {
               try {
@@ -383,14 +439,14 @@
                   return;
                 }
                 
-                // Search in the cards table by name
+                // Search in the cards table by name with proper price data
                 const { data, error } = await supabase
                   .from('cards')
                   .select(`
                     id,
                     name,
                     created_at,
-                    card_prices (
+                    card_prices!inner (
                       average_price,
                       last_seen,
                       sync_status
@@ -961,9 +1017,118 @@
                             color: '#64748b',
                             margin: 0
                           }
-                        }, `${libraryCards.length} cards with advanced pricing data`)
+                        }, `${filteredLibraryCards.length} of ${libraryCards.length} cards shown`)
                       ])
                     ]),
+                    
+                    // Search and Filter Controls
+                    React.createElement('div', {
+                      key: 'library-controls',
+                      style: {
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                        gap: '1rem',
+                        marginBottom: '1.5rem'
+                      }
+                    }, [
+                      // Search Input
+                      React.createElement('div', { key: 'library-search' }, [
+                        React.createElement('label', {
+                          key: 'search-label',
+                          style: {
+                            display: 'block',
+                            fontSize: '0.875rem',
+                            fontWeight: 600,
+                            color: '#374151',
+                            marginBottom: '0.5rem'
+                          }
+                        }, '🔍 Search Cards'),
+                        React.createElement('input', {
+                          key: 'search-input',
+                          type: 'text',
+                          value: librarySearchQuery,
+                          onChange: (e) => setLibrarySearchQuery(e.target.value),
+                          placeholder: 'Search by name, set, or condition...',
+                          style: {
+                            width: '100%',
+                            padding: '0.75rem',
+                            fontSize: '0.875rem',
+                            border: '1px solid #d1d5db',
+                            borderRadius: '0.5rem',
+                            outline: 'none',
+                            transition: 'all 0.2s'
+                          }
+                        })
+                      ]),
+                      
+                      // Category Filter
+                      React.createElement('div', { key: 'library-filter' }, [
+                        React.createElement('label', {
+                          key: 'filter-label',
+                          style: {
+                            display: 'block',
+                            fontSize: '0.875rem',
+                            fontWeight: 600,
+                            color: '#374151',
+                            marginBottom: '0.5rem'
+                          }
+                        }, '🏷️ Category'),
+                        React.createElement('select', {
+                          key: 'filter-select',
+                          value: libraryFilter,
+                          onChange: (e) => setLibraryFilter(e.target.value),
+                          style: {
+                            width: '100%',
+                            padding: '0.75rem',
+                            fontSize: '0.875rem',
+                            border: '1px solid #d1d5db',
+                            borderRadius: '0.5rem',
+                            outline: 'none',
+                            backgroundColor: '#ffffff'
+                          }
+                        }, [
+                          React.createElement('option', { key: 'all', value: 'all' }, 'All Cards'),
+                          React.createElement('option', { key: 'pokemon', value: 'pokemon' }, 'Pokemon Cards'),
+                          React.createElement('option', { key: 'high-value', value: 'high-value' }, 'High Value ($500+)'),
+                          React.createElement('option', { key: 'mid-value', value: 'mid-value' }, 'Mid Value ($100-$500)'),
+                          React.createElement('option', { key: 'low-value', value: 'low-value' }, 'Low Value (<$100)')
+                        ])
+                      ]),
+                      
+                      // Sort Options
+                      React.createElement('div', { key: 'library-sort' }, [
+                        React.createElement('label', {
+                          key: 'sort-label',
+                          style: {
+                            display: 'block',
+                            fontSize: '0.875rem',
+                            fontWeight: 600,
+                            color: '#374151',
+                            marginBottom: '0.5rem'
+                          }
+                        }, '📊 Sort By'),
+                        React.createElement('select', {
+                          key: 'sort-select',
+                          value: librarySortBy,
+                          onChange: (e) => setLibrarySortBy(e.target.value),
+                          style: {
+                            width: '100%',
+                            padding: '0.75rem',
+                            fontSize: '0.875rem',
+                            border: '1px solid #d1d5db',
+                            borderRadius: '0.5rem',
+                            outline: 'none',
+                            backgroundColor: '#ffffff'
+                          }
+                        }, [
+                          React.createElement('option', { key: 'name', value: 'name' }, 'Name (A-Z)'),
+                          React.createElement('option', { key: 'price-high', value: 'price-high' }, 'Price (High to Low)'),
+                          React.createElement('option', { key: 'price-low', value: 'price-low' }, 'Price (Low to High)'),
+                          React.createElement('option', { key: 'recent', value: 'recent' }, 'Recently Updated')
+                        ])
+                      ])
+                    ]),
+                    
                     React.createElement('p', {
                       key: 'library-description',
                       style: {
@@ -981,7 +1146,7 @@
                       gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
                       gap: '2rem'
                     }
-                  }, libraryCards.map(card => {
+                  }, filteredLibraryCards.map(card => {
                     const priceChange = getPriceChange(card.current_price, card.average_price);
                     
                     return React.createElement('div', {
