@@ -7,6 +7,22 @@ console.log('React version:', React.version)
 console.log('ReactDOM version:', ReactDOM.version)
 console.log('App component:', App)
 
+// Add a simple test to see if anything renders
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('✅ DOM Content Loaded')
+  
+  // Create a simple test element
+  const testDiv = document.createElement('div')
+  testDiv.innerHTML = `
+    <div style="padding: 20px; background: #fef3c7; border: 1px solid #fcd34d; border-radius: 10px; margin: 20px;">
+      <h1 style="color: #92400e;">🧪 JavaScript Test</h1>
+      <p>If you see this, JavaScript is working!</p>
+      <p>Time: ${new Date().toISOString()}</p>
+    </div>
+  `
+  document.body.appendChild(testDiv)
+})
+
 try {
   console.log('🔍 Looking for root element...')
   const rootElement = document.getElementById('root')
@@ -53,22 +69,43 @@ try {
         }
       }, [
         React.createElement('h1', { key: 'title' }, '🧪 React Test'),
-        React.createElement('p', { key: 'status' }, 'React is working! Loading main app...')
+        React.createElement('p', { key: 'status' }, 'React is working! Loading main app...'),
+        React.createElement('p', { key: 'time' }, `Time: ${new Date().toISOString()}`)
       ])
     )
+    
+    console.log('✅ React test component rendered')
     
     // After a short delay, render the actual app
     setTimeout(() => {
       console.log('🚀 Rendering main App component...')
-      root.render(
-        React.createElement(React.StrictMode, null,
-          React.createElement(ErrorBoundary, null,
-            React.createElement(App)
+      try {
+        root.render(
+          React.createElement(React.StrictMode, null,
+            React.createElement(ErrorBoundary, null,
+              React.createElement(App)
+            )
           )
         )
-      )
-      console.log('✅ App rendered successfully')
-    }, 1000)
+        console.log('✅ App rendered successfully')
+      } catch (appError) {
+        console.error('❌ Error rendering App:', appError)
+        root.render(
+          React.createElement('div', {
+            style: {
+              padding: '20px',
+              background: '#fee2e2',
+              border: '1px solid #fecaca',
+              borderRadius: '10px',
+              margin: '20px'
+            }
+          }, [
+            React.createElement('h1', { key: 'title' }, '❌ App Error'),
+            React.createElement('p', { key: 'error' }, appError.message)
+          ])
+        )
+      }
+    }, 2000)
     
     // Update the fallback content to show success
     setTimeout(() => {
