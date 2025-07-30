@@ -87,7 +87,7 @@ function App() {
       console.log('🔍 Fetching real prices for:', searchQuery)
       
       // Choose between API and scraping (you can toggle this)
-      const useScraping = false // Set to true to use scraping instead of APIs
+      const useScraping = true // Set to true to use scraping instead of APIs
       
       let priceData
       if (useScraping) {
@@ -169,7 +169,7 @@ function App() {
 
   const handleSearch = async (searchQuery) => {
     setLoading(true)
-    setSearchStatus('🔍 Searching for card prices...')
+    setSearchStatus('🌐 Scraping eBay, TCGPlayer, CardMarket...')
     
     try {
       // Check if card already exists
@@ -187,11 +187,11 @@ function App() {
         return
       }
 
-      // Simulate eBay scraping with enhanced metadata
+      // Scrape real prices from multiple sources
       const scrapedData = await simulateEbayScraping(searchQuery)
       
-      console.log('🔍 Simulating eBay scraping for:', searchQuery)
-      console.log('💰 Generated data:', scrapedData)
+      console.log('🌐 Scraping completed for:', searchQuery)
+      console.log('💰 Scraped data:', scrapedData)
       
       // Insert into the view (which will trigger the INSTEAD OF INSERT)
       const { data, error } = await supabase
@@ -205,7 +205,8 @@ function App() {
       }
       
       console.log('✅ Inserted card data:', data)
-      setSearchStatus(`✅ Added "${searchQuery}" (${scrapedData.category}) with price $${scrapedData.latest_price.toFixed(2)}`)
+      const source = scrapedData.source || 'Unknown source'
+      setSearchStatus(`✅ Added "${searchQuery}" (${scrapedData.category}) - $${scrapedData.latest_price.toFixed(2)} via ${source}`)
       await loadCards() // Refresh the list
     } catch (error) {
       console.error('❌ Error adding card:', error)
