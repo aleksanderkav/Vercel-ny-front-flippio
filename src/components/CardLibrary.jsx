@@ -495,19 +495,7 @@ const CardLibrary = ({
             </div>
           )}
           
-          {showSearch && (
-            <div style={{
-              marginBottom: '2rem',
-              background: 'rgba(255,255,255,0.97)',
-              borderRadius: '1.25rem',
-              boxShadow: '0 8px 24px -8px rgba(99,102,241,0.10)',
-              padding: '2rem',
-              transition: 'max-height 0.3s',
-              overflow: 'hidden'
-            }}>
-              <SearchBar onSearch={onSearch} loading={loading} searchStatus={searchStatus} />
-            </div>
-          )}
+
 
           {/* Filter and Sort Controls */}
           <div style={{
