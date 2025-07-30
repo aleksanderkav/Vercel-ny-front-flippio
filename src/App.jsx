@@ -102,16 +102,15 @@ function App() {
       console.log('🔍 Simulating price scraping for:', searchQuery)
       console.log('💰 Generated price:', mockPrice)
       
-      // Insert into the base table instead of the view
-      // Use minimal required fields to avoid schema issues
+      // Insert into the view (which will trigger the INSTEAD OF INSERT)
       const { data, error } = await supabase
-        .from('cards')
+        .from('cards_with_prices')
         .insert([
           {
             name: searchQuery,
             latest_price: mockPrice,
             price_count: mockPriceCount
-            // Note: last_price_update will be handled by database default or trigger
+            // Note: last_price_update will be handled by database default
           }
         ])
         .select()
