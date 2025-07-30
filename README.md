@@ -1,8 +1,8 @@
-# Trading Card Tracker Frontend v6.0.0
+# Trading Card Tracker Frontend v8.0.0
 
 A modern React frontend for tracking trading card prices with real-time market data.
 
-**🚀 Deployment Status: RAILWAY v8.0.0 - Optimized for Railway deployment with Nixpacks**
+**🚀 Deployment Status: RAILWAY v8.0.0 - Deployed to rail-flipping-front repository**
 
 ## 🚀 Features
 
@@ -24,8 +24,8 @@ A modern React frontend for tracking trading card prices with real-time market d
 
 ```bash
 # Clone the repository
-git clone https://github.com/aleksanderkav/Ny-flippio-front.git
-cd Ny-flippio-front
+git clone https://github.com/aleksanderkav/rail-flipping-front.git
+cd rail-flipping-front
 
 # Install dependencies
 npm install
