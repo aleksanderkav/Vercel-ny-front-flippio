@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import CardGrid from './CardGrid'
-import SearchBar from './SearchBar'
 
 const CardLibrary = ({ 
   cards = [], 

@@ -18,9 +18,15 @@ function App() {
   const [filterCategory, setFilterCategory] = useState('all')
   const [sortBy, setSortBy] = useState('name')
   const [librarySearch, setLibrarySearch] = useState('')
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    loadCards()
+    try {
+      loadCards()
+    } catch (err) {
+      console.error('❌ Error in useEffect:', err)
+      setError(err.message)
+    }
   }, [])
 
   const loadCards = async () => {
@@ -51,6 +57,7 @@ function App() {
     } catch (error) {
       console.error('❌ Error loading cards:', error)
       setSearchStatus('❌ Error loading cards from database')
+      setError(error.message)
     } finally {
       setLoading(false)
     }
@@ -311,12 +318,57 @@ function App() {
 
   const filteredCards = getFilteredAndSortedCards()
 
+  // Show error if there is one
+  if (error) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        backgroundColor: '#fee2e2',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '2rem'
+      }}>
+        <div style={{
+          background: 'white',
+          padding: '2rem',
+          borderRadius: '1rem',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+          textAlign: 'center',
+          maxWidth: '500px'
+        }}>
+          <h1 style={{ color: '#dc2626', marginBottom: '1rem' }}>❌ App Error</h1>
+          <p style={{ color: '#6b7280', marginBottom: '1rem' }}>
+            Something went wrong while loading the app.
+          </p>
+          <p style={{ color: '#dc2626', fontSize: '0.875rem' }}>
+            Error: {error}
+          </p>
+          <button 
+            onClick={() => window.location.reload()}
+            style={{
+              marginTop: '1rem',
+              padding: '0.75rem 1.5rem',
+              backgroundColor: '#dc2626',
+              color: 'white',
+              border: 'none',
+              borderRadius: '0.5rem',
+              cursor: 'pointer'
+            }}
+          >
+            🔄 Reload Page
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   try {
     return (
       <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
 
         
-        <Header version="1.2.6" />
+        <Header version="1.2.8" />
         <CardLibrary 
           cards={filteredCards}
           loading={loading}
@@ -354,7 +406,7 @@ function App() {
               margin: 0,
               fontWeight: 600
             }}>
-              Trading Card Tracker v1.2.6
+              Trading Card Tracker v1.2.8
             </p>
             <p style={{
               color: '#6b7280',
