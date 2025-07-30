@@ -6,11 +6,20 @@ import { supabase } from './lib/supabase'
 import PriceService from './lib/priceService'
 import ScrapingService from './lib/scrapingService'
 import { scrapeAndInsertCard, batchScrapeCards, getCardStats } from './lib/cardScraper'
+import PublicCardTracker from './components/PublicCardTracker'
+import Embed from './pages/Embed'
 
 function App() {
   // Build timestamp for cache busting
   console.log('🚀 App loaded at:', new Date().toISOString())
-  console.log('📦 Version: 1.3.1')
+  console.log('📦 Version: 1.3.2')
+  
+  // Check if this is an embed request
+  const isEmbed = window.location.pathname === '/embed' || window.location.search.includes('embed=true')
+  
+  if (isEmbed) {
+    return <Embed />
+  }
   
   const [cards, setCards] = useState([])
   const [loading, setLoading] = useState(false)
@@ -369,7 +378,7 @@ function App() {
       <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
 
         
-        <Header version="1.3.1" />
+        <Header version="1.3.2" />
         <CardLibrary 
           cards={filteredCards}
           loading={loading}
@@ -407,7 +416,7 @@ function App() {
               margin: 0,
               fontWeight: 600
             }}>
-              Trading Card Tracker v1.3.1
+              Trading Card Tracker v1.3.2
             </p>
             <p style={{
               color: '#6b7280',

@@ -1,4 +1,7 @@
-/* Simple CSS without PostCSS dependencies */
+/* Modern Design System - Minimalist & Premium */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -6,13 +9,45 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: #F8FAFC;
   min-height: 100vh;
+  color: #1A1A1A;
+  line-height: 1.6;
+}
+
+/* Modern scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Focus styles */
+*:focus {
+  outline: 2px solid #2563EB;
+  outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+  background: rgba(37, 99, 235, 0.2);
+  color: #1A1A1A;
 }
 
 /* Add spin animation for loading spinners */
@@ -440,80 +475,93 @@ body {
   }
 }
 
-/* Button styles */
+/* Modern Button styles */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  border-radius: 0.5rem;
-  transition: all 0.2s;
+  border-radius: 9999px;
+  transition: all 0.2s ease;
   cursor: pointer;
   border: none;
   text-decoration: none;
+  gap: 0.5rem;
+  font-family: 'Inter', sans-serif;
 }
 
 .btn-primary {
-  background-color: #2563eb;
+  background: #1A1A1A;
   color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary:hover {
-  background-color: #1d4ed8;
+  background: #2D3748;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary:disabled {
-  background-color: #94a3b8;
+  background: #94A3B8;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .btn-secondary {
-  background-color: #10b981;
-  color: white;
+  background: #F1F5F9;
+  color: #1A1A1A;
+  border: 1px solid #E2E8F0;
 }
 
 .btn-secondary:hover {
-  background-color: #059669;
+  background: #E2E8F0;
+  border-color: #CBD5E1;
 }
 
 .btn-orange {
-  background-color: #f97316;
+  background: #F59E0B;
   color: white;
 }
 
 .btn-orange:hover {
-  background-color: #ea580c;
-}
-
-/* Card styles */
-.card {
-  background: white;
-  border-radius: 0.75rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  border: 1px solid #e2e8f0;
-  overflow: hidden;
-  transition: all 0.2s;
-}
-
-.card:hover {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  background: #D97706;
   transform: translateY(-1px);
 }
 
-/* Form styles */
+/* Modern Card styles */
+.card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #E2E8F0;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Modern Form styles */
 .form-input {
   width: 100%;
-  padding: 1rem;
-  font-size: 1.125rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.75rem;
-  transition: all 0.2s;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  background: #FFFFFF;
+  font-family: 'Inter', sans-serif;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #2563eb;
+  border-color: #2563EB;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
