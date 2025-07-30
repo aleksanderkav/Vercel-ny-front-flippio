@@ -18,11 +18,11 @@ const SearchBar = ({ onSearch, loading = false, searchStatus = '' }) => {
     }}>
       <div style={{
         background: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(24px)',
-        borderRadius: '1.5rem',
-        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-        border: '1px solid rgba(226, 232, 240, 0.6)',
-        padding: '2.5rem'
+        backdropFilter: 'blur(20px)',
+        borderRadius: '2rem',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 10px 20px -5px rgba(0, 0, 0, 0.1)',
+        border: '2px solid rgba(226, 232, 240, 0.8)',
+        padding: '3rem'
       }}>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div style={{ marginBottom: '1.5rem' }}>
@@ -42,14 +42,22 @@ const SearchBar = ({ onSearch, loading = false, searchStatus = '' }) => {
               placeholder="e.g., Pikachu PSA 10, Charizard PSA 9"
               style={{
                 width: '100%',
-                padding: '1.125rem',
+                padding: '1.25rem',
                 fontSize: '1.125rem',
-                border: '1px solid #e2e8f0',
-                borderRadius: '1rem',
+                border: '2px solid #e2e8f0',
+                borderRadius: '1.25rem',
                 outline: 'none',
-                transition: 'all 0.2s ease-in-out',
+                transition: 'all 0.3s ease-in-out',
                 backgroundColor: loading ? '#f8fafc' : '#ffffff',
-                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#3b82f6'
+                e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#e2e8f0'
+                e.target.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
               }}
               required
               disabled={loading}
@@ -60,32 +68,34 @@ const SearchBar = ({ onSearch, loading = false, searchStatus = '' }) => {
             disabled={loading || !searchQuery.trim()}
             style={{
               width: '100%',
-              padding: '1.125rem',
+              padding: '1.25rem',
               fontSize: '1.125rem',
-              fontWeight: 600,
+              fontWeight: 700,
               color: '#ffffff',
-              backgroundColor: loading || !searchQuery.trim() ? '#94a3b8' : '#2563eb',
+              backgroundColor: loading || !searchQuery.trim() ? '#94a3b8' : '#4f46e5',
               border: 'none',
-              borderRadius: '1rem',
+              borderRadius: '1.25rem',
               cursor: loading || !searchQuery.trim() ? 'not-allowed' : 'pointer',
-              transition: 'all 0.2s ease-in-out',
+              transition: 'all 0.3s ease-in-out',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '0.75rem',
-              boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)',
+              boxShadow: '0 10px 15px -3px rgba(79, 70, 229, 0.3), 0 4px 6px -2px rgba(79, 70, 229, 0.2)',
               transform: loading || !searchQuery.trim() ? 'none' : 'translateY(0)'
             }}
             onMouseEnter={(e) => {
               if (!loading && searchQuery.trim()) {
-                e.target.style.transform = 'translateY(-1px)'
-                e.target.style.boxShadow = '0 6px 8px -1px rgba(37, 99, 235, 0.25)'
+                e.target.style.transform = 'translateY(-2px)'
+                e.target.style.backgroundColor = '#4338ca'
+                e.target.style.boxShadow = '0 20px 25px -5px rgba(79, 70, 229, 0.4), 0 10px 10px -5px rgba(79, 70, 229, 0.3)'
               }
             }}
             onMouseLeave={(e) => {
               if (!loading && searchQuery.trim()) {
                 e.target.style.transform = 'translateY(0)'
-                e.target.style.boxShadow = '0 4px 6px -1px rgba(37, 99, 235, 0.2)'
+                e.target.style.backgroundColor = '#4f46e5'
+                e.target.style.boxShadow = '0 10px 15px -3px rgba(79, 70, 229, 0.3), 0 4px 6px -2px rgba(79, 70, 229, 0.2)'
               }
             }}
           >

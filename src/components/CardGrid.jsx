@@ -125,31 +125,32 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
       
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-        gap: '1.5rem'
+        gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+        gap: '2rem'
       }}>
         {cards.map((card, index) => (
           <div 
             key={index} 
             style={{
-              background: 'rgba(255, 255, 255, 0.98)',
-              backdropFilter: 'blur(16px)',
-              borderRadius: '1.5rem',
-              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-              border: '1px solid rgba(226, 232, 240, 0.6)',
+              background: '#ffffff',
+              borderRadius: '2rem',
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.08)',
+              border: '2px solid rgba(226, 232, 240, 0.8)',
               overflow: 'hidden',
-              transition: 'all 0.2s ease-in-out',
+              transition: 'all 0.3s ease-in-out',
               transform: 'translateY(0)',
               cursor: 'pointer',
               position: 'relative'
             }}
             onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-4px)'
-              e.target.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+              e.target.style.transform = 'translateY(-8px)'
+              e.target.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 15px 20px -5px rgba(0, 0, 0, 0.15)'
+              e.target.style.borderColor = 'rgba(59, 130, 246, 0.3)'
             }}
             onMouseLeave={(e) => {
               e.target.style.transform = 'translateY(0)'
-              e.target.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+              e.target.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.08)'
+              e.target.style.borderColor = 'rgba(226, 232, 240, 0.8)'
             }}
           >
             {/* Card Header */}
@@ -188,20 +189,21 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                 </div>
                 <div style={{ flex: 1 }}>
                   <h3 style={{
-                    fontWeight: 700,
-                    color: '#1e293b',
-                    fontSize: '1.125rem',
+                    fontWeight: 800,
+                    color: '#0f172a',
+                    fontSize: '1.25rem',
                     margin: 0,
-                    marginBottom: '0.25rem',
-                    lineHeight: '1.3'
+                    marginBottom: '0.375rem',
+                    lineHeight: '1.3',
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
                   }}>
                     {card.name || 'Unknown Card'}
                   </h3>
                   <p style={{
-                    color: '#64748b',
-                    fontSize: '0.75rem',
+                    color: '#6b7280',
+                    fontSize: '0.875rem',
                     margin: 0,
-                    fontFamily: 'monospace'
+                    fontWeight: 500
                   }}>
                     #{card.id?.substring(0, 8)}... • Price: {card.latest_price ? `$${card.latest_price}` : 'N/A'}
                   </p>
@@ -246,9 +248,10 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                         >
                           <span style={{ fontSize: '0.75rem', color: '#64748b' }}>💰</span>
                           <span style={{
-                            fontSize: '1.25rem',
-                            fontWeight: 700,
-                            color: getPriceColor(card.latest_price)
+                            fontSize: '1.5rem',
+                            fontWeight: 800,
+                            color: getPriceColor(card.latest_price),
+                            textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
                           }}>
                             {formatPrice(card.latest_price)}
                           </span>
@@ -292,13 +295,13 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                           gap: '0.375rem'
                         }}>
                           <span style={{ fontSize: '0.75rem', color: '#64748b' }}>📊</span>
-                          <span style={{
-                            fontSize: '0.75rem',
-                            fontWeight: 600,
-                            color: '#374151'
-                          }}>
-                            {card.price_count} entries
-                          </span>
+                                                      <span style={{
+                              fontSize: '0.875rem',
+                              fontWeight: 600,
+                              color: '#374151'
+                            }}>
+                              {card.price_count} entries
+                            </span>
                         </div>
                         {card.last_price_update && (
                           <div style={{
@@ -308,7 +311,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                           }}>
                             <span style={{ fontSize: '0.75rem', color: '#64748b' }}>📅</span>
                             <span style={{
-                              fontSize: '0.75rem',
+                              fontSize: '0.875rem',
                               fontWeight: 600,
                               color: '#374151'
                             }}>
@@ -370,10 +373,11 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                 marginTop: '1rem'
               }}>
                 <p style={{
-                  fontSize: '0.75rem',
+                  fontSize: '0.875rem',
                   color: '#9ca3af',
                   textAlign: 'center',
-                  margin: 0
+                  margin: 0,
+                  fontWeight: 500
                 }}>
                   Added: {new Date(card.created_at).toLocaleDateString()}
                 </p>

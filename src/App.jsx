@@ -7,7 +7,7 @@ import { supabase } from './lib/supabase'
 function App() {
   // Build timestamp for cache busting
   console.log('🚀 App loaded at:', new Date().toISOString())
-  console.log('📦 Version: 1.2.3')
+  console.log('📦 Version: 1.2.4')
   
   const [cards, setCards] = useState([])
   const [loading, setLoading] = useState(false)
@@ -211,7 +211,7 @@ function App() {
       <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
 
         
-        <Header version="1.2.3" />
+        <Header version="1.2.4" />
         <Hero 
           onSearch={handleSearch}
           loading={loading}
@@ -230,11 +230,12 @@ function App() {
         
         {/* Footer */}
         <footer style={{
-          background: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(20px)',
-          borderTop: '1px solid rgba(226, 232, 240, 0.4)',
-          padding: '2rem 1rem',
-          marginTop: '4rem'
+          background: 'rgba(255, 255, 255, 0.85)',
+          backdropFilter: 'blur(16px)',
+          borderTop: '2px solid rgba(226, 232, 240, 0.6)',
+          padding: '3rem 1rem',
+          marginTop: '5rem',
+          boxShadow: '0 -10px 15px -3px rgba(0, 0, 0, 0.1), 0 -4px 6px -2px rgba(0, 0, 0, 0.05)'
         }}>
           <div style={{
             maxWidth: '1200px',
@@ -242,17 +243,18 @@ function App() {
             textAlign: 'center'
           }}>
             <p style={{
-              color: '#64748b',
-              fontSize: '0.875rem',
+              color: '#374151',
+              fontSize: '1rem',
               margin: 0,
-              fontWeight: 500
+              fontWeight: 600
             }}>
-              Trading Card Tracker v1.2.3 • Built with React & Supabase
+              Trading Card Tracker v1.2.4 • Built with React & Supabase
             </p>
             <p style={{
-              color: '#94a3b8',
-              fontSize: '0.75rem',
-              margin: '0.5rem 0 0 0'
+              color: '#6b7280',
+              fontSize: '0.875rem',
+              margin: '0.75rem 0 0 0',
+              fontWeight: 500
             }}>
               © 2024 • Real-time market price tracking for trading cards
             </p>

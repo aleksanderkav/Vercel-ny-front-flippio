@@ -21,12 +21,12 @@ const CardLibrary = ({
         margin: '0 auto'
       }}>
         <div style={{
-          background: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(24px)',
-          borderRadius: '1.5rem',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-          border: '1px solid rgba(226, 232, 240, 0.6)',
-          padding: '2.5rem'
+          background: 'rgba(255, 255, 255, 0.98)',
+          backdropFilter: 'blur(20px)',
+          borderRadius: '2rem',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 10px 20px -5px rgba(0, 0, 0, 0.1)',
+          border: '2px solid rgba(226, 232, 240, 0.8)',
+          padding: '3rem'
         }}>
           <div style={{
             display: 'flex',

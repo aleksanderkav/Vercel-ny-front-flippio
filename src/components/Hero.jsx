@@ -3,8 +3,8 @@ import SearchBar from './SearchBar'
 const Hero = ({ onSearch, loading, searchStatus }) => {
   return (
     <div style={{
-      paddingTop: '5rem',
-      paddingBottom: '5rem',
+      paddingTop: '6rem',
+      paddingBottom: '6rem',
       paddingLeft: '1rem',
       paddingRight: '1rem'
     }}>
@@ -15,13 +15,14 @@ const Hero = ({ onSearch, loading, searchStatus }) => {
       }}>
         <div style={{ marginBottom: '4rem' }}>
           <h2 style={{
-            fontSize: '3rem',
-            fontWeight: 700,
-            color: '#1e293b',
+            fontSize: '3.5rem',
+            fontWeight: 800,
+            color: '#0f172a',
             margin: 0,
-            marginBottom: '2rem',
+            marginBottom: '2.5rem',
             letterSpacing: '-0.025em',
-            lineHeight: '1.2'
+            lineHeight: '1.1',
+            textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
           }}>
             Track Card Prices
           </h2>
