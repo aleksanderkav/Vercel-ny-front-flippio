@@ -14,10 +14,5 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "functions": {
-    "build.sh": {
-      "runtime": "nodejs18.x"
-    }
-  }
+  ]
 } 
