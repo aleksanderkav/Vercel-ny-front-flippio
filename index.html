@@ -141,7 +141,27 @@
           console.log('🔍 Initializing Supabase with URL:', supabaseUrl);
           console.log('🔍 Supabase key length:', supabaseKey.length);
           
-          const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+          // Try to create client with error handling
+          let supabase;
+          try {
+            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+            console.log('✅ Supabase client created successfully');
+          } catch (clientError) {
+            console.error('❌ Failed to create Supabase client:', clientError);
+            // Fallback: try with different options
+            try {
+              supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
+                auth: {
+                  autoRefreshToken: false,
+                  persistSession: false
+                }
+              });
+              console.log('✅ Supabase client created with fallback options');
+            } catch (fallbackError) {
+              console.error('❌ Failed to create Supabase client with fallback:', fallbackError);
+              throw fallbackError;
+            }
+          }
           console.log('✅ Supabase client initialized');
           
           // Create a complete trading card tracker app

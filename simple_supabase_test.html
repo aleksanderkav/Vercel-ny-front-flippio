@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Supabase Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Simple Supabase Connection Test</h1>
+    
+    <div id="results"></div>
+    
+    <button onclick="runTests()">Run Tests</button>
+
+    <script>
+        const supabaseUrl = 'https://jvkxjyjycpomtzfngocge.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2a3h5anljcG9tdHpmbmdvY2dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3NTM1OTMsImV4cCI6MjA2OTMyOTU5M30.r3p4y2sl2RFROdKN-MsAsI1Z_8TBn6tK-aZ2claU32Q';
+        
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.textContent = message;
+            results.appendChild(div);
+            console.log(message);
+        }
+        
+        async function runTests() {
+            document.getElementById('results').innerHTML = '';
+            
+            addResult('🚀 Starting Supabase connection tests...', 'info');
+            
+            // Test 1: Basic URL accessibility
+            try {
+                addResult('🔍 Test 1: Checking if Supabase URL is accessible...', 'info');
+                
+                const response = await fetch(supabaseUrl, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                addResult(`✅ URL accessible: ${response.status} ${response.statusText}`, 'success');
+            } catch (error) {
+                addResult(`❌ URL not accessible: ${error.message}`, 'error');
+            }
+            
+            // Test 2: API endpoint accessibility
+            try {
+                addResult('🔍 Test 2: Checking API endpoint...', 'info');
+                
+                const response = await fetch(`${supabaseUrl}/rest/v1/`, {
+                    method: 'GET',
+                    headers: {
+                        'apikey': supabaseKey,
+                        'Authorization': `Bearer ${supabaseKey}`
+                    }
+                });
+                
+                addResult(`✅ API endpoint accessible: ${response.status} ${response.statusText}`, 'success');
+            } catch (error) {
+                addResult(`❌ API endpoint not accessible: ${error.message}`, 'error');
+            }
+            
+            // Test 3: Load Supabase client
+            try {
+                addResult('🔍 Test 3: Loading Supabase client...', 'info');
+                
+                const script = document.createElement('script');
+                script.src = 'https://unpkg.com/@supabase/supabase-js@2';
+                
+                await new Promise((resolve, reject) => {
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                });
+                
+                addResult('✅ Supabase client loaded', 'success');
+                
+                // Test 4: Initialize client
+                try {
+                    addResult('🔍 Test 4: Initializing Supabase client...', 'info');
+                    
+                    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+                    
+                    addResult('✅ Supabase client initialized', 'success');
+                    
+                    // Test 5: Simple query
+                    try {
+                        addResult('🔍 Test 5: Testing simple query...', 'info');
+                        
+                        const { data, error } = await supabase
+                            .from('cards')
+                            .select('count')
+                            .limit(1);
+                        
+                        if (error) {
+                            addResult(`❌ Query failed: ${error.message}`, 'error');
+                        } else {
+                            addResult(`✅ Query successful: ${JSON.stringify(data)}`, 'success');
+                        }
+                    } catch (queryError) {
+                        addResult(`❌ Query error: ${queryError.message}`, 'error');
+                    }
+                    
+                } catch (initError) {
+                    addResult(`❌ Client initialization failed: ${initError.message}`, 'error');
+                }
+                
+            } catch (loadError) {
+                addResult(`❌ Failed to load Supabase: ${loadError.message}`, 'error');
+            }
+        }
+        
+        // Auto-run tests when page loads
+        document.addEventListener('DOMContentLoaded', runTests);
+    </script>
+</body>
+</html> 
