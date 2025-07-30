@@ -35,10 +35,10 @@ function App() {
       }
       
       console.log('📊 Loaded cards:', data)
-      console.log('💰 Cards with prices:', data?.filter(card => card.latest_price > 0))
+      console.log('💰 Cards with prices:', data?.filter(card => card.latest_price && card.latest_price > 0))
       console.log('📈 Price statistics:', {
         total: data?.length || 0,
-        withPrices: data?.filter(card => card.latest_price > 0).length || 0,
+        withPrices: data?.filter(card => card.latest_price && card.latest_price > 0).length || 0,
         averagePrice: data?.length > 0 ? 
           (data.reduce((sum, card) => sum + (card.latest_price || 0), 0) / data.length).toFixed(2) : 0
       })
@@ -66,7 +66,8 @@ function App() {
 
       if (existingCard) {
         console.log('Card already exists:', existingCard)
-        setSearchStatus(`✅ Found existing card: "${searchQuery}" - $${existingCard.latest_price?.toFixed(2) || 'No price'}`)
+        const price = existingCard.latest_price ? `$${existingCard.latest_price.toFixed(2)}` : 'No price'
+        setSearchStatus(`✅ Found existing card: "${searchQuery}" - ${price}`)
         await loadCards() // Refresh the list
         return
       }
