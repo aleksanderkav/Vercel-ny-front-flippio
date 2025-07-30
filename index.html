@@ -7,9 +7,144 @@
     <meta name="description" content="Track real-time market prices for trading cards from eBay and other marketplaces. Modern, responsive trading card tracker." />
     <meta name="keywords" content="trading cards, card prices, market tracker, pokemon cards, sports cards" />
     <title>Trading Card Tracker v1.0.0</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      
+      .container {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        text-align: center;
+        max-width: 600px;
+        width: 100%;
+      }
+      
+      .icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        height: 80px;
+        background-color: #2563eb;
+        border-radius: 20px;
+        margin: 0 auto 20px;
+        box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.3);
+        font-size: 2rem;
+      }
+      
+      .title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+      }
+      
+      .subtitle {
+        font-size: 1.2rem;
+        color: #475569;
+        margin-bottom: 2rem;
+      }
+      
+      .status {
+        background: #ecfdf5;
+        border: '1px solid #a7f3d0';
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 2rem;
+      }
+      
+      .status-title {
+        color: #065f46;
+        margin: 0;
+        font-weight: 500;
+      }
+      
+      .status-text {
+        color: #047857;
+        margin: '5px 0 0 0';
+        font-size: 0.9rem;
+      }
+      
+      .debug {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        z-index: 9999;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <div class="debug">Direct JS Test v1.0.0</div>
+    
+    <div class="container">
+      <div class="icon">🎴</div>
+      
+      <h1 class="title">Trading Card Tracker</h1>
+      
+      <p class="subtitle">v1.0.0 • Testing Built JavaScript</p>
+      
+      <div class="status">
+        <p class="status-title">✅ HTML Page Working!</p>
+        <p class="status-text">Testing built JavaScript file...</p>
+      </div>
+      
+      <div id="root">
+        <p style="color: #666;">Loading React component from built JS...</p>
+      </div>
+    </div>
+    
+    <script>
+      console.log('🚀 Direct JS test starting...');
+      console.log('📅 Current time:', new Date().toISOString());
+      
+      // Try to load the built JavaScript file
+      const script = document.createElement('script');
+      script.type = 'module';
+      script.src = '/assets/index-2b0dc3d6.js'; // Use the actual built file name
+      script.onload = () => {
+        console.log('✅ Built JavaScript file loaded successfully!');
+      };
+      script.onerror = (error) => {
+        console.error('❌ Error loading built JavaScript:', error);
+        document.getElementById('root').innerHTML = `
+          <div style="
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            color: #dc2626;
+          ">
+            <h3 style="margin: 0 0 10px 0;">❌ JavaScript Load Error</h3>
+            <p style="margin: 0; font-size: 0.9rem;">Failed to load built JavaScript file</p>
+          </div>
+        `;
+      };
+      
+      document.head.appendChild(script);
+    </script>
   </body>
 </html> 
