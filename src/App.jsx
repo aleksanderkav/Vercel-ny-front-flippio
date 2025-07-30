@@ -105,7 +105,7 @@ function App() {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
-      <Header version="1.1.0" />
+      <Header version="1.0.1" />
       <Hero 
         onSearch={handleSearch}
         loading={loading}

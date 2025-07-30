@@ -68,62 +68,112 @@ const CardLibrary = ({
               </div>
             </div>
             
-            {/* Filter and Sort Controls - Matching Search Card Style */}
+            {/* Filter and Sort Controls - Enhanced Glassmorphism Design */}
             <div style={{
-              background: 'rgba(255, 255, 255, 0.8)',
+              background: 'rgba(255, 255, 255, 0.9)',
               backdropFilter: 'blur(24px)',
-              borderRadius: '1rem',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-              border: '1px solid rgba(226, 232, 240, 0.5)',
-              padding: '1.5rem'
+              borderRadius: '1.5rem',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.1)',
+              border: '1px solid rgba(226, 232, 240, 0.6)',
+              padding: '2rem',
+              position: 'relative',
+              overflow: 'hidden'
             }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <div style={{ marginBottom: '1rem' }}>
-                  <label style={{
-                    display: 'block',
-                    fontSize: '1.125rem',
-                    fontWeight: 600,
-                    color: '#334155',
-                    marginBottom: '0.75rem'
+              {/* Decorative gradient overlay */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent)'
+              }}></div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '1rem',
+                  marginBottom: '0.5rem'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '2.5rem',
+                    height: '2.5rem',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderRadius: '0.75rem',
+                    border: '1px solid rgba(59, 130, 246, 0.2)'
                   }}>
-                    Filter & Sort Options
-                  </label>
+                    <span style={{ fontSize: '1.125rem' }}>🔍</span>
+                  </div>
+                  <div>
+                    <h3 style={{
+                      fontSize: '1.25rem',
+                      fontWeight: 700,
+                      color: '#1e293b',
+                      margin: 0
+                    }}>
+                      Filter & Sort
+                    </h3>
+                    <p style={{
+                      color: '#64748b',
+                      margin: 0,
+                      fontSize: '0.875rem'
+                    }}>
+                      Organize your card collection
+                    </p>
+                  </div>
                 </div>
                 
                 <div style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '1rem'
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                  gap: '1.5rem'
                 }}>
                   {/* Category Filter */}
                   <div>
                     <label style={{
                       display: 'block',
-                      fontSize: '1rem',
-                      fontWeight: 500,
-                      color: '#475569',
-                      marginBottom: '0.5rem'
+                      fontSize: '0.875rem',
+                      fontWeight: 600,
+                      color: '#374151',
+                      marginBottom: '0.75rem',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em'
                     }}>
-                      Category Filter
+                      📂 Category Filter
                     </label>
                     <select
                       value={filterCategory}
                       onChange={(e) => setFilterCategory(e.target.value)}
                       style={{
                         width: '100%',
-                        padding: '0.75rem',
+                        padding: '1rem',
                         fontSize: '1rem',
-                        border: '1px solid #cbd5e1',
-                        borderRadius: '0.75rem',
+                        border: '1px solid rgba(203, 213, 225, 0.6)',
+                        borderRadius: '1rem',
                         outline: 'none',
-                        transition: 'all 0.2s',
-                        backgroundColor: '#ffffff'
+                        transition: 'all 0.3s ease',
+                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                        backdropFilter: 'blur(12px)',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                        cursor: 'pointer'
+                      }}
+                      onFocus={(e) => {
+                        e.target.style.borderColor = '#3b82f6'
+                        e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = 'rgba(203, 213, 225, 0.6)'
+                        e.target.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
                       }}
                     >
-                      <option value="all">All Categories</option>
-                      <option value="pokemon">Pokémon Cards</option>
-                      <option value="sports">Sports Cards</option>
-                      <option value="gaming">Gaming Cards</option>
+                      <option value="all">🎴 All Categories</option>
+                      <option value="pokemon">⚡ Pokémon Cards</option>
+                      <option value="sports">🏀 Sports Cards</option>
+                      <option value="gaming">🎮 Gaming Cards</option>
                     </select>
                   </div>
                   
@@ -131,32 +181,45 @@ const CardLibrary = ({
                   <div>
                     <label style={{
                       display: 'block',
-                      fontSize: '1rem',
-                      fontWeight: 500,
-                      color: '#475569',
-                      marginBottom: '0.5rem'
+                      fontSize: '0.875rem',
+                      fontWeight: 600,
+                      color: '#374151',
+                      marginBottom: '0.75rem',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em'
                     }}>
-                      Sort By
+                      📊 Sort By
                     </label>
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value)}
                       style={{
                         width: '100%',
-                        padding: '0.75rem',
+                        padding: '1rem',
                         fontSize: '1rem',
-                        border: '1px solid #cbd5e1',
-                        borderRadius: '0.75rem',
+                        border: '1px solid rgba(203, 213, 225, 0.6)',
+                        borderRadius: '1rem',
                         outline: 'none',
-                        transition: 'all 0.2s',
-                        backgroundColor: '#ffffff'
+                        transition: 'all 0.3s ease',
+                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                        backdropFilter: 'blur(12px)',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                        cursor: 'pointer'
+                      }}
+                      onFocus={(e) => {
+                        e.target.style.borderColor = '#3b82f6'
+                        e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = 'rgba(203, 213, 225, 0.6)'
+                        e.target.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
                       }}
                     >
-                      <option value="name">Name (A-Z)</option>
-                      <option value="price-high">Price (High to Low)</option>
-                      <option value="price-low">Price (Low to High)</option>
-                      <option value="date-new">Date Added (Newest)</option>
-                      <option value="date-old">Date Added (Oldest)</option>
+                      <option value="name">📝 Name (A-Z)</option>
+                      <option value="price-high">💰 Price (High to Low)</option>
+                      <option value="price-low">💸 Price (Low to High)</option>
+                      <option value="date-new">🆕 Date Added (Newest)</option>
+                      <option value="date-old">📅 Date Added (Oldest)</option>
                     </select>
                   </div>
                 </div>

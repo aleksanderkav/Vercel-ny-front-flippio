@@ -158,13 +158,13 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                 fontSize: '0.875rem',
                 margin: 0
               }}>
-                #{card.id?.substring(0, 8)}...
+                #{card.id?.substring(0, 8)}... • Price: {card.latest_price ? `$${card.latest_price}` : 'N/A'}
               </p>
             </div>
             
             {/* Card Content */}
             <div style={{ padding: '1.5rem' }}>
-              {card.latest_price && card.latest_price > 0 ? (
+              {card.latest_price !== null && card.latest_price !== undefined && card.latest_price > 0 ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   <div style={{
                     display: 'flex',
@@ -240,9 +240,16 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                   <p style={{
                     fontWeight: 500,
                     color: '#c2410c',
-                    marginBottom: '1rem'
+                    marginBottom: '0.5rem'
                   }}>
                     No Price Data
+                  </p>
+                  <p style={{
+                    fontSize: '0.875rem',
+                    color: '#6b7280',
+                    marginBottom: '1rem'
+                  }}>
+                    Price: {card.latest_price === null ? 'null' : card.latest_price === undefined ? 'undefined' : card.latest_price}
                   </p>
                   <button style={{
                     padding: '0.75rem 1.5rem',
