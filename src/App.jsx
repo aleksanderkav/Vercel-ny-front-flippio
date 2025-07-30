@@ -3,11 +3,13 @@ import Header from './components/Header'
 import Hero from './components/Hero'
 import CardLibrary from './components/CardLibrary'
 import { supabase } from './lib/supabase'
+import PriceService from './lib/priceService'
+import ScrapingService from './lib/scrapingService'
 
 function App() {
   // Build timestamp for cache busting
   console.log('🚀 App loaded at:', new Date().toISOString())
-  console.log('📦 Version: 1.2.6')
+  console.log('📦 Version: 1.2.7')
   
   const [cards, setCards] = useState([])
   const [loading, setLoading] = useState(false)
@@ -79,8 +81,42 @@ function App() {
     return 'Other'
   }
 
+  // Function to fetch real prices using the PriceService or ScrapingService
+  const fetchRealPrices = async (searchQuery) => {
+    try {
+      console.log('🔍 Fetching real prices for:', searchQuery)
+      
+      // Choose between API and scraping (you can toggle this)
+      const useScraping = false // Set to true to use scraping instead of APIs
+      
+      let priceData
+      if (useScraping) {
+        // Use web scraping
+        priceData = await ScrapingService.scrapeCardPrices(searchQuery)
+      } else {
+        // Use APIs
+        priceData = await PriceService.getCardPrices(searchQuery)
+      }
+      
+      return {
+        latest_price: priceData.latest_price,
+        price_count: priceData.price_count,
+        success: priceData.success,
+        source: priceData.source
+      }
+    } catch (error) {
+      console.error('❌ Error fetching real prices:', error)
+      return {
+        latest_price: null,
+        price_count: 0,
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
   // Function to simulate eBay scraping with enhanced metadata
-  const simulateEbayScraping = (searchQuery) => {
+  const simulateEbayScraping = async (searchQuery) => {
     const queryLower = searchQuery.toLowerCase()
     
     // Simulate eBay card type detection
@@ -114,13 +150,13 @@ function App() {
     const gradings = ['PSA 10', 'PSA 9', 'PSA 8', 'BGS 10', 'BGS 9.5', 'Raw']
     const rarities = ['Common', 'Uncommon', 'Rare', 'Ultra Rare', 'Secret Rare', 'Holo']
     
-    const mockPrice = 25 + (Math.random() * 150) // $25-$175 range
-    const mockPriceCount = Math.floor(Math.random() * 20) + 5
+    // Fetch real prices instead of mock prices
+    const priceData = await fetchRealPrices(searchQuery)
     
     return {
       name: searchQuery,
-      latest_price: mockPrice,
-      price_count: mockPriceCount,
+      latest_price: priceData.latest_price,
+      price_count: priceData.price_count,
       category: category,
       card_type: cardType,
       card_set: setNames[Math.floor(Math.random() * setNames.length)],
@@ -152,7 +188,7 @@ function App() {
       }
 
       // Simulate eBay scraping with enhanced metadata
-      const scrapedData = simulateEbayScraping(searchQuery)
+      const scrapedData = await simulateEbayScraping(searchQuery)
       
       console.log('🔍 Simulating eBay scraping for:', searchQuery)
       console.log('💰 Generated data:', scrapedData)

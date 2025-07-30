@@ -1,6 +1,6 @@
 import { isSupabaseConfigured } from '../lib/supabase'
 
-const Header = ({ version = '1.2.6' }) => {
+const Header = ({ version = '1.2.7' }) => {
   console.log('🎴 Header rendered with version:', version)
   return (
     <div style={{
