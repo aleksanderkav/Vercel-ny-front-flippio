@@ -10,7 +10,7 @@ import { scrapeAndInsertCard, batchScrapeCards, getCardStats } from './lib/cardS
 function App() {
   // Build timestamp for cache busting
   console.log('🚀 App loaded at:', new Date().toISOString())
-  console.log('📦 Version: 1.2.8')
+  console.log('📦 Version: 1.2.9')
   
   const [cards, setCards] = useState([])
   const [loading, setLoading] = useState(false)
@@ -368,7 +368,7 @@ function App() {
       <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
 
         
-        <Header version="1.2.8" />
+        <Header version="1.2.9" />
         <CardLibrary 
           cards={filteredCards}
           loading={loading}
@@ -406,7 +406,7 @@ function App() {
               margin: 0,
               fontWeight: 600
             }}>
-              Trading Card Tracker v1.2.8
+              Trading Card Tracker v1.2.9
             </p>
             <p style={{
               color: '#6b7280',

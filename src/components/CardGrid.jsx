@@ -27,20 +27,44 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
     const basePrice = currentPrice * 0.8 // Start 20% lower
     const variance = currentPrice * 0.3 // 30% variance
     
+    // Generate dates going backwards from today
+    const today = new Date()
+    const daysBack = Math.min(count * 3, 30) // Spread over more days, max 30 days
+    
     for (let i = 0; i < Math.min(count, 10); i++) { // Max 10 data points
       const price = basePrice + (Math.random() * variance)
-      const date = new Date()
-      date.setDate(date.getDate() - (count - i) * 2) // Spread over time
+      const date = new Date(today)
+      date.setDate(date.getDate() - (daysBack - (i * daysBack / count)))
       
       history.push({
-        date: date.toLocaleDateString(),
+        date: date.toLocaleDateString('en-US', { 
+          month: 'short', 
+          day: 'numeric',
+          year: '2-digit'
+        }),
+        fullDate: date.toLocaleDateString('en-US', { 
+          weekday: 'long',
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric'
+        }),
         price: Math.max(0.01, price)
       })
     }
     
     // Add current price as last point
     history.push({
-      date: new Date().toLocaleDateString(),
+      date: today.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric',
+        year: '2-digit'
+      }),
+      fullDate: today.toLocaleDateString('en-US', { 
+        weekday: 'long',
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric'
+      }),
       price: currentPrice
     })
     
@@ -63,17 +87,33 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
           <Tooltip
             content={({ active, payload, label }) => {
               if (active && payload && payload.length) {
+                const dataPoint = payload[0].payload
                 return (
                   <div style={{
                     background: '#1e293b',
                     color: 'white',
-                    padding: '0.5rem',
-                    borderRadius: '0.375rem',
+                    padding: '0.75rem',
+                    borderRadius: '0.5rem',
                     fontSize: '0.75rem',
-                    border: 'none'
+                    border: 'none',
+                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)',
+                    minWidth: '150px'
                   }}>
-                    <p style={{ margin: 0 }}>{label}</p>
-                    <p style={{ margin: 0, fontWeight: 'bold' }}>
+                    <p style={{ 
+                      margin: '0 0 0.25rem 0', 
+                      color: '#94a3b8',
+                      fontSize: '0.625rem',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em'
+                    }}>
+                      {dataPoint.fullDate}
+                    </p>
+                    <p style={{ 
+                      margin: 0, 
+                      fontWeight: 'bold',
+                      fontSize: '0.875rem',
+                      color: '#f1f5f9'
+                    }}>
                       {formatPrice(payload[0].value)}
                     </p>
                   </div>
@@ -399,11 +439,11 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                     justifyContent: 'center',
                     width: '3rem',
                     height: '3rem',
-                    backgroundColor: '#fed7aa',
+                    backgroundColor: '#f3f4f6',
                     borderRadius: '50%',
                     marginBottom: '1rem'
                   }}>
-                    <span style={{ fontSize: '1.25rem' }}>💰</span>
+                    <span style={{ fontSize: '1.25rem' }}>📊</span>
                   </div>
                   <p style={{
                     fontWeight: 500,

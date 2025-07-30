@@ -951,7 +951,7 @@ const CardLibrary = ({
             <button
               onClick={onRefreshPrices}
               disabled={loading}
-              title="Update all card prices with random variations"
+              title="Refresh all card prices from database"
               style={{
                 padding: '0.375rem 0.75rem',
                 fontSize: '0.75rem',
