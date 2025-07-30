@@ -11,42 +11,74 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
   }
 
   const getPriceColor = (price) => {
-    if (price >= 100) return 'text-purple-600'
-    if (price >= 50) return 'text-orange-600'
-    return 'text-emerald-600'
+    if (price >= 100) return '#9333ea'
+    if (price >= 50) return '#ea580c'
+    return '#059669'
   }
 
   const getPriceBadgeColor = (price) => {
-    if (price >= 100) return 'badge-info'
-    if (price >= 50) return 'badge-warning'
-    return 'badge-success'
+    if (price >= 100) return { bg: '#eff6ff', color: '#1e40af', border: '#93c5fd' }
+    if (price >= 50) return { bg: '#fffbeb', color: '#92400e', border: '#fcd34d' }
+    return { bg: '#ecfdf5', color: '#065f46', border: '#a7f3d0' }
   }
 
   if (loading) {
     return (
-      <div className="text-center py-24">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full shadow-sm mb-6">
-          <div className="spinner"></div>
+      <div style={{ textAlign: 'center', paddingTop: '6rem', paddingBottom: '6rem' }}>
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '4rem',
+          height: '4rem',
+          backgroundColor: '#2563eb',
+          borderRadius: '50%',
+          boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+          marginBottom: '1.5rem'
+        }}>
+          <div style={{
+            width: '1.5rem',
+            height: '1.5rem',
+            border: '2px solid #ffffff',
+            borderTop: '2px solid transparent',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite'
+          }}></div>
         </div>
-        <p className="text-lg text-slate-600">Loading your card collection...</p>
+        <p style={{ fontSize: '1.125rem', color: '#475569' }}>Loading your card collection...</p>
       </div>
     )
   }
 
   if (cards.length === 0) {
     return (
-      <div className="text-center py-24">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-400 rounded-full shadow-sm mb-6">
-          <span className="text-2xl">📭</span>
+      <div style={{ textAlign: 'center', paddingTop: '6rem', paddingBottom: '6rem' }}>
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '4rem',
+          height: '4rem',
+          backgroundColor: '#94a3b8',
+          borderRadius: '50%',
+          boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+          marginBottom: '1.5rem'
+        }}>
+          <span style={{ fontSize: '1.5rem' }}>📭</span>
         </div>
-        <h3 className="text-xl font-semibold text-slate-700 mb-2">
+        <h3 style={{
+          fontSize: '1.25rem',
+          fontWeight: 600,
+          color: '#374151',
+          marginBottom: '0.5rem'
+        }}>
           {!isSupabaseConfigured ? 'Configuration Required' : 'No cards found'}
         </h3>
-        <p className="text-slate-600">
+        <p style={{ color: '#475569' }}>
           {!isSupabaseConfigured ? (
             <>
               Supabase environment variables need to be configured.<br />
-              <span className="text-sm text-slate-500">
+              <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>
                 Check the README for setup instructions.
               </span>
             </>
@@ -60,72 +92,187 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-        <p className="text-lg font-semibold text-slate-700">
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+        marginBottom: '2rem'
+      }}>
+        <p style={{
+          fontSize: '1.125rem',
+          fontWeight: 600,
+          color: '#374151'
+        }}>
           Found {cards.length} card{cards.length !== 1 ? 's' : ''}
         </p>
-        <div className="badge badge-success">
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          padding: '0.375rem 0.75rem',
+          fontSize: '0.75rem',
+          fontWeight: 500,
+          borderRadius: '0.5rem',
+          border: '1px solid',
+          backgroundColor: '#ecfdf5',
+          color: '#065f46',
+          borderColor: '#a7f3d0'
+        }}>
           💰 Live Prices
         </div>
       </div>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gap: '1.5rem'
+      }}>
         {cards.map((card, index) => (
           <div 
             key={index} 
-            className="card"
+            style={{
+              background: '#ffffff',
+              borderRadius: '0.75rem',
+              boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+              border: '1px solid #e2e8f0',
+              overflow: 'hidden',
+              transition: 'all 0.2s'
+            }}
           >
             {/* Card Header */}
-            <div className="bg-slate-50 px-6 py-4 border-b border-slate-200">
-              <h3 className="font-semibold text-slate-900 text-lg mb-1">
+            <div style={{
+              backgroundColor: '#f8fafc',
+              padding: '1rem 1.5rem',
+              borderBottom: '1px solid #e2e8f0'
+            }}>
+              <h3 style={{
+                fontWeight: 600,
+                color: '#0f172a',
+                fontSize: '1.125rem',
+                marginBottom: '0.25rem',
+                margin: 0,
+                marginBottom: '0.25rem'
+              }}>
                 {card.name || 'Unknown Card'}
               </h3>
-              <p className="text-slate-500 text-sm">
+              <p style={{
+                color: '#64748b',
+                fontSize: '0.875rem',
+                margin: 0
+              }}>
                 #{card.id?.substring(0, 8)}...
               </p>
             </div>
             
             {/* Card Content */}
-            <div className="p-6 gap-4">
+            <div style={{ padding: '1.5rem' }}>
               {card.latest_price && card.latest_price > 0 ? (
-                <div className="gap-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm text-slate-500">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: '1rem'
+                  }}>
+                    <span style={{
+                      fontSize: '0.875rem',
+                      color: '#64748b'
+                    }}>
                       Latest Price
                     </span>
-                    <span className={`text-2xl font-bold ${getPriceColor(card.latest_price)}`}>
+                    <span style={{
+                      fontSize: '1.5rem',
+                      fontWeight: 700,
+                      color: getPriceColor(card.latest_price)
+                    }}>
                       {formatPrice(card.latest_price)}
                     </span>
                   </div>
                   
-                  <div className="flex items-center justify-between gap-2">
-                    <span className={`badge ${getPriceBadgeColor(card.latest_price)}`}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '0.5rem'
+                  }}>
+                    <span style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      padding: '0.375rem 0.75rem',
+                      fontSize: '0.75rem',
+                      fontWeight: 500,
+                      borderRadius: '0.5rem',
+                      border: '1px solid',
+                      ...getPriceBadgeColor(card.latest_price)
+                    }}>
                       📊 {card.price_count} entries
                     </span>
                     {card.last_price_update && (
-                      <span className="badge badge-info">
+                      <span style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        padding: '0.375rem 0.75rem',
+                        fontSize: '0.75rem',
+                        fontWeight: 500,
+                        borderRadius: '0.5rem',
+                        border: '1px solid',
+                        backgroundColor: '#eff6ff',
+                        color: '#1e40af',
+                        borderColor: '#93c5fd'
+                      }}>
                         📅 {new Date(card.last_price_update).toLocaleDateString()}
                       </span>
                     )}
                   </div>
                 </div>
               ) : (
-                <div className="text-center py-6">
-                  <div className="inline-flex items-center justify-center w-12 h-12 bg-orange-100 rounded-full mb-4">
-                    <span className="text-xl">💰</span>
+                <div style={{ textAlign: 'center', paddingTop: '1.5rem', paddingBottom: '1.5rem' }}>
+                  <div style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '3rem',
+                    height: '3rem',
+                    backgroundColor: '#fed7aa',
+                    borderRadius: '50%',
+                    marginBottom: '1rem'
+                  }}>
+                    <span style={{ fontSize: '1.25rem' }}>💰</span>
                   </div>
-                  <p className="font-medium text-orange-700 mb-4">
+                  <p style={{
+                    fontWeight: 500,
+                    color: '#c2410c',
+                    marginBottom: '1rem'
+                  }}>
                     No Price Data
                   </p>
-                  <button className="btn btn-orange">
+                  <button style={{
+                    padding: '0.75rem 1.5rem',
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    color: '#ffffff',
+                    backgroundColor: '#ea580c',
+                    border: 'none',
+                    borderRadius: '0.5rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}>
                     🚀 Scrape Prices
                   </button>
                 </div>
               )}
               
               {/* Card Footer */}
-              <div className="pt-4 border-t border-slate-200 mt-4">
-                <p className="text-xs text-slate-400 text-center">
+              <div style={{
+                paddingTop: '1rem',
+                borderTop: '1px solid #e2e8f0',
+                marginTop: '1rem'
+              }}>
+                <p style={{
+                  fontSize: '0.75rem',
+                  color: '#9ca3af',
+                  textAlign: 'center',
+                  margin: 0
+                }}>
                   Added: {new Date(card.created_at).toLocaleDateString()}
                 </p>
               </div>

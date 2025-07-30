@@ -21,7 +21,6 @@ const Hero = ({ onSearch, loading, searchStatus }) => {
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
-            marginBottom: '2rem',
             margin: 0,
             marginBottom: '2rem'
           }}>
