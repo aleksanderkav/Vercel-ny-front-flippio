@@ -1,8 +1,8 @@
-# Trading Card Tracker Frontend v8.0.0
+# Trading Card Tracker Frontend v8.0.1
 
 A modern React frontend for tracking trading card prices with real-time market data.
 
-**🚀 Deployment Status: RAILWAY v8.0.0 - Deployed to rail-flipping-front repository**
+**🚀 Deployment Status: RAILWAY v8.0.1 - Environment variables debugging added**
 
 ## 🚀 Features
 

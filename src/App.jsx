@@ -8,7 +8,7 @@ function App() {
   const [libraryLoading, setLibraryLoading] = useState(true)
   
   // Version tracking - prominently displayed
-  const APP_VERSION = '8.0.0'
+  const APP_VERSION = '8.0.1'
 
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
   const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
@@ -25,7 +25,7 @@ function App() {
   const fetchCards = async () => {
     try {
       setLibraryLoading(true)
-      console.log('=== FETCHING CARDS WITH PRICES (v8.0.0) ===')
+      console.log('=== FETCHING CARDS WITH PRICES (v8.0.1) ===')
       
       // Check if environment variables are set
       if (!supabaseUrl || !supabaseAnonKey) {
@@ -257,10 +257,19 @@ function App() {
                   <span className="text-2xl">📭</span>
                 </div>
                 <h3 className="text-xl font-semibold text-slate-700 mb-2">
-                  No cards found
+                  {!supabaseUrl || !supabaseAnonKey ? 'Configuration Required' : 'No cards found'}
                 </h3>
                 <p className="text-slate-600">
-                  Start by searching for a card above to build your collection
+                  {!supabaseUrl || !supabaseAnonKey ? (
+                    <>
+                      Supabase environment variables need to be configured in Railway.<br />
+                      <span className="text-sm text-slate-500">
+                        Check the README for setup instructions.
+                      </span>
+                    </>
+                  ) : (
+                    'Start by searching for a card above to build your collection'
+                  )}
                 </p>
               </div>
             ) : (
