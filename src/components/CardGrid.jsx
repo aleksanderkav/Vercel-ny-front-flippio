@@ -148,7 +148,6 @@ const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
                 fontWeight: 600,
                 color: '#0f172a',
                 fontSize: '1.125rem',
-                marginBottom: '0.25rem',
                 margin: 0,
                 marginBottom: '0.25rem'
               }}>

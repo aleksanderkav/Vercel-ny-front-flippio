@@ -13,7 +13,10 @@ function App() {
   // Version tracking - prominently displayed
   const APP_VERSION = '1.0.0'
 
+  console.log('🚀 App component rendering...', { APP_VERSION, isSupabaseConfigured })
+
   useEffect(() => {
+    console.log('🔄 App useEffect running...')
     fetchCards()
   }, [])
 
@@ -85,12 +88,29 @@ function App() {
     }
   }
 
+  console.log('🎨 Rendering App component with:', { cards: cards.length, loading, libraryLoading })
+
   return (
     <div style={{
       minHeight: '100vh',
       background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
+      {/* Fallback content in case components fail */}
+      <div style={{
+        position: 'fixed',
+        top: '10px',
+        left: '10px',
+        background: 'rgba(0,0,0,0.8)',
+        color: 'white',
+        padding: '10px',
+        borderRadius: '5px',
+        fontSize: '12px',
+        zIndex: 9999
+      }}>
+        App Loading... v{APP_VERSION}
+      </div>
+      
       <Header version={APP_VERSION} />
       <Hero 
         onSearch={handleSearch}
