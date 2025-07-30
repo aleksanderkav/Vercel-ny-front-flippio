@@ -55,6 +55,7 @@ const CardLibrary = ({
               {showSearch ? '✖ Close Search' : '➕ Search for New Cards'}
             </button>
           </div>
+          
           {showSearch && (
             <div style={{
               marginBottom: '2rem',
@@ -69,7 +70,7 @@ const CardLibrary = ({
             </div>
           )}
 
-          {/* Filter and Sort Controls - Ultra Compact Design */}
+          {/* Filter and Sort Controls */}
           <div style={{
             background: 'rgba(255, 255, 255, 0.9)',
             backdropFilter: 'blur(16px)',
@@ -78,7 +79,8 @@ const CardLibrary = ({
             border: '1px solid rgba(226, 232, 240, 0.6)',
             padding: '1rem',
             position: 'relative',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            marginBottom: '1.5rem'
           }}>
             {/* Decorative gradient overlay */}
             <div style={{
@@ -229,10 +231,12 @@ const CardLibrary = ({
             </div>
           </div>
           
+          {/* Action Buttons */}
           <div style={{
             display: 'flex',
             gap: '0.5rem',
-            flexWrap: 'wrap'
+            flexWrap: 'wrap',
+            marginBottom: '2rem'
           }}>
             <button
               onClick={onRefresh}
@@ -304,8 +308,8 @@ const CardLibrary = ({
               )}
             </button>
           </div>
-          </div>
           
+          {/* Card Grid */}
           <CardGrid 
             cards={cards}
             loading={loading}
