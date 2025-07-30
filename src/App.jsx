@@ -10,13 +10,14 @@ import { scrapeAndInsertCard, batchScrapeCards, getCardStats } from './lib/cardS
 function App() {
   // Build timestamp for cache busting
   console.log('🚀 App loaded at:', new Date().toISOString())
-  console.log('📦 Version: 1.2.7')
+  console.log('📦 Version: 1.2.8')
   
   const [cards, setCards] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchStatus, setSearchStatus] = useState('')
   const [filterCategory, setFilterCategory] = useState('all')
   const [sortBy, setSortBy] = useState('name')
+  const [librarySearch, setLibrarySearch] = useState('')
 
   useEffect(() => {
     loadCards()
@@ -194,6 +195,17 @@ function App() {
   const getFilteredAndSortedCards = () => {
     let filteredCards = [...cards]
     
+    // Apply library search filter
+    if (librarySearch.trim()) {
+      const searchTerm = librarySearch.toLowerCase()
+      filteredCards = filteredCards.filter(card => 
+        card.name.toLowerCase().includes(searchTerm) ||
+        (card.category && card.category.toLowerCase().includes(searchTerm)) ||
+        (card.card_type && card.card_type.toLowerCase().includes(searchTerm)) ||
+        (card.set_name && card.set_name.toLowerCase().includes(searchTerm))
+      )
+    }
+    
     // Apply category filter
     if (filterCategory !== 'all') {
       filteredCards = filteredCards.filter(card => {
@@ -316,6 +328,8 @@ function App() {
           setFilterCategory={setFilterCategory}
           sortBy={sortBy}
           setSortBy={setSortBy}
+          librarySearch={librarySearch}
+          setLibrarySearch={setLibrarySearch}
           onSearch={handleSearch}
           searchStatus={searchStatus}
         />

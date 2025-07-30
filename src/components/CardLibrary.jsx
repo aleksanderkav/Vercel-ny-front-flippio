@@ -13,10 +13,11 @@ const CardLibrary = ({
   setFilterCategory,
   sortBy = 'name',
   setSortBy,
+  librarySearch = '',
+  setLibrarySearch,
   onSearch,
   searchStatus
 }) => {
-  const [showSearch, setShowSearch] = useState(false)
   const [showScraper, setShowScraper] = useState(false)
   const [scrapingMode, setScrapingMode] = useState('single')
   const [singleCardName, setSingleCardName] = useState('')
@@ -139,24 +140,65 @@ const CardLibrary = ({
             >
               {showScraper ? '✖ Close Scraper' : '🎯 Card Scraper'}
             </button>
-            <button
-              onClick={() => setShowSearch(v => !v)}
-              style={{
-                padding: '0.75rem 1.5rem',
+
+          </div>
+
+          {/* Library Search */}
+          <div style={{
+            display: 'flex',
+            gap: '0.5rem',
+            alignItems: 'center',
+            marginBottom: '1.5rem'
+          }}>
+            <div style={{
+              position: 'relative',
+              flex: 1,
+              maxWidth: '400px'
+            }}>
+              <input
+                type="text"
+                value={librarySearch}
+                onChange={(e) => setLibrarySearch(e.target.value)}
+                placeholder="🔍 Search cards in library..."
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem 0.75rem 2.5rem',
+                  fontSize: '0.875rem',
+                  border: '1px solid rgba(203, 213, 225, 0.6)',
+                  borderRadius: '0.5rem',
+                  outline: 'none',
+                  transition: 'all 0.2s',
+                  backgroundColor: 'rgba(255, 255, 255, 0.8)'
+                }}
+              />
+              <span style={{
+                position: 'absolute',
+                left: '0.75rem',
+                top: '50%',
+                transform: 'translateY(-50%)',
                 fontSize: '1rem',
-                fontWeight: 700,
-                color: '#fff',
-                backgroundColor: '#6366f1',
-                border: 'none',
-                borderRadius: '0.75rem',
-                cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(99, 102, 241, 0.15)',
-                transition: 'all 0.2s',
-                outline: 'none'
-              }}
-            >
-              {showSearch ? '✖ Close Search' : '➕ Search for New Cards'}
-            </button>
+                color: '#6b7280'
+              }}>
+                🔍
+              </span>
+            </div>
+            {librarySearch && (
+              <button
+                onClick={() => setLibrarySearch('')}
+                style={{
+                  padding: '0.5rem 0.75rem',
+                  fontSize: '0.75rem',
+                  color: '#6b7280',
+                  backgroundColor: 'rgba(243, 244, 246, 0.8)',
+                  border: '1px solid rgba(203, 213, 225, 0.6)',
+                  borderRadius: '0.375rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                Clear
+              </button>
+            )}
           </div>
           
           {showScraper && (
