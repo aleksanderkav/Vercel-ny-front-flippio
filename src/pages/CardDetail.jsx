@@ -9,9 +9,14 @@ const CardDetail = () => {
   const [card, setCard] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const [imageError, setImageError] = useState(false)
 
   useEffect(() => {
     loadCardDetails()
+    // Reset image states when card changes
+    setImageLoaded(false)
+    setImageError(false)
   }, [slug])
 
   const loadCardDetails = async () => {
@@ -204,16 +209,20 @@ const CardDetail = () => {
                   style={cardImageStyle}
                   onError={(e) => {
                     console.log('❌ Image failed to load:', card.image_url);
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'flex';
+                    setImageError(true);
+                    setImageLoaded(false);
                   }}
                   onLoad={(e) => {
                     console.log('✅ Image loaded successfully:', card.image_url);
-                    e.target.nextSibling.style.display = 'none';
+                    setImageLoaded(true);
+                    setImageError(false);
                   }}
                 />
               ) : null}
-              <div style={imagePlaceholderStyle}>
+              <div style={{
+                ...imagePlaceholderStyle,
+                display: (card.image_url && imageLoaded && !imageError) ? 'none' : 'flex'
+              }}>
                 <div style={imageIconStyle}>🃏</div>
                 <p style={imageTextStyle}>Card Image</p>
               </div>
