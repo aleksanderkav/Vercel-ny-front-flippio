@@ -68,6 +68,8 @@ function MainApp() {
       }
       
       console.log('📊 Loaded cards:', data)
+      console.log('🖼️ Cards with images:', data?.filter(card => card.image_url).length || 0)
+      console.log('🔍 Sample card data:', data?.[0])
       console.log('💰 Cards with prices:', data?.filter(card => card.latest_price && card.latest_price > 0))
       console.log('📈 Price statistics:', {
         total: data?.length || 0,

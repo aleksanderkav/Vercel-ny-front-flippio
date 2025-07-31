@@ -7,6 +7,8 @@ import { colors, typography, spacing, borderRadius, shadows, getPriceColor, form
 
 const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) => {
   console.log('CardGrid received cards:', cards)
+  console.log('Cards with images:', cards.filter(card => card.image_url).length)
+  console.log('Sample card image_url:', cards[0]?.image_url)
   console.log('Cards with prices:', cards.filter(card => card.latest_price > 0))
 
   const generateSlug = (cardName) => {
