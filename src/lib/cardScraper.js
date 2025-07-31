@@ -416,41 +416,36 @@ async function simulateEbayImageScraping(cardName) {
     // Simulate network delay for image scraping
     await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
     
-    // Generate realistic eBay image URLs based on card characteristics
+    // Generate realistic eBay-style image URLs
     const nameLower = cardName.toLowerCase();
+    const timestamp = Date.now();
+    const randomId = Math.floor(Math.random() * 1000000);
     
-    // For Pokemon cards, use realistic image patterns
+    // Create eBay-style image URLs based on card characteristics
     if (nameLower.includes('charizard')) {
-        return 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=600&fit=crop';
+        return `https://i.ebayimg.com/images/g/${randomId}/s-l1600.jpg`;
     } else if (nameLower.includes('pikachu')) {
-        return 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop';
+        return `https://i.ebayimg.com/images/g/${randomId + 1}/s-l1600.jpg`;
     } else if (nameLower.includes('mewtwo')) {
-        return 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=600&fit=crop';
+        return `https://i.ebayimg.com/images/g/${randomId + 2}/s-l1600.jpg`;
     } else if (nameLower.includes('blastoise')) {
-        return 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop';
+        return `https://i.ebayimg.com/images/g/${randomId + 3}/s-l1600.jpg`;
     } else if (nameLower.includes('venusaur')) {
-        return 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=600&fit=crop';
+        return `https://i.ebayimg.com/images/g/${randomId + 4}/s-l1600.jpg`;
+    } else if (nameLower.includes('jordan')) {
+        return `https://i.ebayimg.com/images/g/${randomId + 5}/s-l1600.jpg`;
+    } else if (nameLower.includes('lebron')) {
+        return `https://i.ebayimg.com/images/g/${randomId + 6}/s-l1600.jpg`;
+    } else if (nameLower.includes('brady')) {
+        return `https://i.ebayimg.com/images/g/${randomId + 7}/s-l1600.jpg`;
+    } else if (nameLower.includes('mahomes')) {
+        return `https://i.ebayimg.com/images/g/${randomId + 8}/s-l1600.jpg`;
+    } else if (nameLower.includes('kobe')) {
+        return `https://i.ebayimg.com/images/g/${randomId + 9}/s-l1600.jpg`;
     }
     
-    // For sports cards
-    if (nameLower.includes('jordan') || nameLower.includes('lebron') || nameLower.includes('brady')) {
-        return 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=600&fit=crop';
-    }
-    
-    // For Magic cards
-    if (nameLower.includes('black lotus') || nameLower.includes('magic') || nameLower.includes('mtg')) {
-        return 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=600&fit=crop';
-    }
-    
-    // Default card image (placeholder)
-    const cardImages = [
-        'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=600&fit=crop'
-    ];
-    
-    return cardImages[Math.floor(Math.random() * cardImages.length)];
+    // Default eBay-style image URL
+    return `https://i.ebayimg.com/images/g/${randomId}/s-l1600.jpg`;
 }
 
 /**
