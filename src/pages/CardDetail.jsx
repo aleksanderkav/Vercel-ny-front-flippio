@@ -16,8 +16,16 @@ const CardDetail = () => {
   const loadCardDetails = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`/api/public/cards/detail?slug=${encodeURIComponent(slug)}`)
+      console.log('🔍 Loading card details for slug:', slug)
+      
+      const apiUrl = `/api/public/cards/detail?slug=${encodeURIComponent(slug)}`
+      console.log('🔗 API URL:', apiUrl)
+      
+      const response = await fetch(apiUrl)
+      console.log('📡 Response status:', response.status)
+      
       const data = await response.json()
+      console.log('📦 Response data:', data)
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to load card details')
@@ -25,6 +33,7 @@ const CardDetail = () => {
 
       setCard(data.data)
     } catch (err) {
+      console.error('❌ Error loading card details:', err)
       setError(err.message)
     } finally {
       setLoading(false)

@@ -3,11 +3,16 @@ import { supabase } from '../../../lib/supabase.js'
 // GET /api/public/cards/detail?slug=card-name or /api/public/cards/detail?id=uuid
 export async function GET(request) {
   try {
+    console.log('🔍 API endpoint called:', request.url)
+    
     const { searchParams } = new URL(request.url)
     const slug = searchParams.get('slug')
     const id = searchParams.get('id')
+    
+    console.log('📝 Parameters - slug:', slug, 'id:', id)
 
     if (!slug && !id) {
+      console.log('❌ No slug or id provided')
       return new Response(JSON.stringify({ 
         error: 'Either slug or id parameter is required' 
       }), {
@@ -49,6 +54,8 @@ export async function GET(request) {
     // If no card found by ID or slug is provided, try by name
     if (!card && slug) {
       const slugifiedName = slug.replace(/-/g, ' ').toLowerCase()
+      console.log('🔍 Searching for card with slugified name:', slugifiedName)
+      
       const { data: cardsByName, error: nameError } = await supabase
         .from('cards')
         .select(`
@@ -70,7 +77,11 @@ export async function GET(request) {
         .ilike('name', `%${slugifiedName}%`)
         .limit(1)
 
+      console.log('📦 Cards found by name:', cardsByName)
+      console.log('❌ Name error:', nameError)
+
       if (nameError || !cardsByName || cardsByName.length === 0) {
+        console.log('❌ No cards found with name search')
         return new Response(JSON.stringify({ 
           error: 'Card not found',
           details: 'No card found with the provided slug or name' 
@@ -81,6 +92,7 @@ export async function GET(request) {
       }
       
       card = cardsByName[0]
+      console.log('✅ Card found:', card.name)
     }
 
     // If still no card found, return error
