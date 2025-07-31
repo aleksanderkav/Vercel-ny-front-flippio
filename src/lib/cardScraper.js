@@ -554,13 +554,27 @@ async function scrapeRealCardImage(cardName) {
         // 1. Pokemon TCG API (for Pokemon cards)
         async () => {
             if (nameLower.includes('charizard') || nameLower.includes('pikachu') || 
-                nameLower.includes('mewtwo') || nameLower.includes('pokemon')) {
+                nameLower.includes('mewtwo') || nameLower.includes('blastoise') || 
+                nameLower.includes('venusaur') || nameLower.includes('rayquaza') ||
+                nameLower.includes('pokemon')) {
                 try {
-                    const searchTerm = cardName.replace(/\s+/g, '+');
-                    const response = await fetch(`https://api.pokemontcg.io/v2/cards?q=name:"${searchTerm}"&pageSize=1`);
-                    const data = await response.json();
-                    if (data.data && data.data.length > 0) {
-                        return data.data[0].images.small || data.data[0].images.large;
+                    // Extract the Pokemon name from the card name
+                    let pokemonName = '';
+                    if (nameLower.includes('charizard')) pokemonName = 'charizard';
+                    else if (nameLower.includes('pikachu')) pokemonName = 'pikachu';
+                    else if (nameLower.includes('mewtwo')) pokemonName = 'mewtwo';
+                    else if (nameLower.includes('blastoise')) pokemonName = 'blastoise';
+                    else if (nameLower.includes('venusaur')) pokemonName = 'venusaur';
+                    else if (nameLower.includes('rayquaza')) pokemonName = 'rayquaza';
+                    
+                    if (pokemonName) {
+                        // Search for the specific Pokemon
+                        const response = await fetch(`https://api.pokemontcg.io/v2/cards?q=name:"${pokemonName}"&pageSize=5`);
+                        const data = await response.json();
+                        if (data.data && data.data.length > 0) {
+                            // Return the first result (should be the correct Pokemon)
+                            return data.data[0].images.small || data.data[0].images.large;
+                        }
                     }
                 } catch (error) {
                     console.log('Pokemon TCG API failed:', error);
