@@ -538,10 +538,13 @@ async function updateExistingCard(cardId, scrapedData) {
             latest_price: scrapedData.latest_price
         };
         
-        // Only update image if we don't already have one
+        // Always update image URL if we have one from scraping
         if (scrapedData.image_url) {
             updateData.image_url = scrapedData.image_url;
+            console.log(`🖼️ Adding image URL to update: ${scrapedData.image_url}`);
         }
+        
+        console.log(`🔄 Updating card with data:`, updateData);
         
         const { data, error } = await supabase
             .from('cards')
