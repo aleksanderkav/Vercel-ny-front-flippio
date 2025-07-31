@@ -319,13 +319,14 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
             </div>
             
             {/* Card Image */}
-            {card.image_url && (
-              <div style={{
-                width: '100%',
-                height: '200px',
-                background: colors.surfaceHover,
-                borderBottom: '1px solid rgba(226, 232, 240, 0.4)'
-              }}>
+            <div style={{
+              width: '100%',
+              height: '200px',
+              background: colors.surfaceHover,
+              borderBottom: '1px solid rgba(226, 232, 240, 0.4)',
+              position: 'relative'
+            }}>
+              {card.image_url && (
                 <img 
                   src={card.image_url} 
                   alt={card.name}
@@ -335,25 +336,27 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
                     objectFit: 'cover'
                   }}
                   onError={(e) => {
+                    console.log('❌ Card image failed to load:', card.image_url);
                     e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                  onLoad={(e) => {
+                    console.log('✅ Card image loaded successfully:', card.image_url);
+                    e.target.nextSibling.style.display = 'none';
                   }}
                 />
-              </div>
-            )}
-            {!card.image_url && (
+              )}
               <div style={{
                 width: '100%',
-                height: '200px',
-                background: colors.surfaceHover,
-                borderBottom: '1px solid rgba(226, 232, 240, 0.4)',
-                display: 'flex',
+                height: '100%',
+                display: card.image_url ? 'none' : 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: colors.textSecondary
               }}>
                 <div>🃏 No Image</div>
               </div>
-            )}
+            </div>
             
             {/* Card Content */}
             <div style={{ padding: '1rem' }}>

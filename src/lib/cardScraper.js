@@ -416,58 +416,58 @@ async function simulateEbayImageScraping(cardName) {
     // Simulate network delay for image scraping
     await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
     
-    // Generate realistic eBay-style image URLs
+    // Generate realistic placeholder image URLs using Picsum Photos
     const nameLower = cardName.toLowerCase();
-    const timestamp = Date.now();
-    const randomId = Math.floor(Math.random() * 1000000);
+    const randomId = Math.floor(Math.random() * 1000);
     
-    // Create eBay-style image URLs based on card characteristics
+    // Create placeholder image URLs based on card characteristics
+    // Using Picsum Photos for realistic placeholder images
     if (nameLower.includes('charizard')) {
-        return `https://i.ebayimg.com/images/g/${randomId}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId}&blur=1`;
     } else if (nameLower.includes('pikachu')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 1}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 1}&blur=1`;
     } else if (nameLower.includes('mewtwo')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 2}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 2}&blur=1`;
     } else if (nameLower.includes('blastoise')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 3}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 3}&blur=1`;
     } else if (nameLower.includes('venusaur')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 4}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 4}&blur=1`;
     } else if (nameLower.includes('rayquaza')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 10}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 10}&blur=1`;
     } else if (nameLower.includes('sylveon')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 11}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 11}&blur=1`;
     } else if (nameLower.includes('umbreon')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 12}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 12}&blur=1`;
     } else if (nameLower.includes('espeon')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 13}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 13}&blur=1`;
     } else if (nameLower.includes('vaporeon')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 14}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 14}&blur=1`;
     } else if (nameLower.includes('jolteon')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 15}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 15}&blur=1`;
     } else if (nameLower.includes('flareon')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 16}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 16}&blur=1`;
     } else if (nameLower.includes('leafeon')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 17}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 17}&blur=1`;
     } else if (nameLower.includes('glaceon')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 18}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 18}&blur=1`;
     } else if (nameLower.includes('jordan')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 20}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 20}&blur=1`;
     } else if (nameLower.includes('lebron')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 21}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 21}&blur=1`;
     } else if (nameLower.includes('brady')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 22}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 22}&blur=1`;
     } else if (nameLower.includes('mahomes')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 23}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 23}&blur=1`;
     } else if (nameLower.includes('kobe')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 24}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 24}&blur=1`;
     } else if (nameLower.includes('curry')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 25}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 25}&blur=1`;
     } else if (nameLower.includes('giannis')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 26}/s-l1600.jpg`;
+        return `https://picsum.photos/400/600?random=${randomId + 26}&blur=1`;
     }
     
-    // Default eBay-style image URL
-    return `https://i.ebayimg.com/images/g/${randomId}/s-l1600.jpg`;
+    // Default placeholder image URL
+    return `https://picsum.photos/400/600?random=${randomId}&blur=1`;
 }
 
 /**

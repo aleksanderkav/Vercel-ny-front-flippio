@@ -196,28 +196,28 @@ const CardDetail = () => {
         <div style={mainSectionStyle}>
           <div style={cardOverviewStyle}>
             {/* Card Image */}
-            {card.image_url ? (
-              <div style={imageContainerStyle}>
+            <div style={imageContainerStyle}>
+              {card.image_url ? (
                 <img 
                   src={card.image_url} 
                   alt={card.name}
                   style={cardImageStyle}
                   onError={(e) => {
+                    console.log('❌ Image failed to load:', card.image_url);
                     e.target.style.display = 'none';
                     e.target.nextSibling.style.display = 'flex';
                   }}
+                  onLoad={(e) => {
+                    console.log('✅ Image loaded successfully:', card.image_url);
+                    e.target.nextSibling.style.display = 'none';
+                  }}
                 />
-                <div style={imagePlaceholderStyle}>
-                  <div style={imageIconStyle}>🃏</div>
-                  <p style={imageTextStyle}>Card Image</p>
-                </div>
-              </div>
-            ) : (
+              ) : null}
               <div style={imagePlaceholderStyle}>
                 <div style={imageIconStyle}>🃏</div>
                 <p style={imageTextStyle}>Card Image</p>
               </div>
-            )}
+            </div>
 
             {/* Card Metadata */}
             <div style={metadataStyle}>
