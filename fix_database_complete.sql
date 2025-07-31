@@ -131,27 +131,65 @@ CREATE TABLE IF NOT EXISTS price_entries (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Create indexes for better performance
-CREATE INDEX IF NOT EXISTS idx_price_entries_card_id ON price_entries(card_id);
-CREATE INDEX IF NOT EXISTS idx_price_entries_timestamp ON price_entries(timestamp);
-CREATE INDEX IF NOT EXISTS idx_price_entries_source ON price_entries(source);
+-- Create indexes for better performance (only if they don't exist)
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_price_entries_card_id') THEN
+        CREATE INDEX idx_price_entries_card_id ON price_entries(card_id);
+        RAISE NOTICE 'Created index idx_price_entries_card_id';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_price_entries_timestamp') THEN
+        CREATE INDEX idx_price_entries_timestamp ON price_entries(timestamp);
+        RAISE NOTICE 'Created index idx_price_entries_timestamp';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_price_entries_source') THEN
+        CREATE INDEX idx_price_entries_source ON price_entries(source);
+        RAISE NOTICE 'Created index idx_price_entries_source';
+    END IF;
+END $$;
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE price_entries ENABLE ROW LEVEL SECURITY;
 
--- Create policy to allow anonymous read access
-DROP POLICY IF EXISTS "Allow anonymous read access" ON price_entries;
-CREATE POLICY "Allow anonymous read access" ON price_entries
-    FOR SELECT USING (true);
+-- Create policies only if they don't exist
+DO $$
+BEGIN
+    -- Check if read policy exists
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies 
+        WHERE tablename = 'price_entries' 
+        AND policyname = 'Allow anonymous read access'
+    ) THEN
+        CREATE POLICY "Allow anonymous read access" ON price_entries
+            FOR SELECT USING (true);
+        RAISE NOTICE 'Created read policy for price_entries';
+    END IF;
+    
+    -- Check if insert policy exists
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies 
+        WHERE tablename = 'price_entries' 
+        AND policyname = 'Allow anonymous insert access'
+    ) THEN
+        CREATE POLICY "Allow anonymous insert access" ON price_entries
+            FOR INSERT WITH CHECK (true);
+        RAISE NOTICE 'Created insert policy for price_entries';
+    END IF;
+END $$;
 
--- Create policy to allow anonymous insert access
-DROP POLICY IF EXISTS "Allow anonymous insert access" ON price_entries;
-CREATE POLICY "Allow anonymous insert access" ON price_entries
-    FOR INSERT WITH CHECK (true);
-
--- Grant permissions
+-- Grant permissions (safe to run multiple times)
 GRANT SELECT, INSERT ON price_entries TO anon;
-GRANT USAGE ON SEQUENCE price_entries_id_seq TO anon;
+
+-- Grant sequence usage if sequence exists
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.sequences WHERE sequence_name = 'price_entries_id_seq') THEN
+        GRANT USAGE ON SEQUENCE price_entries_id_seq TO anon;
+        RAISE NOTICE 'Granted sequence usage to anon';
+    END IF;
+END $$;
 
 -- ========================================
 -- STEP 3: Verify everything is working
