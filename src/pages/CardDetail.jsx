@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from 'recharts'
 import { colors, typography, spacing, borderRadius, shadows, getPriceColor, formatPrice } from '../styles/designSystem'
+import { supabase } from '../lib/supabase'
 
 const CardDetail = () => {
   const { slug } = useParams()
@@ -18,20 +19,106 @@ const CardDetail = () => {
       setLoading(true)
       console.log('🔍 Loading card details for slug:', slug)
       
-      const apiUrl = `/api/public/cards/detail?slug=${encodeURIComponent(slug)}`
-      console.log('🔗 API URL:', apiUrl)
+      // Convert slug back to searchable name
+      const searchName = slug.replace(/-/g, ' ').toLowerCase()
+      console.log('🔍 Searching for card with name:', searchName)
       
-      const response = await fetch(apiUrl)
-      console.log('📡 Response status:', response.status)
-      
-      const data = await response.json()
-      console.log('📦 Response data:', data)
+      // Find card by name
+      const { data: cards, error: cardError } = await supabase
+        .from('cards')
+        .select(`
+          id,
+          name,
+          latest_price,
+          price_entries_count,
+          category,
+          card_type,
+          set_name,
+          year,
+          grading,
+          rarity,
+          serial_number,
+          image_url,
+          created_at,
+          last_updated
+        `)
+        .ilike('name', `%${searchName}%`)
+        .limit(1)
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to load card details')
+      console.log('📦 Cards found:', cards)
+      console.log('❌ Card error:', cardError)
+
+      if (cardError || !cards || cards.length === 0) {
+        throw new Error('Card not found')
       }
 
-      setCard(data.data)
+      const card = cards[0]
+      console.log('✅ Card found:', card.name)
+
+      // Get price history for this card
+      const { data: priceHistory, error: priceError } = await supabase
+        .from('price_entries')
+        .select(`
+          id,
+          price,
+          source,
+          timestamp
+        `)
+        .eq('card_id', card.id)
+        .order('timestamp', { ascending: true })
+        .limit(50)
+
+      if (priceError) {
+        console.error('Price history error:', priceError)
+      }
+
+      // Get latest eBay affiliate link
+      const { data: latestEbayEntry, error: ebayError } = await supabase
+        .from('price_entries')
+        .select('source, price, timestamp')
+        .eq('card_id', card.id)
+        .eq('source', 'eBay')
+        .order('timestamp', { ascending: false })
+        .limit(1)
+
+      // Get similar cards based on set_name, grading, or category
+      const { data: similarCards, error: similarError } = await supabase
+        .from('cards')
+        .select(`
+          id,
+          name,
+          latest_price,
+          category,
+          set_name,
+          year,
+          grading,
+          rarity
+        `)
+        .or(`set_name.eq.${card.set_name},grading.eq.${card.grading},category.eq.${card.category}`)
+        .neq('id', card.id)
+        .limit(6)
+
+      if (similarError) {
+        console.error('Similar cards error:', similarError)
+      }
+
+      // Generate affiliate link
+      const affiliateLink = latestEbayEntry && latestEbayEntry.length > 0 
+        ? `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(card.name)}`
+        : null
+
+      const cardData = {
+        ...card,
+        slug: slug,
+        price_history: priceHistory || [],
+        similar_cards: similarCards || [],
+        affiliate_link: affiliateLink,
+        ebay_price: latestEbayEntry?.[0]?.price || null,
+        ebay_last_updated: latestEbayEntry?.[0]?.timestamp || null
+      }
+
+      console.log('📦 Final card data:', cardData)
+      setCard(cardData)
     } catch (err) {
       console.error('❌ Error loading card details:', err)
       setError(err.message)
