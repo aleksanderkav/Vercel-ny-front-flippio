@@ -432,16 +432,38 @@ async function simulateEbayImageScraping(cardName) {
         return `https://i.ebayimg.com/images/g/${randomId + 3}/s-l1600.jpg`;
     } else if (nameLower.includes('venusaur')) {
         return `https://i.ebayimg.com/images/g/${randomId + 4}/s-l1600.jpg`;
+    } else if (nameLower.includes('rayquaza')) {
+        return `https://i.ebayimg.com/images/g/${randomId + 10}/s-l1600.jpg`;
+    } else if (nameLower.includes('sylveon')) {
+        return `https://i.ebayimg.com/images/g/${randomId + 11}/s-l1600.jpg`;
+    } else if (nameLower.includes('umbreon')) {
+        return `https://i.ebayimg.com/images/g/${randomId + 12}/s-l1600.jpg`;
+    } else if (nameLower.includes('espeon')) {
+        return `https://i.ebayimg.com/images/g/${randomId + 13}/s-l1600.jpg`;
+    } else if (nameLower.includes('vaporeon')) {
+        return `https://i.ebayimg.com/images/g/${randomId + 14}/s-l1600.jpg`;
+    } else if (nameLower.includes('jolteon')) {
+        return `https://i.ebayimg.com/images/g/${randomId + 15}/s-l1600.jpg`;
+    } else if (nameLower.includes('flareon')) {
+        return `https://i.ebayimg.com/images/g/${randomId + 16}/s-l1600.jpg`;
+    } else if (nameLower.includes('leafeon')) {
+        return `https://i.ebayimg.com/images/g/${randomId + 17}/s-l1600.jpg`;
+    } else if (nameLower.includes('glaceon')) {
+        return `https://i.ebayimg.com/images/g/${randomId + 18}/s-l1600.jpg`;
     } else if (nameLower.includes('jordan')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 5}/s-l1600.jpg`;
+        return `https://i.ebayimg.com/images/g/${randomId + 20}/s-l1600.jpg`;
     } else if (nameLower.includes('lebron')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 6}/s-l1600.jpg`;
+        return `https://i.ebayimg.com/images/g/${randomId + 21}/s-l1600.jpg`;
     } else if (nameLower.includes('brady')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 7}/s-l1600.jpg`;
+        return `https://i.ebayimg.com/images/g/${randomId + 22}/s-l1600.jpg`;
     } else if (nameLower.includes('mahomes')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 8}/s-l1600.jpg`;
+        return `https://i.ebayimg.com/images/g/${randomId + 23}/s-l1600.jpg`;
     } else if (nameLower.includes('kobe')) {
-        return `https://i.ebayimg.com/images/g/${randomId + 9}/s-l1600.jpg`;
+        return `https://i.ebayimg.com/images/g/${randomId + 24}/s-l1600.jpg`;
+    } else if (nameLower.includes('curry')) {
+        return `https://i.ebayimg.com/images/g/${randomId + 25}/s-l1600.jpg`;
+    } else if (nameLower.includes('giannis')) {
+        return `https://i.ebayimg.com/images/g/${randomId + 26}/s-l1600.jpg`;
     }
     
     // Default eBay-style image URL
@@ -499,6 +521,7 @@ async function createNewCard(cardName, scrapedData) {
         
         console.log(`✅ Created new card: ${cardName} (ID: ${data.id}) with image: ${scrapedData.image_url}`);
         console.log(`📦 Full card data:`, cardData);
+        console.log(`🖼️ Image URL generated:`, scrapedData.image_url);
         return data;
     } catch (error) {
         console.error('Error creating new card:', error);
