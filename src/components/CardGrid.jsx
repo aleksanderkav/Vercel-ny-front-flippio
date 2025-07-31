@@ -6,12 +6,6 @@ import { isSupabaseConfigured } from '../lib/supabase'
 import { colors, typography, spacing, borderRadius, shadows, getPriceColor, formatPrice } from '../styles/designSystem'
 
 const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) => {
-  // Debug: Log card data to see if image_url exists
-  console.log('🔍 CardGrid received cards:', cards);
-  if (cards.length > 0) {
-    console.log('🔍 First card data:', cards[0]);
-    console.log('🔍 First card image_url:', cards[0].image_url);
-  }
   console.log('CardGrid received cards:', cards)
   console.log('Cards with prices:', cards.filter(card => card.latest_price > 0))
 
@@ -339,11 +333,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
                     objectFit: 'cover'
                   }}
                   onError={(e) => {
-                    console.log('❌ Image failed to load:', card.image_url);
                     e.target.style.display = 'none';
-                  }}
-                  onLoad={(e) => {
-                    console.log('✅ Image loaded successfully:', card.image_url);
                   }}
                 />
               </div>
