@@ -511,13 +511,20 @@ async function createNewCard(cardName, scrapedData) {
             image_url: scrapedData.image_url
         };
 
+        console.log(`🔄 Attempting to create new card with data:`, cardData);
+        
         const { data, error } = await supabase
             .from('cards')
             .insert(cardData)
             .select()
             .single();
         
-        if (error) throw error;
+        if (error) {
+            console.error('❌ Database insert error:', error);
+            throw error;
+        }
+        
+        console.log(`✅ Database insert successful. Created data:`, data);
         
         console.log(`✅ Created new card: ${cardName} (ID: ${data.id}) with image: ${scrapedData.image_url}`);
         console.log(`📦 Full card data:`, cardData);
@@ -546,12 +553,20 @@ async function updateExistingCard(cardId, scrapedData) {
         
         console.log(`🔄 Updating card with data:`, updateData);
         
+        console.log(`🔄 Attempting to update card ${cardId} with data:`, updateData);
+        
         const { data, error } = await supabase
             .from('cards')
             .update(updateData)
-            .eq('id', cardId);
+            .eq('id', cardId)
+            .select(); // Add select to get the updated data back
         
-        if (error) throw error;
+        if (error) {
+            console.error('❌ Database update error:', error);
+            throw error;
+        }
+        
+        console.log(`✅ Database update successful. Updated data:`, data);
         
         console.log(`✅ Updated existing card (ID: ${cardId}) with new price: $${scrapedData.latest_price} and image: ${scrapedData.image_url}`);
         return { id: cardId, latest_price: scrapedData.latest_price, image_url: scrapedData.image_url };
