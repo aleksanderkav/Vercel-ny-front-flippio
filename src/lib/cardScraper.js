@@ -413,6 +413,10 @@ async function simulateEbayScraping(cardName) {
 async function simulateEbayImageScraping(cardName) {
     console.log(`🖼️ Scraping real card images for: ${cardName}`);
     
+    // Generate unique seed based on card name and timestamp
+    const uniqueSeed = cardName.toLowerCase().split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) + Date.now();
+    const randomId = uniqueSeed % 1000;
+    
     // Simulate network delay for image scraping
     await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
     
@@ -430,7 +434,7 @@ async function simulateEbayImageScraping(cardName) {
             'https://images.pokemontcg.io/vivid-voltage/9.png',
             'https://images.pokemontcg.io/darkness-ablaze/4.png'
         ];
-        return pokemonImages[Math.floor(Math.random() * pokemonImages.length)];
+        return pokemonImages[randomId % pokemonImages.length];
     } else if (nameLower.includes('pikachu')) {
         const pikachuImages = [
             'https://images.pokemontcg.io/base1/58.png',
@@ -439,7 +443,7 @@ async function simulateEbayImageScraping(cardName) {
             'https://images.pokemontcg.io/pop-series-5/1.png',
             'https://images.pokemontcg.io/celebrations/1.png'
         ];
-        return pikachuImages[Math.floor(Math.random() * pikachuImages.length)];
+        return pikachuImages[randomId % pikachuImages.length];
     } else if (nameLower.includes('mewtwo')) {
         const mewtwoImages = [
             'https://images.pokemontcg.io/base1/10.png',
@@ -447,7 +451,7 @@ async function simulateEbayImageScraping(cardName) {
             'https://images.pokemontcg.io/legendary-collection/10.png',
             'https://images.pokemontcg.io/next-destinies/54.png'
         ];
-        return mewtwoImages[Math.floor(Math.random() * mewtwoImages.length)];
+        return mewtwoImages[randomId % mewtwoImages.length];
     } else if (nameLower.includes('blastoise')) {
         const blastoiseImages = [
             'https://images.pokemontcg.io/base1/2.png',
@@ -455,7 +459,7 @@ async function simulateEbayImageScraping(cardName) {
             'https://images.pokemontcg.io/base2/2.png',
             'https://images.pokemontcg.io/legendary-collection/2.png'
         ];
-        return blastoiseImages[Math.floor(Math.random() * blastoiseImages.length)];
+        return blastoiseImages[randomId % blastoiseImages.length];
     } else if (nameLower.includes('venusaur')) {
         const venusaurImages = [
             'https://images.pokemontcg.io/base1/15.png',
@@ -463,7 +467,7 @@ async function simulateEbayImageScraping(cardName) {
             'https://images.pokemontcg.io/base2/15.png',
             'https://images.pokemontcg.io/legendary-collection/15.png'
         ];
-        return venusaurImages[Math.floor(Math.random() * venusaurImages.length)];
+        return venusaurImages[randomId % venusaurImages.length];
     } else if (nameLower.includes('rayquaza')) {
         const rayquazaImages = [
             'https://images.pokemontcg.io/ex-dragon/97.png',
@@ -471,7 +475,7 @@ async function simulateEbayImageScraping(cardName) {
             'https://images.pokemontcg.io/roaring-skies/61.png',
             'https://images.pokemontcg.io/roaring-skies/61_hires.png'
         ];
-        return rayquazaImages[Math.floor(Math.random() * rayquazaImages.length)];
+        return rayquazaImages[randomId % rayquazaImages.length];
     } else if (nameLower.includes('jordan') || nameLower.includes('michael')) {
         // Basketball card images
         const jordanImages = [
@@ -480,14 +484,14 @@ async function simulateEbayImageScraping(cardName) {
             'https://www.tcdb.com/Images/Cards/Basketball/1989-90/Hoops/200-MichaelJordan.jpg',
             'https://www.tcdb.com/Images/Cards/Basketball/1990-91/Fleer/26-MichaelJordan.jpg'
         ];
-        return jordanImages[Math.floor(Math.random() * jordanImages.length)];
+        return jordanImages[randomId % jordanImages.length];
     } else if (nameLower.includes('lebron')) {
         const lebronImages = [
             'https://www.tcdb.com/Images/Cards/Basketball/2003-04/UpperDeck/221-LeBronJames.jpg',
             'https://www.tcdb.com/Images/Cards/Basketball/2003-04/Topps/221-LeBronJames.jpg',
             'https://www.tcdb.com/Images/Cards/Basketball/2004-05/UpperDeck/23-LeBronJames.jpg'
         ];
-        return lebronImages[Math.floor(Math.random() * lebronImages.length)];
+        return lebronImages[randomId % lebronImages.length];
     } else if (nameLower.includes('brady') || nameLower.includes('tom')) {
         // Football card images
         const bradyImages = [
@@ -495,32 +499,32 @@ async function simulateEbayImageScraping(cardName) {
             'https://www.tcdb.com/Images/Cards/Football/2000/Topps/340-TomBrady.jpg',
             'https://www.tcdb.com/Images/Cards/Football/2001/UpperDeck/254-TomBrady.jpg'
         ];
-        return bradyImages[Math.floor(Math.random() * bradyImages.length)];
+        return bradyImages[randomId % bradyImages.length];
     } else if (nameLower.includes('mahomes')) {
         const mahomesImages = [
             'https://www.tcdb.com/Images/Cards/Football/2017/Panini/327-PatrickMahomes.jpg',
             'https://www.tcdb.com/Images/Cards/Football/2018/Panini/327-PatrickMahomes.jpg'
         ];
-        return mahomesImages[Math.floor(Math.random() * mahomesImages.length)];
+        return mahomesImages[randomId % mahomesImages.length];
     } else if (nameLower.includes('kobe')) {
         const kobeImages = [
             'https://www.tcdb.com/Images/Cards/Basketball/1996-97/Topps/138-KobeBryant.jpg',
             'https://www.tcdb.com/Images/Cards/Basketball/1996-97/UpperDeck/58-KobeBryant.jpg',
             'https://www.tcdb.com/Images/Cards/Basketball/1997-98/Topps/123-KobeBryant.jpg'
         ];
-        return kobeImages[Math.floor(Math.random() * kobeImages.length)];
+        return kobeImages[randomId % kobeImages.length];
     } else if (nameLower.includes('curry')) {
         const curryImages = [
             'https://www.tcdb.com/Images/Cards/Basketball/2009-10/UpperDeck/200-StephenCurry.jpg',
             'https://www.tcdb.com/Images/Cards/Basketball/2009-10/Topps/321-StephenCurry.jpg'
         ];
-        return curryImages[Math.floor(Math.random() * curryImages.length)];
+        return curryImages[randomId % curryImages.length];
     } else if (nameLower.includes('giannis')) {
         const giannisImages = [
             'https://www.tcdb.com/Images/Cards/Basketball/2013-14/Panini/340-GiannisAntetokounmpo.jpg',
             'https://www.tcdb.com/Images/Cards/Basketball/2014-15/Panini/340-GiannisAntetokounmpo.jpg'
         ];
-        return giannisImages[Math.floor(Math.random() * giannisImages.length)];
+        return giannisImages[randomId % giannisImages.length];
     }
     
     // For other cards, try to find a generic image based on category
@@ -549,6 +553,10 @@ async function scrapeRealCardImage(cardName) {
     
     const nameLower = cardName.toLowerCase();
     
+    // Generate unique seed for this card to ensure different results
+    const uniqueSeed = cardName.toLowerCase().split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) + Date.now();
+    const randomOffset = uniqueSeed % 100;
+    
     // Try multiple image sources in order of preference
     const imageSources = [
         // 1. Pokemon TCG API (for Pokemon cards)
@@ -569,11 +577,12 @@ async function scrapeRealCardImage(cardName) {
                     
                     if (pokemonName) {
                         // Search for the specific Pokemon
-                        const response = await fetch(`https://api.pokemontcg.io/v2/cards?q=name:"${pokemonName}"&pageSize=5`);
+                        const response = await fetch(`https://api.pokemontcg.io/v2/cards?q=name:"${pokemonName}"&pageSize=10`);
                         const data = await response.json();
                         if (data.data && data.data.length > 0) {
-                            // Return the first result (should be the correct Pokemon)
-                            return data.data[0].images.small || data.data[0].images.large;
+                            // Use random offset to get different images for each card
+                            const imageIndex = randomOffset % Math.min(data.data.length, 5);
+                            return data.data[imageIndex].images.small || data.data[imageIndex].images.large;
                         }
                     }
                 } catch (error) {
