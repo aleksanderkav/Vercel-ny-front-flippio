@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from 'recharts'
 import { colors, typography, spacing, borderRadius, shadows, getPriceColor, formatPrice } from '../styles/designSystem'
 import { supabase } from '../lib/supabase'
+import { scrapeAndInsertCard } from '../lib/cardScraper'
 
 const CardDetail = () => {
   const { slug } = useParams()
@@ -11,12 +12,21 @@ const CardDetail = () => {
   const [error, setError] = useState(null)
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
+  
+  // Editing states
+  const [isEditing, setIsEditing] = useState(false)
+  const [editData, setEditData] = useState({})
+  const [saving, setSaving] = useState(false)
+  const [updatingImage, setUpdatingImage] = useState(false)
+  const [showEditButton, setShowEditButton] = useState(true)
 
   useEffect(() => {
     loadCardDetails()
     // Reset image states when card changes
     setImageLoaded(false)
     setImageError(false)
+    setIsEditing(false)
+    setEditData({})
   }, [slug])
 
   const loadCardDetails = async () => {
@@ -124,11 +134,107 @@ const CardDetail = () => {
 
       console.log('📦 Final card data:', cardData)
       setCard(cardData)
+      setEditData(cardData)
     } catch (err) {
       console.error('❌ Error loading card details:', err)
       setError(err.message)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleEditToggle = () => {
+    if (isEditing) {
+      // Cancel editing - reset to original data
+      setEditData(card)
+    }
+    setIsEditing(!isEditing)
+  }
+
+  const handleFieldChange = (field, value) => {
+    setEditData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const handleSave = async () => {
+    try {
+      setSaving(true)
+      console.log('💾 Saving card updates:', editData)
+
+      const { error } = await supabase
+        .from('cards')
+        .update({
+          name: editData.name,
+          category: editData.category,
+          card_type: editData.card_type,
+          set_name: editData.set_name,
+          year: editData.year,
+          grading: editData.grading,
+          rarity: editData.rarity,
+          serial_number: editData.serial_number,
+          image_url: editData.image_url,
+          last_updated: new Date().toISOString()
+        })
+        .eq('id', card.id)
+
+      if (error) {
+        throw error
+      }
+
+      console.log('✅ Card updated successfully')
+      
+      // Reload card data to get fresh data
+      await loadCardDetails()
+      setIsEditing(false)
+      
+      // Show success message
+      alert('✅ Card updated successfully!')
+      
+    } catch (err) {
+      console.error('❌ Error updating card:', err)
+      alert(`❌ Error updating card: ${err.message}`)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleUpdateImage = async () => {
+    try {
+      setUpdatingImage(true)
+      console.log('🖼️ Updating image for:', card.name)
+
+      // Use the card scraper to get a new image
+      const result = await scrapeAndInsertCard(card.name)
+      
+      if (result.success) {
+        console.log('✅ Image updated successfully')
+        
+        // Update the local state with new image
+        setCard(prev => ({
+          ...prev,
+          image_url: result.image_url || prev.image_url
+        }))
+        setEditData(prev => ({
+          ...prev,
+          image_url: result.image_url || prev.image_url
+        }))
+        
+        // Reset image states
+        setImageLoaded(false)
+        setImageError(false)
+        
+        alert('✅ Image updated successfully!')
+      } else {
+        throw new Error(result.error || 'Failed to update image')
+      }
+      
+    } catch (err) {
+      console.error('❌ Error updating image:', err)
+      alert(`❌ Error updating image: ${err.message}`)
+    } finally {
+      setUpdatingImage(false)
     }
   }
 
@@ -145,6 +251,37 @@ const CardDetail = () => {
 
   const generateSlug = (cardName) => {
     return cardName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+  }
+
+  const renderEditableField = (label, field, value, type = 'text', options = null) => {
+    if (isEditing) {
+      if (type === 'select' && options) {
+        return (
+          <select
+            value={value || ''}
+            onChange={(e) => handleFieldChange(field, e.target.value)}
+            style={editInputStyle}
+          >
+            <option value="">Select {label}</option>
+            {options.map(option => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </select>
+        )
+      }
+      
+      return (
+        <input
+          type={type}
+          value={value || ''}
+          onChange={(e) => handleFieldChange(field, e.target.value)}
+          style={editInputStyle}
+          placeholder={`Enter ${label.toLowerCase()}`}
+        />
+      )
+    }
+    
+    return <span style={metadataValueStyle}>{value || 'Unknown'}</span>
   }
 
   if (loading) {
@@ -193,7 +330,49 @@ const CardDetail = () => {
         <Link to="/" style={backButtonStyle}>
           ← Back to Collection
         </Link>
-        <h1 style={titleStyle}>{card.name}</h1>
+        <div style={headerContentStyle}>
+          <h1 style={titleStyle}>
+            {isEditing ? (
+              <input
+                type="text"
+                value={editData.name || ''}
+                onChange={(e) => handleFieldChange('name', e.target.value)}
+                style={editTitleStyle}
+                placeholder="Card name"
+              />
+            ) : (
+              card.name
+            )}
+          </h1>
+          
+          {/* Edit Controls */}
+          <div style={editControlsStyle}>
+            {isEditing ? (
+              <>
+                <button 
+                  onClick={handleSave}
+                  disabled={saving}
+                  style={saveButtonStyle}
+                >
+                  {saving ? '💾 Saving...' : '✅ Save Changes'}
+                </button>
+                <button 
+                  onClick={handleEditToggle}
+                  style={cancelButtonStyle}
+                >
+                  ❌ Cancel
+                </button>
+              </>
+            ) : (
+              <button 
+                onClick={handleEditToggle}
+                style={editButtonStyle}
+              >
+                ✏️ Edit Card
+              </button>
+            )}
+          </div>
+        </div>
       </div>
 
       <div style={contentStyle}>
@@ -202,18 +381,18 @@ const CardDetail = () => {
           <div style={cardOverviewStyle}>
             {/* Card Image */}
             <div style={imageContainerStyle}>
-              {card.image_url ? (
+              {(editData.image_url || card.image_url) ? (
                 <img 
-                  src={card.image_url} 
+                  src={editData.image_url || card.image_url} 
                   alt={card.name}
                   style={cardImageStyle}
                   onError={(e) => {
-                    console.log('❌ Image failed to load:', card.image_url);
+                    console.log('❌ Image failed to load:', editData.image_url || card.image_url);
                     setImageError(true);
                     setImageLoaded(false);
                   }}
                   onLoad={(e) => {
-                    console.log('✅ Image loaded successfully:', card.image_url);
+                    console.log('✅ Image loaded successfully:', editData.image_url || card.image_url);
                     setImageLoaded(true);
                     setImageError(false);
                   }}
@@ -221,10 +400,31 @@ const CardDetail = () => {
               ) : null}
               <div style={{
                 ...imagePlaceholderStyle,
-                display: (card.image_url && imageLoaded && !imageError) ? 'none' : 'flex'
+                display: ((editData.image_url || card.image_url) && imageLoaded && !imageError) ? 'none' : 'flex'
               }}>
                 <div style={imageIconStyle}>🃏</div>
                 <p style={imageTextStyle}>Card Image</p>
+              </div>
+              
+              {/* Image Update Button */}
+              <div style={imageControlsStyle}>
+                <button 
+                  onClick={handleUpdateImage}
+                  disabled={updatingImage}
+                  style={updateImageButtonStyle}
+                >
+                  {updatingImage ? '🔄 Updating...' : '🖼️ Update Image'}
+                </button>
+                
+                {isEditing && (
+                  <input
+                    type="url"
+                    value={editData.image_url || ''}
+                    onChange={(e) => handleFieldChange('image_url', e.target.value)}
+                    style={imageUrlInputStyle}
+                    placeholder="Or enter image URL manually"
+                  />
+                )}
               </div>
             </div>
 
@@ -233,35 +433,52 @@ const CardDetail = () => {
               <div style={metadataGridStyle}>
                 <div style={metadataItemStyle}>
                   <label style={metadataLabelStyle}>Set</label>
-                  <span style={metadataValueStyle}>{card.set_name || 'Unknown'}</span>
+                  {renderEditableField('Set', 'set_name', editData.set_name)}
                 </div>
                 
                 <div style={metadataItemStyle}>
                   <label style={metadataLabelStyle}>Year</label>
-                  <span style={metadataValueStyle}>{card.year || 'Unknown'}</span>
+                  {renderEditableField('Year', 'year', editData.year, 'number')}
                 </div>
                 
                 <div style={metadataItemStyle}>
                   <label style={metadataLabelStyle}>Grading</label>
-                  <span style={metadataValueStyle}>{card.grading || 'Ungraded'}</span>
+                  {renderEditableField('Grading', 'grading', editData.grading, 'select', [
+                    'Ungraded', 'PSA 1', 'PSA 2', 'PSA 3', 'PSA 4', 'PSA 5', 
+                    'PSA 6', 'PSA 7', 'PSA 8', 'PSA 9', 'PSA 10',
+                    'BGS 1', 'BGS 2', 'BGS 3', 'BGS 4', 'BGS 5',
+                    'BGS 6', 'BGS 7', 'BGS 8', 'BGS 9', 'BGS 9.5', 'BGS 10'
+                  ])}
                 </div>
                 
                 <div style={metadataItemStyle}>
                   <label style={metadataLabelStyle}>Category</label>
-                  <span style={metadataValueStyle}>{card.category || 'Other'}</span>
+                  {renderEditableField('Category', 'category', editData.category, 'select', [
+                    'Pokemon', 'Magic', 'Yu-Gi-Oh!', 'Basketball', 'Football', 
+                    'Baseball', 'Hockey', 'Soccer', 'Other'
+                  ])}
+                </div>
+                
+                <div style={metadataItemStyle}>
+                  <label style={metadataLabelStyle}>Card Type</label>
+                  {renderEditableField('Card Type', 'card_type', editData.card_type, 'select', [
+                    'Holo', 'Reverse Holo', 'Full Art', 'Secret Rare', 'Ultra Rare',
+                    'Common', 'Uncommon', 'Rare', 'Legendary', 'Other'
+                  ])}
                 </div>
                 
                 <div style={metadataItemStyle}>
                   <label style={metadataLabelStyle}>Rarity</label>
-                  <span style={metadataValueStyle}>{card.rarity || 'Unknown'}</span>
+                  {renderEditableField('Rarity', 'rarity', editData.rarity, 'select', [
+                    'Common', 'Uncommon', 'Rare', 'Ultra Rare', 'Secret Rare',
+                    'Legendary', 'Mythic', 'Promo', 'Other'
+                  ])}
                 </div>
                 
-                {card.serial_number && (
-                  <div style={metadataItemStyle}>
-                    <label style={metadataLabelStyle}>Serial #</label>
-                    <span style={metadataValueStyle}>{card.serial_number}</span>
-                  </div>
-                )}
+                <div style={metadataItemStyle}>
+                  <label style={metadataLabelStyle}>Serial #</label>
+                  {renderEditableField('Serial Number', 'serial_number', editData.serial_number)}
+                </div>
               </div>
 
               {/* Price Information */}
@@ -393,12 +610,86 @@ const backButtonStyle = {
   }
 }
 
+const headerContentStyle = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginTop: spacing.md
+}
+
 const titleStyle = {
   fontSize: typography.fontSize['4xl'],
   fontWeight: typography.fontWeight.bold,
   color: colors.textPrimary,
   margin: 0,
   lineHeight: typography.lineHeight.tight
+}
+
+const editTitleStyle = {
+  fontSize: typography.fontSize['4xl'],
+  fontWeight: typography.fontWeight.bold,
+  color: colors.textPrimary,
+  margin: 0,
+  lineHeight: typography.lineHeight.tight,
+  border: `1px solid ${colors.border}`,
+  borderRadius: borderRadius.md,
+  padding: spacing.sm,
+  background: colors.surface,
+  width: '100%'
+}
+
+const editControlsStyle = {
+  display: 'flex',
+  gap: spacing.sm,
+  marginTop: spacing.md
+}
+
+const editButtonStyle = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: spacing.xs,
+  padding: `${spacing.sm} ${spacing.lg}`,
+  background: colors.primary,
+  color: colors.white,
+  textDecoration: 'none',
+  borderRadius: borderRadius.full,
+  fontWeight: typography.fontWeight.semibold,
+  fontSize: typography.fontSize.sm,
+  transition: 'all 0.2s ease',
+  border: 'none',
+  cursor: 'pointer'
+}
+
+const saveButtonStyle = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: spacing.xs,
+  padding: `${spacing.sm} ${spacing.lg}`,
+  background: colors.success,
+  color: colors.white,
+  textDecoration: 'none',
+  borderRadius: borderRadius.full,
+  fontWeight: typography.fontWeight.semibold,
+  fontSize: typography.fontSize.sm,
+  transition: 'all 0.2s ease',
+  border: 'none',
+  cursor: 'pointer'
+}
+
+const cancelButtonStyle = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: spacing.xs,
+  padding: `${spacing.sm} ${spacing.lg}`,
+  background: colors.danger,
+  color: colors.white,
+  textDecoration: 'none',
+  borderRadius: borderRadius.full,
+  fontWeight: typography.fontWeight.semibold,
+  fontSize: typography.fontSize.sm,
+  transition: 'all 0.2s ease',
+  border: 'none',
+  cursor: 'pointer'
 }
 
 const contentStyle = {
@@ -458,6 +749,38 @@ const imageIconStyle = {
 const imageTextStyle = {
   fontSize: typography.fontSize.sm,
   margin: 0
+}
+
+const imageControlsStyle = {
+  display: 'flex',
+  gap: spacing.sm,
+  marginTop: spacing.md
+}
+
+const updateImageButtonStyle = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: spacing.xs,
+  padding: `${spacing.sm} ${spacing.lg}`,
+  background: colors.info,
+  color: colors.white,
+  textDecoration: 'none',
+  borderRadius: borderRadius.full,
+  fontWeight: typography.fontWeight.semibold,
+  fontSize: typography.fontSize.sm,
+  transition: 'all 0.2s ease',
+  border: 'none',
+  cursor: 'pointer'
+}
+
+const imageUrlInputStyle = {
+  flex: 1,
+  padding: spacing.sm,
+  border: `1px solid ${colors.border}`,
+  borderRadius: borderRadius.md,
+  background: colors.surface,
+  color: colors.textPrimary,
+  fontSize: typography.fontSize.sm
 }
 
 const metadataStyle = {
@@ -632,6 +955,16 @@ const errorStyle = {
   textAlign: 'center',
   padding: spacing.xl,
   color: colors.textSecondary
+}
+
+const editInputStyle = {
+  padding: spacing.sm,
+  border: `1px solid ${colors.border}`,
+  borderRadius: borderRadius.md,
+  background: colors.surface,
+  color: colors.textPrimary,
+  fontSize: typography.fontSize.sm,
+  width: '100%'
 }
 
 export default CardDetail 

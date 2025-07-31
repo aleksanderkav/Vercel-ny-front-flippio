@@ -29,8 +29,13 @@ export const colors = {
   
   // Status
   success: '#10B981',
+  successHover: '#059669',
   warning: '#F59E0B',
   error: '#EF4444',
+  danger: '#EF4444',
+  dangerHover: '#DC2626',
+  info: '#3B82F6',
+  infoHover: '#2563EB',
   
   // Price colors
   priceLow: '#10B981',

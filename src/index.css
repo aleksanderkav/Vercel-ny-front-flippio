@@ -618,4 +618,25 @@ body {
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(24px);
   border: 1px solid rgba(226, 232, 240, 0.5);
+}
+
+/* Button hover effects for CardDetail */
+button[style*="background: #2563EB"]:hover {
+  background: #1D4ED8 !important;
+  transform: translateY(-1px);
+}
+
+button[style*="background: #10B981"]:hover {
+  background: #059669 !important;
+  transform: translateY(-1px);
+}
+
+button[style*="background: #EF4444"]:hover {
+  background: #DC2626 !important;
+  transform: translateY(-1px);
+}
+
+button[style*="background: #3B82F6"]:hover {
+  background: #2563EB !important;
+  transform: translateY(-1px);
 } 
