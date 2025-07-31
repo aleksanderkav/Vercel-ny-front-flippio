@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts'
 import AdSlot from './AdSlot'
 import { isSupabaseConfigured } from '../lib/supabase'
@@ -7,6 +8,10 @@ import { colors, typography, spacing, borderRadius, shadows, getPriceColor, form
 const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) => {
   console.log('CardGrid received cards:', cards)
   console.log('Cards with prices:', cards.filter(card => card.latest_price > 0))
+
+  const generateSlug = (cardName) => {
+    return cardName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+  }
   
 
 
@@ -228,8 +233,8 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
         fontFamily: typography.fontFamily.primary
       }}>
         {cards.map((card, index) => {
-          // Add ad every 10th card
-          const shouldShowAd = (index + 1) % 10 === 0
+          // Add ads after cards 8 and 17
+          const shouldShowAd = (index + 1) === 8 || (index + 1) === 17
           
           return (
             <React.Fragment key={index}>
@@ -239,7 +244,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
                   margin: `${spacing.lg} 0`
                 }}>
                   <AdSlot 
-                    adSlot={`card-grid-${Math.floor(index / 10) + 1}`}
+                    adSlot={`card-grid-${index + 1}`}
                     adFormat="auto"
                     className="grid-ad-slot"
                   />
@@ -277,15 +282,28 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
                 justifyContent: 'space-between',
                 marginBottom: '0.5rem'
               }}>
-                <h3 style={{
-                  fontWeight: 700,
-                  color: '#1e293b',
-                  fontSize: '1.125rem',
-                  margin: 0,
-                  lineHeight: '1.3'
-                }}>
-                  {card.name || 'Unknown Card'}
-                </h3>
+                <Link 
+                  to={`/card/${generateSlug(card.name)}`}
+                  style={{
+                    textDecoration: 'none',
+                    color: 'inherit'
+                  }}
+                >
+                  <h3 style={{
+                    fontWeight: 700,
+                    color: '#1e293b',
+                    fontSize: '1.125rem',
+                    margin: 0,
+                    lineHeight: '1.3',
+                    cursor: 'pointer',
+                    transition: 'color 0.2s ease',
+                    '&:hover': {
+                      color: colors.primary
+                    }
+                  }}>
+                    {card.name || 'Unknown Card'}
+                  </h3>
+                </Link>
 
               </div>
               <p style={{

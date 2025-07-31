@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import CardLibrary from './components/CardLibrary'
+import CardDetail from './pages/CardDetail'
 import { supabase } from './lib/supabase'
 import PriceService from './lib/priceService'
 import ScrapingService from './lib/scrapingService'
@@ -12,7 +14,7 @@ import Embed from './pages/Embed'
 function App() {
   // Build timestamp for cache busting
   console.log('🚀 App loaded at:', new Date().toISOString())
-  console.log('📦 Version: 1.3.5')
+  console.log('📦 Version: 1.3.6')
   
   // Check if this is an embed request
   const isEmbed = window.location.pathname === '/embed' || window.location.search.includes('embed=true')
@@ -20,6 +22,18 @@ function App() {
   if (isEmbed) {
     return <Embed />
   }
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/card/:slug" element={<CardDetail />} />
+        <Route path="/" element={<MainApp />} />
+      </Routes>
+    </Router>
+  )
+}
+
+function MainApp() {
   
   const [cards, setCards] = useState([])
   const [loading, setLoading] = useState(false)
@@ -378,7 +392,7 @@ function App() {
       <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
 
         
-        <Header version="1.3.5" />
+        <Header version="1.3.6" />
         <CardLibrary 
           cards={filteredCards}
           loading={loading}
@@ -416,7 +430,7 @@ function App() {
               margin: 0,
               fontWeight: 600
             }}>
-              Trading Card Tracker v1.3.5
+              Trading Card Tracker v1.3.6
             </p>
             <p style={{
               color: '#6b7280',
@@ -474,6 +488,8 @@ function App() {
       </div>
     )
   }
+}
+
 }
 
 export default App

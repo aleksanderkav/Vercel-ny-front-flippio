@@ -1046,6 +1046,46 @@ const CardLibrary = ({
             className="search-ad-slot"
           />
 
+          {/* Left Sidebar Ad (Desktop Only) */}
+          <div style={{
+            display: 'none',
+            '@media (min-width: 1200px)': {
+              display: 'block',
+              position: 'fixed',
+              left: '1rem',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: '160px',
+              zIndex: 10
+            }
+          }}>
+            <AdSlot 
+              adSlot="left-sidebar"
+              adFormat="auto"
+              className="sidebar-ad-slot"
+            />
+          </div>
+
+          {/* Right Sidebar Ad (Desktop Only) */}
+          <div style={{
+            display: 'none',
+            '@media (min-width: 1200px)': {
+              display: 'block',
+              position: 'fixed',
+              right: '1rem',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: '160px',
+              zIndex: 10
+            }
+          }}>
+            <AdSlot 
+              adSlot="right-sidebar"
+              adFormat="auto"
+              className="sidebar-ad-slot"
+            />
+          </div>
+
           {/* Card Grid */}
           <CardGrid 
             cards={currentCards}
