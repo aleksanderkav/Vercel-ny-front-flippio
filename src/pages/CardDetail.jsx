@@ -16,7 +16,7 @@ const CardDetail = () => {
   const loadCardDetails = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`/api/public/cards/${slug}`)
+      const response = await fetch(`/api/public/cards/detail?slug=${encodeURIComponent(slug)}`)
       const data = await response.json()
 
       if (!response.ok) {

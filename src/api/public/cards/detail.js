@@ -1,43 +1,53 @@
 import { supabase } from '../../../lib/supabase.js'
 
-// GET /api/public/cards/[slug] - Get single card details by slug (public endpoint)
-export async function GET(request, { params }) {
+// GET /api/public/cards/detail?slug=card-name or /api/public/cards/detail?id=uuid
+export async function GET(request) {
   try {
-    const { slug } = params
+    const { searchParams } = new URL(request.url)
+    const slug = searchParams.get('slug')
+    const id = searchParams.get('id')
 
-    if (!slug) {
+    if (!slug && !id) {
       return new Response(JSON.stringify({ 
-        error: 'Card slug is required' 
+        error: 'Either slug or id parameter is required' 
       }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       })
     }
 
-    // First try to find by slug (if we have slug field)
-    let { data: card, error: cardError } = await supabase
-      .from('cards')
-      .select(`
-        id,
-        name,
-        latest_price,
-        price_entries_count,
-        category,
-        card_type,
-        set_name,
-        year,
-        grading,
-        rarity,
-        serial_number,
-        image_url,
-        created_at,
-        last_updated
-      `)
-      .eq('id', slug)
-      .single()
+    let card = null
+    let cardError = null
 
-    // If not found by ID, try by name (slugified)
-    if (cardError) {
+    // If ID is provided, try to find by ID first
+    if (id) {
+      const { data, error } = await supabase
+        .from('cards')
+        .select(`
+          id,
+          name,
+          latest_price,
+          price_entries_count,
+          category,
+          card_type,
+          set_name,
+          year,
+          grading,
+          rarity,
+          serial_number,
+          image_url,
+          created_at,
+          last_updated
+        `)
+        .eq('id', id)
+        .single()
+
+      card = data
+      cardError = error
+    }
+
+    // If no card found by ID or slug is provided, try by name
+    if (!card && slug) {
       const slugifiedName = slug.replace(/-/g, ' ').toLowerCase()
       const { data: cardsByName, error: nameError } = await supabase
         .from('cards')
@@ -71,6 +81,17 @@ export async function GET(request, { params }) {
       }
       
       card = cardsByName[0]
+    }
+
+    // If still no card found, return error
+    if (!card) {
+      return new Response(JSON.stringify({ 
+        error: 'Card not found',
+        details: 'No card found with the provided parameters' 
+      }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      })
     }
 
     // Get price history for this card
@@ -129,7 +150,7 @@ export async function GET(request, { params }) {
       success: true,
       data: {
         ...card,
-        slug: slug,
+        slug: slug || card.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
         price_history: priceHistory || [],
         similar_cards: similarCards || [],
         affiliate_link: affiliateLink,
