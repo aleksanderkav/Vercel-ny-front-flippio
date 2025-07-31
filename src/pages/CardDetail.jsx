@@ -195,11 +195,29 @@ const CardDetail = () => {
         {/* Main Card Info */}
         <div style={mainSectionStyle}>
           <div style={cardOverviewStyle}>
-            {/* Card Image Placeholder */}
-            <div style={imagePlaceholderStyle}>
-              <div style={imageIconStyle}>🃏</div>
-              <p style={imageTextStyle}>Card Image</p>
-            </div>
+            {/* Card Image */}
+            {card.image_url ? (
+              <div style={imageContainerStyle}>
+                <img 
+                  src={card.image_url} 
+                  alt={card.name}
+                  style={cardImageStyle}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+                <div style={imagePlaceholderStyle}>
+                  <div style={imageIconStyle}>🃏</div>
+                  <p style={imageTextStyle}>Card Image</p>
+                </div>
+              </div>
+            ) : (
+              <div style={imagePlaceholderStyle}>
+                <div style={imageIconStyle}>🃏</div>
+                <p style={imageTextStyle}>Card Image</p>
+              </div>
+            )}
 
             {/* Card Metadata */}
             <div style={metadataStyle}>
@@ -395,18 +413,33 @@ const cardOverviewStyle = {
   border: `1px solid ${colors.border}`
 }
 
-const imagePlaceholderStyle = {
-  width: '100%',
-  height: '400px',
-  background: colors.surfaceHover,
-  borderRadius: borderRadius.md,
-  border: `2px dashed ${colors.border}`,
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: colors.textSecondary
-}
+  const imageContainerStyle = {
+    position: 'relative',
+    width: '100%',
+    height: '400px'
+  }
+
+  const cardImageStyle = {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    borderRadius: borderRadius.md,
+    border: `1px solid ${colors.border}`,
+    boxShadow: shadows.md
+  }
+
+  const imagePlaceholderStyle = {
+    width: '100%',
+    height: '400px',
+    background: colors.surfaceHover,
+    borderRadius: borderRadius.md,
+    border: `2px dashed ${colors.border}`,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: colors.textSecondary
+  }
 
 const imageIconStyle = {
   fontSize: '4rem',

@@ -7,7 +7,7 @@ const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsI
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 /**
- * Simulate eBay scraping for card data
+ * Simulate eBay scraping for card data and images
  * In a real implementation, this would use a web scraping library like Puppeteer or Cheerio
  */
 async function simulateEbayScraping(cardName) {
@@ -388,6 +388,9 @@ async function simulateEbayScraping(cardName) {
     const serial_number = grading !== 'Ungraded' ? 
         `${Math.floor(Math.random() * 900000) + 100000}` : null;
     
+    // Simulate eBay image scraping
+    const image_url = await simulateEbayImageScraping(cardName);
+    
     return {
         latest_price,
         price_entries: Math.floor(Math.random() * 50) + 5,
@@ -398,8 +401,56 @@ async function simulateEbayScraping(cardName) {
         grading,
         rarity,
         serial_number,
+        image_url,
         source: 'eBay'
     };
+}
+
+/**
+ * Simulate eBay image scraping
+ * In a real implementation, this would scrape actual eBay listing images
+ */
+async function simulateEbayImageScraping(cardName) {
+    console.log(`🖼️ Simulating eBay image scraping for: ${cardName}`);
+    
+    // Simulate network delay for image scraping
+    await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
+    
+    // Generate realistic eBay image URLs based on card characteristics
+    const nameLower = cardName.toLowerCase();
+    
+    // For Pokemon cards, use realistic image patterns
+    if (nameLower.includes('charizard')) {
+        return 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=600&fit=crop';
+    } else if (nameLower.includes('pikachu')) {
+        return 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop';
+    } else if (nameLower.includes('mewtwo')) {
+        return 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=600&fit=crop';
+    } else if (nameLower.includes('blastoise')) {
+        return 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop';
+    } else if (nameLower.includes('venusaur')) {
+        return 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=600&fit=crop';
+    }
+    
+    // For sports cards
+    if (nameLower.includes('jordan') || nameLower.includes('lebron') || nameLower.includes('brady')) {
+        return 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=600&fit=crop';
+    }
+    
+    // For Magic cards
+    if (nameLower.includes('black lotus') || nameLower.includes('magic') || nameLower.includes('mtg')) {
+        return 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=600&fit=crop';
+    }
+    
+    // Default card image (placeholder)
+    const cardImages = [
+        'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=600&fit=crop',
+        'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop',
+        'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=600&fit=crop',
+        'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=600&fit=crop'
+    ];
+    
+    return cardImages[Math.floor(Math.random() * cardImages.length)];
 }
 
 /**
@@ -429,9 +480,18 @@ async function checkCardExists(cardName) {
  */
 async function createNewCard(cardName, scrapedData) {
     try {
-        // Create a minimal card object with only the most basic fields
+        // Create card object with all scraped data
         const cardData = {
-            name: cardName
+            name: cardName,
+            latest_price: scrapedData.latest_price,
+            category: scrapedData.category,
+            card_type: scrapedData.card_type,
+            set_name: scrapedData.set_name,
+            year: scrapedData.year,
+            grading: scrapedData.grading,
+            rarity: scrapedData.rarity,
+            serial_number: scrapedData.serial_number,
+            image_url: scrapedData.image_url
         };
 
         const { data, error } = await supabase
@@ -442,7 +502,7 @@ async function createNewCard(cardName, scrapedData) {
         
         if (error) throw error;
         
-        console.log(`✅ Created new card: ${cardName} (ID: ${data.id})`);
+        console.log(`✅ Created new card: ${cardName} (ID: ${data.id}) with image: ${scrapedData.image_url}`);
         return data;
     } catch (error) {
         console.error('Error creating new card:', error);
@@ -451,21 +511,28 @@ async function createNewCard(cardName, scrapedData) {
 }
 
 /**
- * Update existing card with new price data
+ * Update existing card with new price data and image
  */
 async function updateExistingCard(cardId, scrapedData) {
     try {
+        const updateData = {
+            latest_price: scrapedData.latest_price
+        };
+        
+        // Only update image if we don't already have one
+        if (scrapedData.image_url) {
+            updateData.image_url = scrapedData.image_url;
+        }
+        
         const { data, error } = await supabase
             .from('cards')
-            .update({
-                latest_price: scrapedData.latest_price
-            })
+            .update(updateData)
             .eq('id', cardId);
         
         if (error) throw error;
         
-        console.log(`✅ Updated existing card (ID: ${cardId}) with new price: $${scrapedData.latest_price}`);
-        return { id: cardId, latest_price: scrapedData.latest_price };
+        console.log(`✅ Updated existing card (ID: ${cardId}) with new price: $${scrapedData.latest_price} and image: ${scrapedData.image_url}`);
+        return { id: cardId, latest_price: scrapedData.latest_price, image_url: scrapedData.image_url };
     } catch (error) {
         console.error('Error updating existing card:', error);
         throw error;

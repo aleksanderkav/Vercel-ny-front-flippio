@@ -316,6 +316,29 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
               </p>
             </div>
             
+            {/* Card Image */}
+            {card.image_url && (
+              <div style={{
+                width: '100%',
+                height: '200px',
+                background: colors.surfaceHover,
+                borderBottom: '1px solid rgba(226, 232, 240, 0.4)'
+              }}>
+                <img 
+                  src={card.image_url} 
+                  alt={card.name}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover'
+                  }}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
+            )}
+            
             {/* Card Content */}
             <div style={{ padding: '1rem' }}>
               {card.latest_price !== null && card.latest_price !== undefined && card.latest_price > 0 ? (
