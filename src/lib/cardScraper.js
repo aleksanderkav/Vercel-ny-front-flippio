@@ -503,6 +503,7 @@ async function createNewCard(cardName, scrapedData) {
         if (error) throw error;
         
         console.log(`✅ Created new card: ${cardName} (ID: ${data.id}) with image: ${scrapedData.image_url}`);
+        console.log(`📦 Full card data:`, cardData);
         return data;
     } catch (error) {
         console.error('Error creating new card:', error);
