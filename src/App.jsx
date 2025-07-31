@@ -490,6 +490,4 @@ function MainApp() {
   }
 }
 
-}
-
 export default App
