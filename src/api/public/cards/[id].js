@@ -39,7 +39,7 @@ export async function GET(request, { params }) {
     if (cardError || !card) {
       return new Response(JSON.stringify({ 
         error: 'Card not found',
-        details: cardError?.message || 'No card found with the provided ID'
+        details: 'No card found with the provided ID'
       }), {
         status: 404,
         headers: { 'Content-Type': 'application/json' }
@@ -88,25 +88,82 @@ export async function GET(request, { params }) {
     }
 
     // Get similar cards based on set_name, grading, or category
-    const { data: similarCards, error: similarError } = await supabase
-      .from('cards')
-      .select(`
-        id,
-        name,
-        latest_price,
-        category,
-        set_name,
-        year,
-        grading,
-        image_url
-      `)
-      .or(`set_name.eq.${card.set_name},grading.eq.${card.grading},category.eq.${card.category}`)
-      .neq('id', card.id)
-      .limit(6)
-
-    if (similarError) {
-      console.error('Similar cards error:', similarError)
+    let similarCards = []
+    
+    // Try to find cards from the same set first
+    if (card.set_name) {
+      const { data: setMatches } = await supabase
+        .from('cards')
+        .select(`
+          id,
+          name,
+          latest_price,
+          category,
+          set_name,
+          year,
+          grading,
+          image_url
+        `)
+        .eq('set_name', card.set_name)
+        .neq('id', card.id)
+        .limit(3)
+      
+      if (setMatches) {
+        similarCards.push(...setMatches)
+      }
     }
+    
+    // If we don't have enough, add cards with same grading
+    if (similarCards.length < 6 && card.grading && card.grading !== 'Ungraded') {
+      const excludeIds = similarCards.length > 0 ? similarCards.map(c => c.id).join(',') : '00000000-0000-0000-0000-000000000000'
+      const { data: gradingMatches } = await supabase
+        .from('cards')
+        .select(`
+          id,
+          name,
+          latest_price,
+          category,
+          set_name,
+          year,
+          grading,
+          image_url
+        `)
+        .eq('grading', card.grading)
+        .neq('id', card.id)
+        .not('id', 'in', `(${excludeIds})`)
+        .limit(6 - similarCards.length)
+      
+      if (gradingMatches) {
+        similarCards.push(...gradingMatches)
+      }
+    }
+    
+    // If we still don't have enough, add cards from same category
+    if (similarCards.length < 6 && card.category) {
+      const excludeIds = similarCards.length > 0 ? similarCards.map(c => c.id).join(',') : '00000000-0000-0000-0000-000000000000'
+      const { data: categoryMatches } = await supabase
+        .from('cards')
+        .select(`
+          id,
+          name,
+          latest_price,
+          category,
+          set_name,
+          year,
+          grading,
+          image_url
+        `)
+        .eq('category', card.category)
+        .neq('id', card.id)
+        .not('id', 'in', `(${excludeIds})`)
+        .limit(6 - similarCards.length)
+      
+      if (categoryMatches) {
+        similarCards.push(...categoryMatches)
+      }
+    }
+
+    // Remove the error check since we're not using the old query anymore
 
     // Add slugs to similar cards
     const similarCardsWithSlugs = (similarCards || []).map(similarCard => ({
@@ -147,7 +204,7 @@ export async function GET(request, { params }) {
     console.error('Single card API error:', error)
     return new Response(JSON.stringify({ 
       error: 'Internal server error',
-      details: error.message 
+      details: 'An unexpected error occurred'
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }

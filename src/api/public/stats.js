@@ -207,7 +207,7 @@ export async function GET(request) {
     console.error('Public stats API error:', error)
     return new Response(JSON.stringify({ 
       error: 'Internal server error',
-      details: error.message 
+      details: 'An unexpected error occurred'
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }

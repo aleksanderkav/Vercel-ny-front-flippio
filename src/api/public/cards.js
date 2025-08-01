@@ -6,17 +6,76 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url)
     
     // Pagination parameters
-    const limit = Math.min(parseInt(searchParams.get('limit')) || 20, 100) // Max 100 per request
-    const offset = parseInt(searchParams.get('offset')) || 0
+    const limitParam = searchParams.get('limit')
+    const offsetParam = searchParams.get('offset')
+    
+    // Validate and parse pagination parameters
+    const limit = Math.min(parseInt(limitParam) || 20, 100) // Max 100 per request
+    const offset = Math.max(parseInt(offsetParam) || 0, 0) // Min 0
+    
+    if (isNaN(limit) || isNaN(offset)) {
+      return new Response(JSON.stringify({ 
+        error: 'Invalid pagination parameters',
+        details: 'limit and offset must be valid numbers'
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
     
     // Filter parameters
     const category = searchParams.get('category')
     const search = searchParams.get('search')
     const grading = searchParams.get('grading')
-    const year = searchParams.get('year')
+    const yearParam = searchParams.get('year')
     const set_name = searchParams.get('set_name')
-    const min_price = parseFloat(searchParams.get('min_price')) || null
-    const max_price = parseFloat(searchParams.get('max_price')) || null
+    const min_priceParam = searchParams.get('min_price')
+    const max_priceParam = searchParams.get('max_price')
+    
+    // Validate numeric parameters
+    const year = yearParam ? parseInt(yearParam) : null
+    const min_price = min_priceParam ? parseFloat(min_priceParam) : null
+    const max_price = max_priceParam ? parseFloat(max_priceParam) : null
+    
+    if (yearParam && (isNaN(year) || year < 1900 || year > 2030)) {
+      return new Response(JSON.stringify({ 
+        error: 'Invalid year parameter',
+        details: 'Year must be between 1900 and 2030'
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+    
+    if (min_priceParam && (isNaN(min_price) || min_price < 0)) {
+      return new Response(JSON.stringify({ 
+        error: 'Invalid min_price parameter',
+        details: 'min_price must be a positive number'
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+    
+    if (max_priceParam && (isNaN(max_price) || max_price < 0)) {
+      return new Response(JSON.stringify({ 
+        error: 'Invalid max_price parameter',
+        details: 'max_price must be a positive number'
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+    
+    if (min_price !== null && max_price !== null && min_price > max_price) {
+      return new Response(JSON.stringify({ 
+        error: 'Invalid price range',
+        details: 'min_price cannot be greater than max_price'
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
     
     // Sorting parameters
     const sortParam = searchParams.get('sort') || 'last_updated'
@@ -130,7 +189,7 @@ export async function GET(request) {
       console.error('Cards API error:', error)
       return new Response(JSON.stringify({ 
         error: 'Failed to fetch cards',
-        details: error.message 
+        details: 'Database query failed'
       }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' }
@@ -250,7 +309,7 @@ export async function GET(request) {
     console.error('Public cards API error:', error)
     return new Response(JSON.stringify({ 
       error: 'Internal server error',
-      details: error.message 
+      details: 'An unexpected error occurred'
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
