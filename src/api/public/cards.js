@@ -4,13 +4,49 @@ import { supabase } from '../../lib/supabase.js'
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url)
-    const limit = parseInt(searchParams.get('limit')) || 50
+    
+    // Pagination parameters
+    const limit = Math.min(parseInt(searchParams.get('limit')) || 20, 100) // Max 100 per request
     const offset = parseInt(searchParams.get('offset')) || 0
+    
+    // Filter parameters
     const category = searchParams.get('category')
     const search = searchParams.get('search')
-    const sortBy = searchParams.get('sortBy') || 'created_at'
-    const sortOrder = searchParams.get('sortOrder') || 'desc'
+    const grading = searchParams.get('grading')
+    const year = searchParams.get('year')
+    const set_name = searchParams.get('set_name')
+    const min_price = parseFloat(searchParams.get('min_price')) || null
+    const max_price = parseFloat(searchParams.get('max_price')) || null
+    
+    // Sorting parameters
+    const sortBy = searchParams.get('sort') || 'last_updated'
+    const sortOrder = searchParams.get('order') || 'desc'
+    
+    // Validate sort parameters
+    const validSortFields = ['name', 'latest_price', 'last_updated', 'created_at', 'year']
+    const validSortOrders = ['asc', 'desc']
+    
+    if (!validSortFields.includes(sortBy)) {
+      return new Response(JSON.stringify({ 
+        error: 'Invalid sort parameter',
+        validSortFields 
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+    
+    if (!validSortOrders.includes(sortOrder)) {
+      return new Response(JSON.stringify({ 
+        error: 'Invalid order parameter',
+        validSortOrders 
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
 
+    // Build the main query
     let query = supabase
       .from('cards')
       .select(`
@@ -38,16 +74,46 @@ export async function GET(request) {
     if (search) {
       query = query.ilike('name', `%${search}%`)
     }
+    
+    if (grading && grading !== 'all') {
+      if (grading === 'graded') {
+        query = query.neq('grading', 'Ungraded')
+      } else if (grading === 'ungraded') {
+        query = query.eq('grading', 'Ungraded')
+      } else {
+        query = query.eq('grading', grading)
+      }
+    }
+    
+    if (year) {
+      query = query.eq('year', parseInt(year))
+    }
+    
+    if (set_name) {
+      query = query.ilike('set_name', `%${set_name}%`)
+    }
+    
+    if (min_price !== null) {
+      query = query.gte('latest_price', min_price)
+    }
+    
+    if (max_price !== null) {
+      query = query.lte('latest_price', max_price)
+    }
 
     // Apply sorting
     query = query.order(sortBy, { ascending: sortOrder === 'asc' })
 
+    // Get total count for pagination
+    const { count } = await query.count()
+
     // Apply pagination
     query = query.range(offset, offset + limit - 1)
 
-    const { data, error, count } = await query
+    const { data, error } = await query
 
     if (error) {
+      console.error('Cards API error:', error)
       return new Response(JSON.stringify({ 
         error: 'Failed to fetch cards',
         details: error.message 
@@ -57,19 +123,109 @@ export async function GET(request) {
       })
     }
 
-    return new Response(JSON.stringify({
+    // Get price history and affiliate links for each card
+    const cardsWithDetails = await Promise.all(
+      (data || []).map(async (card) => {
+        // Get price history (last 10 entries)
+        const { data: priceHistory } = await supabase
+          .from('price_entries')
+          .select('price, source, timestamp')
+          .eq('card_id', card.id)
+          .order('timestamp', { ascending: false })
+          .limit(10)
+
+        // Get latest eBay price for affiliate link
+        const { data: latestEbay } = await supabase
+          .from('price_entries')
+          .select('price, timestamp')
+          .eq('card_id', card.id)
+          .eq('source', 'eBay')
+          .order('timestamp', { ascending: false })
+          .limit(1)
+
+        // Generate affiliate link
+        const affiliate_link = latestEbay && latestEbay.length > 0 
+          ? `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(card.name)}`
+          : null
+
+        // Calculate price stats
+        const prices = priceHistory?.map(p => p.price).filter(p => p > 0) || []
+        const price_stats = {
+          latest: card.latest_price,
+          average: prices.length > 0 ? prices.reduce((a, b) => a + b, 0) / prices.length : null,
+          min: prices.length > 0 ? Math.min(...prices) : null,
+          max: prices.length > 0 ? Math.max(...prices) : null,
+          count: prices.length
+        }
+
+        return {
+          ...card,
+          price_history: priceHistory || [],
+          price_stats,
+          affiliate_link,
+          slug: card.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+        }
+      })
+    )
+
+    // Get available filters for the current query
+    const { data: categories } = await supabase
+      .from('cards')
+      .select('category')
+      .not('category', 'is', null)
+      .limit(1000)
+
+    const { data: sets } = await supabase
+      .from('cards')
+      .select('set_name')
+      .not('set_name', 'is', null)
+      .limit(1000)
+
+    const { data: years } = await supabase
+      .from('cards')
+      .select('year')
+      .not('year', 'is', null)
+      .limit(1000)
+
+    const available_filters = {
+      categories: [...new Set(categories?.map(c => c.category).filter(Boolean))].sort(),
+      sets: [...new Set(sets?.map(s => s.set_name).filter(Boolean))].sort(),
+      years: [...new Set(years?.map(y => y.year).filter(Boolean))].sort().reverse(),
+      gradings: ['Ungraded', 'PSA 1', 'PSA 2', 'PSA 3', 'PSA 4', 'PSA 5', 'PSA 6', 'PSA 7', 'PSA 8', 'PSA 9', 'PSA 10', 'BGS 1', 'BGS 2', 'BGS 3', 'BGS 4', 'BGS 5', 'BGS 6', 'BGS 7', 'BGS 8', 'BGS 9', 'BGS 9.5', 'BGS 10']
+    }
+
+    const response = {
       success: true,
-      data: data || [],
-      pagination: {
+      data: cardsWithDetails,
+      meta: {
+        total: count || 0,
+        page: Math.floor(offset / limit) + 1,
         limit,
         offset,
-        total: count || data?.length || 0,
-        hasMore: (data?.length || 0) === limit
+        hasMore: (offset + limit) < (count || 0),
+        totalPages: Math.ceil((count || 0) / limit)
+      },
+      filters: {
+        applied: {
+          category,
+          search,
+          grading,
+          year,
+          set_name,
+          min_price,
+          max_price,
+          sort: sortBy,
+          order: sortOrder
+        },
+        available: available_filters
       }
-    }), {
+    }
+
+    return new Response(JSON.stringify(response), {
       status: 200,
       headers: { 
         'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=3600', // 1 hour cache
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type'
