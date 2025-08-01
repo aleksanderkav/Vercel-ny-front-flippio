@@ -8,6 +8,14 @@
   ],
   "routes": [
     {
+      "src": "/ads.txt",
+      "dest": "/ads.txt"
+    },
+    {
+      "src": "/robots.txt",
+      "dest": "/robots.txt"
+    },
+    {
       "src": "/assets/(.*)",
       "dest": "/assets/$1"
     },

@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://your-domain.vercel.app/sitemap.xml
+
+# Allow Google AdSense
+User-agent: Mediapartners-Google
+Allow: / 
