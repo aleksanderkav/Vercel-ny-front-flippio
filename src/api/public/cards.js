@@ -19,8 +19,22 @@ export async function GET(request) {
     const max_price = parseFloat(searchParams.get('max_price')) || null
     
     // Sorting parameters
-    const sortBy = searchParams.get('sort') || 'last_updated'
+    const sortParam = searchParams.get('sort') || 'last_updated'
     const sortOrder = searchParams.get('order') || 'desc'
+    
+    // Map sort parameters to database fields
+    const sortMapping = {
+      'price_desc': { field: 'latest_price', order: 'desc' },
+      'price_asc': { field: 'latest_price', order: 'asc' },
+      'name': { field: 'name', order: 'asc' },
+      'last_updated': { field: 'last_updated', order: 'desc' },
+      'created_at': { field: 'created_at', order: 'desc' },
+      'year': { field: 'year', order: 'desc' }
+    }
+    
+    const sortConfig = sortMapping[sortParam] || sortMapping['last_updated']
+    const sortBy = sortConfig.field
+    const finalSortOrder = sortParam.startsWith('price_') ? sortConfig.order : (sortOrder || sortConfig.order)
     
     // Validate sort parameters
     const validSortFields = ['name', 'latest_price', 'last_updated', 'created_at', 'year']
@@ -102,7 +116,7 @@ export async function GET(request) {
     }
 
     // Apply sorting
-    query = query.order(sortBy, { ascending: sortOrder === 'asc' })
+    query = query.order(sortBy, { ascending: finalSortOrder === 'asc' })
 
     // Get total count for pagination
     const { count } = await query.count()
@@ -214,8 +228,8 @@ export async function GET(request) {
           set_name,
           min_price,
           max_price,
-          sort: sortBy,
-          order: sortOrder
+          sort: sortParam,
+          order: finalSortOrder
         },
         available: available_filters
       }
