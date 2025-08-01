@@ -14,6 +14,51 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
   const generateSlug = (cardName) => {
     return cardName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
   }
+
+  // Helper functions for category and grade styling
+  const getCategoryColor = (category) => {
+    const colors = {
+      'Pokemon': { bg: '#fef3c7', text: '#92400e', border: '#fcd34d' },
+      'Magic': { bg: '#dbeafe', text: '#1e40af', border: '#93c5fd' },
+      'Yu-Gi-Oh!': { bg: '#f3e8ff', text: '#7c3aed', border: '#c4b5fd' },
+      'Basketball': { bg: '#fef2f2', text: '#dc2626', border: '#fca5a5' },
+      'Football': { bg: '#ecfdf5', text: '#059669', border: '#86efac' },
+      'Baseball': { bg: '#fffbeb', text: '#d97706', border: '#fcd34d' },
+      'Hockey': { bg: '#f0f9ff', text: '#0369a1', border: '#7dd3fc' },
+      'Soccer': { bg: '#f0fdf4', text: '#16a34a', border: '#86efac' },
+      'Other': { bg: '#f1f5f9', text: '#475569', border: '#cbd5e1' }
+    }
+    return colors[category] || colors['Other']
+  }
+
+  const getCategoryEmoji = (category) => {
+    const emojis = {
+      'Pokemon': '⚡',
+      'Magic': '🔮',
+      'Yu-Gi-Oh!': '🐉',
+      'Basketball': '🏀',
+      'Football': '🏈',
+      'Baseball': '⚾',
+      'Hockey': '🏒',
+      'Soccer': '⚽',
+      'Other': '🎴'
+    }
+    return emojis[category] || '🎴'
+  }
+
+  const getGradeColor = (grade) => {
+    if (grade.includes('PSA 10') || grade.includes('BGS 10')) {
+      return { bg: '#fef3c7', text: '#92400e', border: '#fcd34d' } // Gold
+    } else if (grade.includes('PSA 9') || grade.includes('BGS 9')) {
+      return { bg: '#f3e8ff', text: '#7c3aed', border: '#c4b5fd' } // Purple
+    } else if (grade.includes('PSA 8') || grade.includes('BGS 8')) {
+      return { bg: '#dbeafe', text: '#1e40af', border: '#93c5fd' } // Blue
+    } else if (grade.includes('PSA 7') || grade.includes('BGS 7')) {
+      return { bg: '#ecfdf5', text: '#059669', border: '#86efac' } // Green
+    } else {
+      return { bg: '#f1f5f9', text: '#475569', border: '#cbd5e1' } // Gray
+    }
+  }
   
 
 
@@ -298,15 +343,51 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
                     margin: 0,
                     lineHeight: '1.3',
                     cursor: 'pointer',
-                    transition: 'color 0.2s ease',
-                    '&:hover': {
-                      color: colors.primary
-                    }
+                    transition: 'color 0.2s ease'
                   }}>
                     {card.name || 'Unknown Card'}
                   </h3>
                 </Link>
-
+              </div>
+              
+              {/* Category and Grade Badges */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                marginBottom: '0.5rem',
+                flexWrap: 'wrap'
+              }}>
+                {card.category && (
+                  <div style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    padding: '0.25rem 0.5rem',
+                    fontSize: '0.625rem',
+                    fontWeight: 600,
+                    borderRadius: '0.375rem',
+                    backgroundColor: getCategoryColor(card.category).bg,
+                    color: getCategoryColor(card.category).text,
+                    border: `1px solid ${getCategoryColor(card.category).border}`
+                  }}>
+                    {getCategoryEmoji(card.category)} {card.category}
+                  </div>
+                )}
+                {card.grading && card.grading !== 'Ungraded' && (
+                  <div style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    padding: '0.25rem 0.5rem',
+                    fontSize: '0.625rem',
+                    fontWeight: 600,
+                    borderRadius: '0.375rem',
+                    backgroundColor: getGradeColor(card.grading).bg,
+                    color: getGradeColor(card.grading).text,
+                    border: `1px solid ${getGradeColor(card.grading).border}`
+                  }}>
+                    🏆 {card.grading}
+                  </div>
+                )}
               </div>
               <p style={{
                 color: '#6b7280',

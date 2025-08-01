@@ -13,6 +13,8 @@ const CardLibrary = ({
   onGetStats,
   filterCategory = 'all',
   setFilterCategory,
+  filterGrade = 'all',
+  setFilterGrade,
   sortBy = 'name',
   setSortBy,
   librarySearch = '',
@@ -953,6 +955,107 @@ const CardLibrary = ({
                     <option value="price-low">💸 Price (Low to High)</option>
                     <option value="date-new">🆕 Date Added (Newest)</option>
                     <option value="date-old">📅 Date Added (Oldest)</option>
+                  </select>
+                </div>
+
+                {/* Category Filter */}
+                <div style={{ minWidth: '150px' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.625rem',
+                    fontWeight: 600,
+                    color: '#374151',
+                    marginBottom: '0.375rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em'
+                  }}>
+                    🏷️ Category
+                  </label>
+                  <select
+                    value={filterCategory}
+                    onChange={(e) => setFilterCategory(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem',
+                      fontSize: '0.75rem',
+                      border: '1px solid rgba(203, 213, 225, 0.6)',
+                      borderRadius: '0.5rem',
+                      outline: 'none',
+                      transition: 'all 0.3s ease',
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                      backdropFilter: 'blur(12px)',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                      cursor: 'pointer'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#3b82f6'
+                      e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'rgba(203, 213, 225, 0.6)'
+                      e.target.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                    }}
+                  >
+                    <option value="all">🎴 All Categories</option>
+                    <option value="Pokemon">⚡ Pokemon</option>
+                    <option value="Magic">🔮 Magic</option>
+                    <option value="Yu-Gi-Oh!">🐉 Yu-Gi-Oh!</option>
+                    <option value="Basketball">🏀 Basketball</option>
+                    <option value="Football">🏈 Football</option>
+                    <option value="Baseball">⚾ Baseball</option>
+                    <option value="Hockey">🏒 Hockey</option>
+                    <option value="Soccer">⚽ Soccer</option>
+                    <option value="Other">🎴 Other</option>
+                  </select>
+                </div>
+
+                {/* Grade Filter */}
+                <div style={{ minWidth: '150px' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.625rem',
+                    fontWeight: 600,
+                    color: '#374151',
+                    marginBottom: '0.375rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em'
+                  }}>
+                    🏆 Grade
+                  </label>
+                  <select
+                    value={filterGrade}
+                    onChange={(e) => setFilterGrade(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem',
+                      fontSize: '0.75rem',
+                      border: '1px solid rgba(203, 213, 225, 0.6)',
+                      borderRadius: '0.5rem',
+                      outline: 'none',
+                      transition: 'all 0.3s ease',
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                      backdropFilter: 'blur(12px)',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                      cursor: 'pointer'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#3b82f6'
+                      e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'rgba(203, 213, 225, 0.6)'
+                      e.target.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                    }}
+                  >
+                    <option value="all">🏆 All Grades</option>
+                    <option value="graded">🏆 Graded Only</option>
+                    <option value="ungraded">📄 Ungraded Only</option>
+                    <option value="PSA 10">🥇 PSA 10</option>
+                    <option value="PSA 9">🥈 PSA 9</option>
+                    <option value="PSA 8">🥉 PSA 8</option>
+                    <option value="BGS 10">🏅 BGS 10</option>
+                    <option value="BGS 9.5">🏅 BGS 9.5</option>
+                    <option value="BGS 9">🏅 BGS 9</option>
                   </select>
                 </div>
               </div>

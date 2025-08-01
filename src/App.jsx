@@ -39,6 +39,7 @@ function MainApp() {
   const [loading, setLoading] = useState(false)
   const [searchStatus, setSearchStatus] = useState('')
   const [filterCategory, setFilterCategory] = useState('all')
+  const [filterGrade, setFilterGrade] = useState('all')
   const [sortBy, setSortBy] = useState('name')
   const [librarySearch, setLibrarySearch] = useState('')
   const [error, setError] = useState(null)
@@ -246,6 +247,20 @@ function MainApp() {
       })
     }
     
+    // Apply grade filter
+    if (filterGrade !== 'all') {
+      filteredCards = filteredCards.filter(card => {
+        const cardGrade = card.grading || 'Ungraded'
+        if (filterGrade === 'graded') {
+          return cardGrade !== 'Ungraded'
+        } else if (filterGrade === 'ungraded') {
+          return cardGrade === 'Ungraded'
+        } else {
+          return cardGrade === filterGrade
+        }
+      })
+    }
+    
     // Apply sorting
     filteredCards.sort((a, b) => {
       switch (sortBy) {
@@ -404,6 +419,8 @@ function MainApp() {
           onGetStats={handleGetStats}
           filterCategory={filterCategory}
           setFilterCategory={setFilterCategory}
+          filterGrade={filterGrade}
+          setFilterGrade={setFilterGrade}
           sortBy={sortBy}
           setSortBy={setSortBy}
           librarySearch={librarySearch}
