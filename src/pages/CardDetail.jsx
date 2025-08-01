@@ -205,7 +205,7 @@ const CardDetail = () => {
       setUpdatingImage(true)
       console.log('🖼️ Updating image for:', card.name)
 
-      // Use the card scraper to get a new image
+      // Use the card search to get a new image
       const result = await scrapeAndInsertCard(card.name)
       
       if (result.success) {

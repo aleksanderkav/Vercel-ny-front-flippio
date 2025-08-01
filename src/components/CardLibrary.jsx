@@ -34,14 +34,14 @@ const CardLibrary = ({
   const [cardsPerPage, setCardsPerPage] = useState(20)
   const [gridColumns, setGridColumns] = useState(4)
 
-  // Scraping functions
+  // Card search functions
   const handleSingleScrape = async () => {
     if (!singleCardName.trim()) {
       setScrapingStatus('❌ Please enter a card name')
       return
     }
 
-    setScrapingStatus('🔍 Scraping card data...')
+    setScrapingStatus('🔍 Searching for card data...')
     setLastResult(null)
     setSearchResults(null)
 
@@ -50,7 +50,7 @@ const CardLibrary = ({
       setLastResult({ type: 'single', success: true })
       
       if (result) {
-        setScrapingStatus(`✅ Successfully scraped "${singleCardName}"`)
+        setScrapingStatus(`✅ Successfully found "${singleCardName}"`)
         
         // Create visual result with card info
         setSearchResults({
@@ -64,7 +64,7 @@ const CardLibrary = ({
         setSingleCardName('') // Clear input on success
       }
     } catch (error) {
-      console.error('Scraping error:', error)
+      console.error('Search error:', error)
       setScrapingStatus(`❌ Error: ${error.message || 'Unknown error occurred'}`)
     }
   }
@@ -80,7 +80,7 @@ const CardLibrary = ({
       return
     }
 
-    setScrapingStatus(`🔄 Starting batch scrape for ${cardNames.length} cards...`)
+    setScrapingStatus(`🔄 Starting batch search for ${cardNames.length} cards...`)
     setLastResult(null)
 
     try {
@@ -88,13 +88,13 @@ const CardLibrary = ({
       setLastResult(result)
       
       if (result.successful > 0) {
-        setScrapingStatus(`✅ Batch completed: ${result.successful}/${result.total} cards processed successfully`)
+        setScrapingStatus(`✅ Batch completed: ${result.successful}/${result.total} cards found successfully`)
         setBatchCardNames('') // Clear input on success
       } else {
-        setScrapingStatus(`❌ Batch failed: ${result.failed}/${result.total} cards failed`)
+        setScrapingStatus(`❌ Batch failed: ${result.failed}/${result.total} cards not found`)
       }
     } catch (error) {
-      console.error('Batch scraping error:', error)
+      console.error('Batch search error:', error)
       setScrapingStatus(`❌ Error: ${error.message || 'Unknown error occurred'}`)
     }
   }
@@ -243,7 +243,7 @@ const CardLibrary = ({
                 outline: 'none'
               }}
             >
-              {showScraper ? '✖ Close Scraper' : '🎯 Card Scraper'}
+              {showScraper ? '✖ Close Search' : '🔍 Search New Cards'}
             </button>
 
           </div>
@@ -286,14 +286,14 @@ const CardLibrary = ({
                     color: '#1e293b',
                     margin: 0
                   }}>
-                    Advanced Card Scraper
+                    Search New Cards
                   </h2>
                   <p style={{
                     color: '#64748b',
                     margin: 0,
                     fontSize: '0.875rem'
                   }}>
-                    Add new cards to your collection with advanced scraping
+                    Add new cards to your collection with market data
                   </p>
                 </div>
               </div>
@@ -389,7 +389,7 @@ const CardLibrary = ({
                         whiteSpace: 'nowrap'
                       }}
                     >
-                      {loading ? '⏳ Scraping...' : '🎯 Scrape Card'}
+                      {loading ? '⏳ Searching...' : '🔍 Search Card'}
                     </button>
                   </div>
                 </div>
@@ -446,7 +446,7 @@ const CardLibrary = ({
                         transition: 'all 0.2s'
                       }}
                     >
-                      {loading ? '⏳ Scraping...' : '🔄 Scrape Batch'}
+                      {loading ? '⏳ Searching...' : '🔄 Search Batch'}
                     </button>
                     <button
                       onClick={loadSampleCards}

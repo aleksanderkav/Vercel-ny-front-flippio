@@ -121,12 +121,12 @@ function MainApp() {
     try {
       console.log('🔍 Fetching real prices for:', searchQuery)
       
-      // Choose between API and scraping (you can toggle this)
-      const useScraping = true // Set to true to use scraping instead of APIs
+      // Choose between API and market data collection (you can toggle this)
+      const useMarketData = true // Set to true to use market data collection instead of APIs
       
       let priceData
-      if (useScraping) {
-        // Use web scraping
+      if (useMarketData) {
+        // Use market data collection
         priceData = await ScrapingService.scrapeCardPrices(searchQuery)
       } else {
         // Use APIs
@@ -150,7 +150,7 @@ function MainApp() {
     }
   }
 
-  // Function to simulate eBay scraping with enhanced metadata
+  // Function to simulate eBay market data collection with enhanced metadata
   const simulateEbayScraping = async (searchQuery) => {
     const queryLower = searchQuery.toLowerCase()
     
@@ -204,10 +204,10 @@ function MainApp() {
 
   const handleSearch = async (searchQuery) => {
     setLoading(true)
-    setSearchStatus('🎯 Using advanced card scraper...')
+    setSearchStatus('🎯 Using advanced card search...')
     
     try {
-      // Use the new scraper function instead of the old simulation
+      // Use the new search function instead of the old simulation
       const result = await scrapeAndInsertCard(searchQuery)
       
       if (result.success) {
@@ -215,11 +215,11 @@ function MainApp() {
         setSearchStatus(`✅ ${action} "${result.cardName}" - $${result.latestPrice} (${result.category})`)
         await loadCards() // Refresh the list
       } else {
-        setSearchStatus(`❌ Failed to scrape "${result.cardName}": ${result.error}`)
+        setSearchStatus(`❌ Failed to find "${result.cardName}": ${result.error}`)
       }
     } catch (error) {
-      console.error('❌ Error during scraping:', error)
-      setSearchStatus('❌ Error during card scraping')
+      console.error('❌ Error during search:', error)
+      setSearchStatus('❌ Error during card search')
     } finally {
       setLoading(false)
     }
@@ -320,25 +320,25 @@ function MainApp() {
     }
   }
 
-  // New function for batch scraping
+  // New function for batch search
   const handleBatchScrape = async (cardNames) => {
     setLoading(true)
-    setSearchStatus(`🔄 Starting batch scrape for ${cardNames.length} cards...`)
+    setSearchStatus(`🔄 Starting batch search for ${cardNames.length} cards...`)
     
     try {
       const result = await batchScrapeCards(cardNames)
       
       if (result.successful > 0) {
-        setSearchStatus(`✅ Batch completed: ${result.successful}/${result.total} cards processed successfully`)
+        setSearchStatus(`✅ Batch completed: ${result.successful}/${result.total} cards found successfully`)
         await loadCards() // Refresh the list
       } else {
-        setSearchStatus(`❌ Batch failed: ${result.failed}/${result.total} cards failed`)
+        setSearchStatus(`❌ Batch failed: ${result.failed}/${result.total} cards not found`)
       }
       
       return result
     } catch (error) {
-      console.error('❌ Error during batch scraping:', error)
-      setSearchStatus('❌ Error during batch scraping')
+      console.error('❌ Error during batch search:', error)
+      setSearchStatus('❌ Error during batch search')
       throw error
     } finally {
       setLoading(false)

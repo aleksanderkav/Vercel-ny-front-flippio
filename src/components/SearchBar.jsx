@@ -109,10 +109,10 @@ const SearchBar = ({ onSearch, loading = false, searchStatus = '' }) => {
                   borderRadius: '50%',
                   animation: 'spin 1s linear infinite'
                 }}></div>
-                <span>Scraping Prices...</span>
+                <span>Searching Prices...</span>
               </>
             ) : (
-              '🚀 Search & Scrape Prices'
+                              '🚀 Search & Get Prices'
             )}
           </button>
         </form>

@@ -269,7 +269,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
           color: '#065f46',
           borderColor: '#a7f3d0'
         }}>
-          💰 Live Prices
+          💰 Market Prices
         </div>
       </div>
       
