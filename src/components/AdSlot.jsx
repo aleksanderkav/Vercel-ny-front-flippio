@@ -37,7 +37,7 @@ const AdSlot = ({
       script.crossOrigin = 'anonymous'
       
       // Replace with your actual AdSense client ID
-      script.setAttribute('data-ad-client', 'ca-pub-XXXXXXXXXXXXXXXX')
+      script.setAttribute('data-ad-client', 'ca-pub-5999810645137867')
       
       script.onload = () => {
         setIsAdSenseLoaded(true)
@@ -124,7 +124,7 @@ const AdSlot = ({
         ref={adRef}
         className="adsbygoogle"
         style={adStyle}
-        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" // Replace with your client ID
+        data-ad-client="ca-pub-5999810645137867" // Replace with your client ID
         data-ad-slot={adSlot}
         data-ad-format={adFormat}
         data-full-width-responsive={fullWidthResponsive}

@@ -7,6 +7,7 @@
     <meta name="description" content="Track real-time market prices for trading cards from eBay and other marketplaces. Modern, responsive trading card tracker." />
     <meta name="keywords" content="trading cards, card prices, market tracker, pokemon cards, sports cards" />
     <title>Trading Card Tracker v1.0.0</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5999810645137867" crossorigin="anonymous"></script>
     <style>
       body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
