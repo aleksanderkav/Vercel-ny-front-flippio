@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts'
-import AdSlot from './AdSlot'
 import { isSupabaseConfigured } from '../lib/supabase'
 import { colors, typography, spacing, borderRadius, shadows, getPriceColor, formatPrice } from '../styles/designSystem'
 
@@ -280,23 +279,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
         fontFamily: typography.fontFamily.primary
       }}>
         {cards.map((card, index) => {
-          // Add ads after cards 8 and 17
-          const shouldShowAd = (index + 1) === 8 || (index + 1) === 17
-          
           return (
-            <React.Fragment key={index}>
-              {shouldShowAd && (
-                <div style={{
-                  gridColumn: `1 / -1`,
-                  margin: `${spacing.lg} 0`
-                }}>
-                  <AdSlot 
-                    adSlot={`card-grid-${index + 1}`}
-                    adFormat="auto"
-                    className="grid-ad-slot"
-                  />
-                </div>
-              )}
               <div 
             key={index} 
             style={{

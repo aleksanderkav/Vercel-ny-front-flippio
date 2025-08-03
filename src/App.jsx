@@ -40,6 +40,7 @@ function MainApp() {
   const [searchStatus, setSearchStatus] = useState('')
   const [filterCategory, setFilterCategory] = useState('all')
   const [filterGrade, setFilterGrade] = useState('all')
+  const [filterPrice, setFilterPrice] = useState('with-prices') // New price filter
   const [sortBy, setSortBy] = useState('name')
   const [librarySearch, setLibrarySearch] = useState('')
   const [error, setError] = useState(null)
@@ -261,6 +262,22 @@ function MainApp() {
       })
     }
     
+    // Apply price filter
+    if (filterPrice === 'with-prices') {
+      // Show only cards with prices, but show all when searching
+      if (!librarySearch.trim()) {
+        filteredCards = filteredCards.filter(card => 
+          card.latest_price && card.latest_price > 0
+        )
+      }
+    } else if (filterPrice === 'no-prices') {
+      // Show only cards without prices
+      filteredCards = filteredCards.filter(card => 
+        !card.latest_price || card.latest_price <= 0
+      )
+    }
+    // 'all-prices' shows all cards regardless of price status
+    
     // Apply sorting
     filteredCards.sort((a, b) => {
       switch (sortBy) {
@@ -357,6 +374,63 @@ function MainApp() {
     }
   }
 
+  // Function to scrape prices for cards without prices
+  const scrapeMissingPrices = async () => {
+    setLoading(true)
+    setSearchStatus('🔍 Finding cards without prices...')
+    
+    try {
+      // Get all cards without prices
+      const { data: cardsWithoutPrices, error } = await supabase
+        .from('cards')
+        .select('*')
+        .or('latest_price.is.null,latest_price.eq.0')
+
+      if (error) throw error
+
+      if (!cardsWithoutPrices || cardsWithoutPrices.length === 0) {
+        setSearchStatus('✅ All cards already have prices!')
+        return
+      }
+
+      setSearchStatus(`🔄 Scraping prices for ${cardsWithoutPrices.length} cards...`)
+      
+      let successCount = 0
+      let failCount = 0
+
+      for (const card of cardsWithoutPrices) {
+        try {
+          // Try to scrape price for this card
+          const result = await handleSearch(card.name)
+          if (result && result.latestPrice) {
+            successCount++
+          } else {
+            failCount++
+          }
+          
+          // Update progress every 5 cards
+          if ((successCount + failCount) % 5 === 0) {
+            setSearchStatus(`🔄 Scraped ${successCount + failCount}/${cardsWithoutPrices.length} cards...`)
+          }
+        } catch (cardError) {
+          console.error(`Error scraping price for ${card.name}:`, cardError)
+          failCount++
+        }
+      }
+
+      setSearchStatus(`✅ Price scraping completed! ${successCount} updated, ${failCount} failed.`)
+      
+      // Refresh the cards list
+      await loadCards()
+      
+    } catch (error) {
+      console.error('❌ Error scraping missing prices:', error)
+      setSearchStatus('❌ Error scraping missing prices')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const filteredCards = getFilteredAndSortedCards()
 
   // Show error if there is one
@@ -415,12 +489,15 @@ function MainApp() {
           loading={loading}
           onRefresh={loadCards}
           onRefreshPrices={refreshPrices}
+          onScrapeMissingPrices={scrapeMissingPrices}
           onBatchScrape={handleBatchScrape}
           onGetStats={handleGetStats}
           filterCategory={filterCategory}
           setFilterCategory={setFilterCategory}
           filterGrade={filterGrade}
           setFilterGrade={setFilterGrade}
+          filterPrice={filterPrice}
+          setFilterPrice={setFilterPrice}
           sortBy={sortBy}
           setSortBy={setSortBy}
           librarySearch={librarySearch}

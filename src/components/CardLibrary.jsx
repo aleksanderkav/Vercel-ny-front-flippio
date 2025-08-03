@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import CardGrid from './CardGrid'
-import AdSlot from './AdSlot'
 import { supabase } from '../lib/supabase'
 import { colors, typography, spacing, borderRadius, shadows, components } from '../styles/designSystem'
 
@@ -9,12 +8,15 @@ const CardLibrary = ({
   loading = false, 
   onRefresh,
   onRefreshPrices,
+  onScrapeMissingPrices,
   onBatchScrape,
   onGetStats,
   filterCategory = 'all',
   setFilterCategory,
   filterGrade = 'all',
   setFilterGrade,
+  filterPrice = 'with-prices',
+  setFilterPrice,
   sortBy = 'name',
   setSortBy,
   librarySearch = '',
@@ -1058,6 +1060,50 @@ const CardLibrary = ({
                     <option value="BGS 9">🏅 BGS 9</option>
                   </select>
                 </div>
+
+                {/* Price Filter */}
+                <div style={{ minWidth: '150px' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.625rem',
+                    fontWeight: 600,
+                    color: '#374151',
+                    marginBottom: '0.375rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em'
+                  }}>
+                    💰 Price
+                  </label>
+                  <select
+                    value={filterPrice}
+                    onChange={(e) => setFilterPrice(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem',
+                      fontSize: '0.75rem',
+                      border: '1px solid rgba(203, 213, 225, 0.6)',
+                      borderRadius: '0.5rem',
+                      outline: 'none',
+                      transition: 'all 0.3s ease',
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                      backdropFilter: 'blur(12px)',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                      cursor: 'pointer'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#3b82f6'
+                      e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'rgba(203, 213, 225, 0.6)'
+                      e.target.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                    }}
+                  >
+                    <option value="with-prices">💰 With Prices</option>
+                    <option value="all-prices">🎴 All Cards</option>
+                    <option value="no-prices">❌ No Prices</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
@@ -1140,54 +1186,45 @@ const CardLibrary = ({
                 '💰 Refresh Prices'
               )}
             </button>
+            
+            <button
+              onClick={onScrapeMissingPrices}
+              disabled={loading}
+              title="Scrape prices for cards that don't have them"
+              style={{
+                padding: '0.375rem 0.75rem',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                color: '#ffffff',
+                backgroundColor: '#8b5cf6',
+                border: 'none',
+                borderRadius: '0.375rem',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.375rem'
+              }}
+            >
+              {loading ? (
+                <>
+                  <div style={{
+                    width: '0.75rem',
+                    height: '0.75rem',
+                    border: '2px solid #ffffff',
+                    borderTop: '2px solid transparent',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }}></div>
+                  <span>Loading...</span>
+                </>
+              ) : (
+                '🔍 Scrape Missing Prices'
+              )}
+            </button>
           </div>
           
-          {/* Ad Slot - Below Search */}
-          <AdSlot 
-            adSlot="search-below"
-            adFormat="auto"
-            className="search-ad-slot"
-          />
 
-          {/* Left Sidebar Ad (Desktop Only) */}
-          <div style={{
-            display: 'none',
-            '@media (min-width: 1200px)': {
-              display: 'block',
-              position: 'fixed',
-              left: '1rem',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              width: '160px',
-              zIndex: 10
-            }
-          }}>
-            <AdSlot 
-              adSlot="left-sidebar"
-              adFormat="auto"
-              className="sidebar-ad-slot"
-            />
-          </div>
-
-          {/* Right Sidebar Ad (Desktop Only) */}
-          <div style={{
-            display: 'none',
-            '@media (min-width: 1200px)': {
-              display: 'block',
-              position: 'fixed',
-              right: '1rem',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              width: '160px',
-              zIndex: 10
-            }
-          }}>
-            <AdSlot 
-              adSlot="right-sidebar"
-              adFormat="auto"
-              className="sidebar-ad-slot"
-            />
-          </div>
 
           {/* Card Grid */}
           <CardGrid 
@@ -1288,12 +1325,7 @@ const CardLibrary = ({
             </div>
           )}
 
-          {/* Ad Slot - Bottom of Page */}
-          <AdSlot 
-            adSlot="bottom-page"
-            adFormat="auto"
-            className="bottom-ad-slot"
-          />
+
         </div>
       </div>
     </div>
