@@ -1,5 +1,8 @@
 import { supabase } from '../../lib/supabase.js'
 
+// Configure for Vercel Edge Runtime
+export const runtime = 'edge';
+
 // GET /api/public/stats - Get overall statistics about the card database
 export async function GET(request) {
   try {

@@ -1,5 +1,8 @@
 import { supabase } from '../../lib/supabase.js'
 
+// Configure for Vercel Edge Runtime
+export const runtime = 'edge';
+
 // GET /api/public/cards - List all cards (public endpoint)
 export async function GET(request) {
   try {

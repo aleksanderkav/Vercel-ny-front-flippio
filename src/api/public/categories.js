@@ -1,5 +1,8 @@
 import { supabase } from '../../lib/supabase.js'
 
+// Configure for Vercel Edge Runtime
+export const runtime = 'edge';
+
 // GET /api/public/categories - Get all categories with card counts
 export async function GET(request) {
   try {
