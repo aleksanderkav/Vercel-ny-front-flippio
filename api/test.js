@@ -16,7 +16,10 @@ export default async function handler(req, res) {
 
   res.status(200).json({
     success: true,
-    message: 'API is working!',
-    timestamp: new Date().toISOString()
+    message: 'API is working! This is a serverless function response.',
+    timestamp: new Date().toISOString(),
+    path: req.url,
+    method: req.method,
+    headers: req.headers
   });
 } 
