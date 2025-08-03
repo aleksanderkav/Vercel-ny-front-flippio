@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 define('PLEDGEN_VERSION', '1.0.0');
 define('PLEDGEN_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('PLEDGEN_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('PLEDGEN_API_BASE', 'https://vercel-ny-front-flippio.vercel.app/api/public');
+define('PLEDGEN_API_BASE', 'https://vercel-ny-front-flippio.vercel.app/api');
 
 /**
  * Main Pledgen Plugin Class
@@ -143,8 +143,7 @@ class Pledgen {
      * Fetch cards from API
      */
     private function get_cards_from_api($params) {
-        $url = PLEDGEN_API_BASE . '/cards';
-        $query_params = array();
+        $query_params = array('path' => 'cards');
         
         if (!empty($params['limit'])) {
             $query_params['limit'] = intval($params['limit']);
@@ -162,9 +161,7 @@ class Pledgen {
             $query_params['sortOrder'] = sanitize_text_field($params['sort_order']);
         }
         
-        if (!empty($query_params)) {
-            $url .= '?' . http_build_query($query_params);
-        }
+        $url = PLEDGEN_API_BASE . '?' . http_build_query($query_params);
         
         $response = wp_remote_get($url, array(
             'timeout' => 30,
@@ -353,7 +350,7 @@ class Pledgen {
         $stats = get_transient($cache_key);
         
         if (false === $stats) {
-            $url = PLEDGEN_API_BASE . '/stats';
+            $url = PLEDGEN_API_BASE . '?path=stats';
             
             $response = wp_remote_get($url, array(
                 'timeout' => 30,
