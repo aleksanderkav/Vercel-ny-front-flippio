@@ -201,6 +201,8 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
     )
   }
 
+  const cardsWithPrices = cards.filter(card => card.latest_price !== null && card.latest_price !== undefined && card.latest_price > 0)
+  
   if (cards.length === 0) {
     return (
       <div style={{ textAlign: 'center', paddingTop: '6rem', paddingBottom: '6rem' }}>
@@ -241,6 +243,44 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
     )
   }
 
+  if (cardsWithPrices.length === 0) {
+    return (
+      <div style={{ textAlign: 'center', paddingTop: '6rem', paddingBottom: '6rem' }}>
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '4rem',
+          height: '4rem',
+          backgroundColor: '#f59e0b',
+          borderRadius: '50%',
+          boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+          marginBottom: '1.5rem'
+        }}>
+          <span style={{ fontSize: '1.5rem' }}>💰</span>
+        </div>
+        <h3 style={{
+          fontSize: '1.25rem',
+          fontWeight: 600,
+          color: '#374151',
+          marginBottom: '0.5rem'
+        }}>
+          No cards with price data
+        </h3>
+        <p style={{ color: '#475569' }}>
+          You have {cards.length} card{cards.length !== 1 ? 's' : ''} in your collection, but none have price data yet.
+        </p>
+        <p style={{ 
+          color: '#6b7280', 
+          fontSize: '0.875rem',
+          marginTop: '0.5rem'
+        }}>
+          Use the scraper above to add price data to your cards
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div>
       <div style={{
@@ -254,7 +294,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
           fontWeight: 600,
           color: '#374151'
         }}>
-          Found {cards.length} card{cards.length !== 1 ? 's' : ''}
+          Found {cardsWithPrices.length} card{cardsWithPrices.length !== 1 ? 's' : ''} with prices
         </p>
         <div style={{
           display: 'inline-flex',
@@ -278,7 +318,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
         gap: spacing.xl,
         fontFamily: typography.fontFamily.primary
       }}>
-        {cards.map((card, index) => {
+        {cardsWithPrices.map((card, index) => {
           return (
             <div 
               key={index} 
