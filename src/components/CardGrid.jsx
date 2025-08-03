@@ -399,7 +399,8 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
               </p>
             </div>
             
-            {/* Card Image */}
+            {/* Card Image - Temporarily Hidden */}
+            {/* 
             <div style={{
               width: '100%',
               height: '200px',
@@ -438,6 +439,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
                 <div>🃏 No Image</div>
               </div>
             </div>
+            */}
             
             {/* Card Content */}
             <div style={{ padding: '1rem' }}>

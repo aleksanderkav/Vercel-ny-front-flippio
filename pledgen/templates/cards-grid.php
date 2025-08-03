@@ -78,6 +78,8 @@ $pagination = $cards_data['pagination'] ?? null;
         <?php else: ?>
             <?php foreach ($cards as $card): ?>
                 <div class="pledgen-card" data-card-id="<?php echo esc_attr($card['id']); ?>" data-card-slug="<?php echo esc_attr(strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $card['name']))); ?>">
+                    <!-- Card Image - Temporarily Hidden -->
+                    <!--
                     <div class="pledgen-card-image">
                         <?php if (!empty($card['image_url'])): ?>
                             <img src="<?php echo esc_url($card['image_url']); ?>" alt="<?php echo esc_attr($card['name']); ?>" loading="lazy">
@@ -90,6 +92,7 @@ $pagination = $cards_data['pagination'] ?? null;
                             </div>
                         <?php endif; ?>
                     </div>
+                    -->
                     
                     <div class="pledgen-card-content">
                         <h3 class="pledgen-card-title"><?php echo esc_html($card['name']); ?></h3>

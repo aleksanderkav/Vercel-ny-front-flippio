@@ -18,6 +18,8 @@ $price_history = $card['price_history'] ?? [];
 <div class="pledgen-container">
     <div class="pledgen-single-card">
         <div class="pledgen-single-card-header">
+            <!-- Card Image - Temporarily Hidden -->
+            <!--
             <div class="pledgen-single-card-image">
                 <?php if (!empty($card['image_url'])): ?>
                     <img src="<?php echo esc_url($card['image_url']); ?>" alt="<?php echo esc_attr($card['name']); ?>" loading="lazy">
@@ -30,6 +32,7 @@ $price_history = $card['price_history'] ?? [];
                     </div>
                 <?php endif; ?>
             </div>
+            -->
             
             <div class="pledgen-single-card-info">
                 <h1><?php echo esc_html($card['name']); ?></h1>

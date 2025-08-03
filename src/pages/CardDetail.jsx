@@ -379,7 +379,8 @@ const CardDetail = () => {
         {/* Main Card Info */}
         <div style={mainSectionStyle}>
           <div style={cardOverviewStyle}>
-            {/* Card Image */}
+            {/* Card Image - Temporarily Hidden */}
+            {/* 
             <div style={imageContainerStyle}>
               {(editData.image_url || card.image_url) ? (
                 <img 
@@ -406,7 +407,6 @@ const CardDetail = () => {
                 <p style={imageTextStyle}>Card Image</p>
               </div>
               
-              {/* Image Update Button */}
               <div style={imageControlsStyle}>
                 <button 
                   onClick={handleUpdateImage}
@@ -427,6 +427,7 @@ const CardDetail = () => {
                 )}
               </div>
             </div>
+            */}
 
             {/* Card Metadata */}
             <div style={metadataStyle}>
