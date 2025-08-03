@@ -381,7 +381,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
                 margin: 0,
                 fontWeight: 500
               }}>
-                Added: {new Date(card.created_at).toLocaleDateString()}
+                Updated: {card.last_price_update ? new Date(card.last_price_update).toLocaleDateString() : new Date(card.created_at).toLocaleDateString()}
               </p>
             </div>
             
@@ -437,7 +437,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
                   {/* Price Information */}
                   <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+                    gridTemplateColumns: '1fr 1fr',
                     gap: '0.75rem'
                   }}>
                     {/* Latest Price */}
@@ -514,42 +514,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
                       </div>
                     </div>
 
-                    {/* Price Count */}
-                    <div style={{
-                      padding: '0.75rem',
-                      background: 'rgba(240, 253, 244, 0.5)',
-                      borderRadius: '0.75rem',
-                      border: '1px solid rgba(34, 197, 94, 0.2)',
-                      minWidth: '0'
-                    }}>
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.25rem',
-                        marginBottom: '0.25rem'
-                      }}>
-                        <span style={{ fontSize: '0.75rem', color: '#22c55e' }}>📊</span>
-                        <span style={{
-                          fontSize: '0.75rem',
-                          fontWeight: 600,
-                          color: '#15803d',
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis'
-                        }}>
-                          Entries
-                        </span>
-                      </div>
-                      <div style={{
-                        fontSize: '1rem',
-                        fontWeight: 700,
-                        color: '#15803d',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis'
-                      }}>
-                        {card.price_entries_count || 0}
-                      </div>
-                    </div>
+
                   </div>
 
                   {/* Last Updated */}
@@ -596,17 +561,38 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
                       <div style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '0.5rem',
+                        justifyContent: 'space-between',
                         marginBottom: '0.5rem'
                       }}>
-                        <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>📊</span>
-                        <span style={{
-                          fontSize: '0.875rem',
-                          fontWeight: 600,
-                          color: '#374151'
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem'
                         }}>
-                          Price History
-                        </span>
+                          <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>📊</span>
+                          <span style={{
+                            fontSize: '0.875rem',
+                            fontWeight: 600,
+                            color: '#374151'
+                          }}>
+                            Price History
+                          </span>
+                        </div>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.25rem',
+                          padding: '0.25rem 0.5rem',
+                          fontSize: '0.625rem',
+                          fontWeight: 600,
+                          borderRadius: '0.375rem',
+                          backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                          color: '#15803d',
+                          border: '1px solid rgba(34, 197, 94, 0.2)'
+                        }}>
+                          <span>📊</span>
+                          <span>{card.price_entries_count || 0}</span>
+                        </div>
                       </div>
                       <SparklineChart 
                         data={generatePriceHistory(card.latest_price, card.price_entries_count)}
