@@ -274,7 +274,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
       
       <div style={{
         display: 'grid',
-        gridTemplateColumns: `repeat(${gridColumns}, 1fr)`,
+        gridTemplateColumns: `repeat(auto-fit, minmax(280px, 1fr))`,
         gap: spacing.xl,
         fontFamily: typography.fontFamily.primary
       }}>
@@ -326,7 +326,10 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
                     margin: 0,
                     lineHeight: '1.3',
                     cursor: 'pointer',
-                    transition: 'color 0.2s ease'
+                    transition: 'color 0.2s ease',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
                   }}>
                     {card.name || 'Unknown Card'}
                   </h3>
@@ -425,41 +428,50 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
             */}
             
             {/* Card Content */}
-            <div style={{ padding: '1rem' }}>
+            <div style={{ 
+              padding: '1rem',
+              overflow: 'hidden'
+            }}>
               {card.latest_price !== null && card.latest_price !== undefined && card.latest_price > 0 ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   {/* Price Information */}
                   <div style={{
                     display: 'grid',
-                    gridTemplateColumns: '1fr 1fr 1fr',
-                    gap: '1rem'
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+                    gap: '0.75rem'
                   }}>
                     {/* Latest Price */}
                     <div style={{
                       padding: '0.75rem',
                       background: 'rgba(239, 246, 255, 0.5)',
                       borderRadius: '0.75rem',
-                      border: '1px solid rgba(59, 130, 246, 0.2)'
+                      border: '1px solid rgba(59, 130, 246, 0.2)',
+                      minWidth: '0'
                     }}>
                       <div style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '0.5rem',
+                        gap: '0.25rem',
                         marginBottom: '0.25rem'
                       }}>
-                        <span style={{ fontSize: '0.875rem', color: '#3b82f6' }}>💰</span>
+                        <span style={{ fontSize: '0.75rem', color: '#3b82f6' }}>💰</span>
                         <span style={{
-                          fontSize: '0.875rem',
+                          fontSize: '0.75rem',
                           fontWeight: 600,
-                          color: '#1e40af'
+                          color: '#1e40af',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
                         }}>
-                          Latest Price
+                          Latest
                         </span>
                       </div>
                       <div style={{
-                        fontSize: '1.25rem',
+                        fontSize: '1rem',
                         fontWeight: 700,
-                        color: getPriceColor(card.latest_price)
+                        color: getPriceColor(card.latest_price),
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis'
                       }}>
                         {formatPrice(card.latest_price)}
                       </div>
@@ -470,27 +482,33 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
                       padding: '0.75rem',
                       background: 'rgba(254, 243, 199, 0.5)',
                       borderRadius: '0.75rem',
-                      border: '1px solid rgba(245, 158, 11, 0.2)'
+                      border: '1px solid rgba(245, 158, 11, 0.2)',
+                      minWidth: '0'
                     }}>
                       <div style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '0.5rem',
+                        gap: '0.25rem',
                         marginBottom: '0.25rem'
                       }}>
-                        <span style={{ fontSize: '0.875rem', color: '#f59e0b' }}>📈</span>
+                        <span style={{ fontSize: '0.75rem', color: '#f59e0b' }}>📈</span>
                         <span style={{
-                          fontSize: '0.875rem',
+                          fontSize: '0.75rem',
                           fontWeight: 600,
-                          color: '#92400e'
+                          color: '#92400e',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
                         }}>
-                          Average Price
+                          Average
                         </span>
                       </div>
                       <div style={{
-                        fontSize: '1.25rem',
+                        fontSize: '1rem',
                         fontWeight: 700,
-                        color: '#92400e'
+                        color: '#92400e',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis'
                       }}>
                         {card.latest_price ? formatPrice(card.latest_price * 0.95) : 'N/A'}
                       </div>
@@ -501,27 +519,33 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
                       padding: '0.75rem',
                       background: 'rgba(240, 253, 244, 0.5)',
                       borderRadius: '0.75rem',
-                      border: '1px solid rgba(34, 197, 94, 0.2)'
+                      border: '1px solid rgba(34, 197, 94, 0.2)',
+                      minWidth: '0'
                     }}>
                       <div style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '0.5rem',
+                        gap: '0.25rem',
                         marginBottom: '0.25rem'
                       }}>
-                        <span style={{ fontSize: '0.875rem', color: '#22c55e' }}>📊</span>
+                        <span style={{ fontSize: '0.75rem', color: '#22c55e' }}>📊</span>
                         <span style={{
-                          fontSize: '0.875rem',
+                          fontSize: '0.75rem',
                           fontWeight: 600,
-                          color: '#15803d'
+                          color: '#15803d',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
                         }}>
-                          Price Entries
+                          Entries
                         </span>
                       </div>
                       <div style={{
-                        fontSize: '1.25rem',
+                        fontSize: '1rem',
                         fontWeight: 700,
-                        color: '#15803d'
+                        color: '#15803d',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis'
                       }}>
                         {card.price_entries_count || 0}
                       </div>
