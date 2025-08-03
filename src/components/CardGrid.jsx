@@ -632,7 +632,6 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
 
             </div>
           </div>
-            </React.Fragment>
           )
         })}
       </div>
