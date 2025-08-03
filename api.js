@@ -1,17 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
-
-// Create Supabase client
-const supabaseUrl = process.env.VITE_SUPABASE_URL
-const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY
-
-const supabase = supabaseUrl && supabaseAnonKey 
-  ? createClient(supabaseUrl, supabaseAnonKey, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      }
-    })
-  : null
+// API endpoint at root level for Vercel automatic detection
+// Note: Supabase integration temporarily disabled for testing
 
 // API endpoint at root level for Vercel automatic detection
 export default async function handler(req, res) {
@@ -36,104 +24,47 @@ export default async function handler(req, res) {
 
   try {
     if (path === 'cards') {
-      // Handle cards endpoint
-      if (!supabase) {
-        return res.status(500).json({
-          success: false,
-          error: 'Supabase not configured'
-        });
-      }
-
-      const parsedLimit = Math.min(parseInt(limit) || 20, 100);
-      const parsedOffset = Math.max(parseInt(offset) || 0, 0);
-      
-      let query = supabase
-        .from('cards_with_prices')
-        .select('*', { count: 'exact' });
-      
-      // Apply filters
-      if (category) {
-        query = query.eq('category', category);
-      }
-      
-      if (search) {
-        query = query.ilike('name', `%${search}%`);
-      }
-      
-      // Apply sorting
-      query = query.order(sortBy, { ascending: sortOrder === 'asc' });
-      
-      // Apply pagination
-      query = query.range(parsedOffset, parsedOffset + parsedLimit - 1);
-      
-      const { data, error, count } = await query;
-      
-      if (error) throw error;
-      
+      // Handle cards endpoint - return mock data for testing
       res.status(200).json({
         success: true,
-        data: data || [],
+        data: [
+          {
+            id: 'test-card-1',
+            name: 'Charizard PSA 10',
+            category: 'Pokemon',
+            latest_price: 1500.00,
+            image_url: 'https://example.com/charizard.jpg',
+            created_at: new Date().toISOString()
+          },
+          {
+            id: 'test-card-2',
+            name: 'Pikachu PSA 9',
+            category: 'Pokemon',
+            latest_price: 250.00,
+            image_url: 'https://example.com/pikachu.jpg',
+            created_at: new Date().toISOString()
+          }
+        ],
         pagination: {
-          limit: parsedLimit,
-          offset: parsedOffset,
-          total: count || 0,
-          hasMore: (parsedOffset + parsedLimit) < (count || 0)
+          limit: parseInt(limit) || 20,
+          offset: parseInt(offset) || 0,
+          total: 2,
+          hasMore: false
         }
       });
       
     } else if (path === 'stats') {
-      // Handle stats endpoint
-      if (!supabase) {
-        return res.status(500).json({
-          success: false,
-          error: 'Supabase not configured'
-        });
-      }
-
-      const { count: totalCards, error: countError } = await supabase
-        .from('cards_with_prices')
-        .select('*', { count: 'exact', head: true });
-      
-      if (countError) throw countError;
-      
-      const { count: cardsWithPrices, error: priceError } = await supabase
-        .from('cards_with_prices')
-        .select('latest_price', { count: 'exact', head: true })
-        .not('latest_price', 'is', null);
-      
-      if (priceError) throw priceError;
-      
-      const { data: avgPriceData, error: avgError } = await supabase
-        .from('cards_with_prices')
-        .select('latest_price')
-        .not('latest_price', 'is', null);
-      
-      if (avgError) throw avgError;
-      
-      const prices = avgPriceData?.map(card => card.latest_price).filter(price => price !== null) || [];
-      const averagePrice = prices.length > 0 ? prices.reduce((sum, price) => sum + price, 0) / prices.length : 0;
-      const totalValue = prices.reduce((sum, price) => sum + price, 0);
-      
-      const { data: categoryData, error: categoryError } = await supabase
-        .from('cards_with_prices')
-        .select('category');
-      
-      if (categoryError) throw categoryError;
-      
-      const categories = {};
-      categoryData?.forEach(card => {
-        const category = card.category || 'Other';
-        categories[category] = (categories[category] || 0) + 1;
-      });
-      
+      // Handle stats endpoint - return mock data for testing
       res.status(200).json({
         success: true,
         data: {
-          totalCards: totalCards || 0,
-          totalValue: totalValue,
-          averagePrice: averagePrice,
-          cardsWithPrices: cardsWithPrices || 0,
-          categories: categories,
+          totalCards: 2,
+          totalValue: 1750.00,
+          averagePrice: 875.00,
+          cardsWithPrices: 2,
+          categories: {
+            'Pokemon': 2
+          },
           lastUpdated: new Date().toISOString()
         }
       });
@@ -147,7 +78,8 @@ export default async function handler(req, res) {
         method: req.method,
         url: req.url,
         path: path || 'none',
-        availablePaths: ['cards', 'stats']
+        availablePaths: ['cards', 'stats'],
+        note: 'Using mock data - Supabase integration pending'
       });
     }
     
