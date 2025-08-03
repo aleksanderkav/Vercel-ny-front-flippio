@@ -1,12 +1,23 @@
 import { supabase } from '../../../src/lib/supabase.js'
 
-// Configure for Vercel Edge Runtime
-export const runtime = 'edge';
+// Standard Vercel serverless function
+export default async function handler(req, res) {
+  // Handle CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-// GET /api/public/cards - List all cards (public endpoint)
-export async function GET(request) {
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = new URL(req.url);
     
     // Pagination parameters
     const limitParam = searchParams.get('limit')
