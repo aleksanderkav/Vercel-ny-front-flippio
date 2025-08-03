@@ -280,26 +280,26 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
       }}>
         {cards.map((card, index) => {
           return (
-              <div 
-            key={index} 
-            style={{
-              background: colors.surface,
-              borderRadius: borderRadius.lg,
-              boxShadow: shadows.sm,
-              border: `1px solid ${colors.border}`,
-              overflow: 'hidden',
-              position: 'relative',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.boxShadow = shadows.lg
-              e.target.style.transform = 'translateY(-2px)'
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.boxShadow = shadows.sm
-              e.target.style.transform = 'translateY(0)'
-            }}
-          >
+            <div 
+              key={index} 
+              style={{
+                background: colors.surface,
+                borderRadius: borderRadius.lg,
+                boxShadow: shadows.sm,
+                border: `1px solid ${colors.border}`,
+                overflow: 'hidden',
+                position: 'relative',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.boxShadow = shadows.lg
+                e.target.style.transform = 'translateY(-2px)'
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.boxShadow = shadows.sm
+                e.target.style.transform = 'translateY(0)'
+              }}
+            >
             {/* Card Header */}
             <div style={{
               background: 'rgba(248, 250, 252, 0.8)',
