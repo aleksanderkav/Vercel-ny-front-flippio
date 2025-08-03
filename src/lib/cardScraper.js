@@ -664,9 +664,26 @@ async function scrapeRealCardImage(cardName) {
         }
     }
     
-    // Final fallback
-    console.log('❌ No image found, using fallback');
-    return 'https://images.pokemontcg.io/base1/1.png';
+    // Final fallback - use appropriate images based on card type
+    console.log('❌ No image found, using category-appropriate fallback');
+    const cardNameLower = cardName.toLowerCase();
+    
+    // Determine card type and use appropriate fallback
+    if (cardNameLower.includes('jordan') || cardNameLower.includes('lebron') || 
+        cardNameLower.includes('kobe') || cardNameLower.includes('curry') || 
+        cardNameLower.includes('giannis') || cardNameLower.includes('basketball')) {
+        return 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=300&h=420&fit=crop';
+    } else if (cardNameLower.includes('brady') || cardNameLower.includes('mahomes') || 
+               cardNameLower.includes('burrow') || cardNameLower.includes('football')) {
+        return 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=300&h=420&fit=crop';
+    } else if (cardNameLower.includes('charizard') || cardNameLower.includes('pikachu') || 
+               cardNameLower.includes('mewtwo') || cardNameLower.includes('blastoise') || 
+               cardNameLower.includes('venusaur') || cardNameLower.includes('pokemon')) {
+        return 'https://images.pokemontcg.io/base1/1.png';
+    } else {
+        // Generic fallback
+        return 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=300&h=420&fit=crop';
+    }
 }
 
 /**
