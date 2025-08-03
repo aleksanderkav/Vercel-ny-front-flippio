@@ -4,7 +4,9 @@ import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts'
 import { isSupabaseConfigured } from '../lib/supabase'
 import { colors, typography, spacing, borderRadius, shadows, getPriceColor, formatPrice } from '../styles/designSystem'
 
-const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) => {
+const CardGrid = ({ cards = [], loading = false, onRefresh }) => {
+  const [hoveredCard, setHoveredCard] = React.useState(null)
+  
   console.log('CardGrid received cards:', cards)
   console.log('Cards with images:', cards.filter(card => card.image_url).length)
   console.log('Sample card image_url:', cards[0]?.image_url)
@@ -283,6 +285,20 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
 
   return (
     <div>
+      <style>
+        {`
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+              transform: translateY(10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        `}
+      </style>
       <div style={{
         display: 'flex',
         flexDirection: 'column',
@@ -325,20 +341,15 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
               style={{
                 background: colors.surface,
                 borderRadius: borderRadius.lg,
-                boxShadow: shadows.sm,
+                boxShadow: hoveredCard === (card.id || index) ? shadows.lg : shadows.sm,
                 border: `1px solid ${colors.border}`,
                 overflow: 'hidden',
                 position: 'relative',
-                transition: 'all 0.2s ease'
+                transition: 'all 0.2s ease',
+                transform: hoveredCard === (card.id || index) ? 'translateY(-2px)' : 'translateY(0)'
               }}
-              onMouseEnter={(e) => {
-                e.target.style.boxShadow = shadows.lg
-                e.target.style.transform = 'translateY(-2px)'
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.boxShadow = shadows.sm
-                e.target.style.transform = 'translateY(0)'
-              }}
+              onMouseEnter={() => setHoveredCard(card.id || index)}
+              onMouseLeave={() => setHoveredCard(null)}
             >
             {/* Card Header */}
             <div style={{
@@ -590,13 +601,14 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
                     </div>
                   )}
 
-                  {/* Price History Chart */}
-                  {card.price_entries_count > 1 && (
+                  {/* Price History Chart - Show on Hover */}
+                  {hoveredCard === (card.id || index) && (
                     <div style={{
                       padding: '0.75rem',
                       background: 'rgba(243, 244, 246, 0.5)',
                       borderRadius: '0.75rem',
-                      border: '1px solid rgba(156, 163, 175, 0.2)'
+                      border: '1px solid rgba(156, 163, 175, 0.2)',
+                      animation: 'fadeIn 0.2s ease-in-out'
                     }}>
                       <div style={{
                         display: 'flex',
@@ -635,7 +647,7 @@ const CardGrid = ({ cards = [], loading = false, onRefresh, gridColumns = 4 }) =
                         </div>
                       </div>
                       <SparklineChart 
-                        data={generatePriceHistory(card.latest_price, card.price_entries_count)}
+                        data={generatePriceHistory(card.latest_price, Math.max(card.price_entries_count || 1, 1))}
                         color={getPriceColor(card.latest_price)}
                       />
                     </div>
