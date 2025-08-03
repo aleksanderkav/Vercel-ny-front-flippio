@@ -4,6 +4,10 @@
     {
       "src": "package.json",
       "use": "@vercel/static-build"
+    },
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
     }
   ],
   "functions": {
@@ -11,11 +15,19 @@
       "runtime": "nodejs18.x"
     }
   },
-  "rewrites": [
-    { "source": "/api", "destination": "/api/index.js" },
-    { "source": "/api/(.*)", "destination": "/api/$1.js" }
-  ],
   "routes": [
+    {
+      "src": "/api/hello",
+      "dest": "/api/hello.js"
+    },
+    {
+      "src": "/api/test",
+      "dest": "/api/test.js"
+    },
+    {
+      "src": "/api",
+      "dest": "/api/index.js"
+    },
     {
       "src": "/api/(.*)",
       "dest": "/api/$1.js"
@@ -36,5 +48,7 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ]
+  ],
+  "rewrites": [],
+  "redirects": []
 } 
